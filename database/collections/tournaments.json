@@ -1,0 +1,64 @@
+[
+  {
+    "_id": {
+      "$oid": "675000000000000000000001"
+    },
+    "facilityId": {
+      "$oid": "66a000000000000000000001"
+    },
+    "createdByUsername": "ivan",
+    "name": "Jesenji teniski kup",
+    "sport": "Tenis",
+    "startDateTime": {
+      "$date": "2026-10-10T09:00:00.000Z"
+    },
+    "status": "open",
+    "applications": [
+      {
+        "_id": {
+          "$oid": "675100000000000000000001"
+        },
+        "athleteUsername": "marko",
+        "status": "accepted"
+      },
+      {
+        "_id": {
+          "$oid": "675100000000000000000002"
+        },
+        "athleteUsername": "ana",
+        "status": "pending"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "675000000000000000000002"
+    },
+    "facilityId": {
+      "$oid": "66a000000000000000000002"
+    },
+    "createdByUsername": "petar",
+    "name": "Novosadski basket 3x3",
+    "sport": "Kosarka",
+    "startDateTime": {
+      "$date": "2026-08-30T10:00:00.000Z"
+    },
+    "status": "closed",
+    "applications": [
+      {
+        "_id": {
+          "$oid": "675100000000000000000003"
+        },
+        "athleteUsername": "ana",
+        "status": "accepted"
+      },
+      {
+        "_id": {
+          "$oid": "675100000000000000000004"
+        },
+        "athleteUsername": "marko",
+        "status": "rejected"
+      }
+    ]
+  }
+]

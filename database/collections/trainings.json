@@ -1,0 +1,50 @@
+[
+  {
+    "_id": {
+      "$oid": "670000000000000000000001"
+    },
+    "athleteUsername": "marko",
+    "trainerId": {
+      "$oid": "66f000000000000000000001"
+    },
+    "facilityId": {
+      "$oid": "66a000000000000000000001"
+    },
+    "resourceId": {
+      "$oid": "66b000000000000000000001"
+    },
+    "sport": "Tenis",
+    "startDateTime": {
+      "$date": "2026-08-18T14:00:00.000Z"
+    },
+    "endDateTime": {
+      "$date": "2026-08-18T15:00:00.000Z"
+    },
+    "price": 2500,
+    "status": "attended"
+  },
+  {
+    "_id": {
+      "$oid": "670000000000000000000002"
+    },
+    "athleteUsername": "ana",
+    "trainerId": {
+      "$oid": "66f000000000000000000002"
+    },
+    "facilityId": {
+      "$oid": "66a000000000000000000002"
+    },
+    "resourceId": {
+      "$oid": "66b000000000000000000003"
+    },
+    "sport": "Kosarka",
+    "startDateTime": {
+      "$date": "2026-09-11T15:00:00.000Z"
+    },
+    "endDateTime": {
+      "$date": "2026-09-11T16:00:00.000Z"
+    },
+    "price": 2200,
+    "status": "scheduled"
+  }
+]

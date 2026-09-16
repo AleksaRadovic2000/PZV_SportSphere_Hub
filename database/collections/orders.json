@@ -1,0 +1,56 @@
+[
+  {
+    "_id": {
+      "$oid": "672000000000000000000001"
+    },
+    "athleteUsername": "marko",
+    "facilityId": {
+      "$oid": "66a000000000000000000001"
+    },
+    "items": [
+      {
+        "_id": {
+          "$oid": "672100000000000000000001"
+        },
+        "productId": {
+          "$oid": "671000000000000000000001"
+        },
+        "productName": "Teniske loptice - pakovanje",
+        "unitPrice": 900,
+        "quantity": 2
+      }
+    ],
+    "totalPrice": 1800,
+    "status": "collected",
+    "createdAt": {
+      "$date": "2026-08-21T12:30:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "672000000000000000000002"
+    },
+    "athleteUsername": "ana",
+    "facilityId": {
+      "$oid": "66a000000000000000000002"
+    },
+    "items": [
+      {
+        "_id": {
+          "$oid": "672100000000000000000002"
+        },
+        "productId": {
+          "$oid": "671000000000000000000003"
+        },
+        "productName": "Kosarkaska lopta",
+        "unitPrice": 4200,
+        "quantity": 1
+      }
+    ],
+    "totalPrice": 4200,
+    "status": "ordered",
+    "createdAt": {
+      "$date": "2026-09-05T10:00:00.000Z"
+    }
+  }
+]

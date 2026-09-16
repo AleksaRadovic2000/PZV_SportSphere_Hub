@@ -1,0 +1,70 @@
+[
+  {
+    "_id": {
+      "$oid": "673000000000000000000001"
+    },
+    "reservationId": {
+      "$oid": "66d000000000000000000001"
+    },
+    "athleteUsername": "marko",
+    "facilityId": {
+      "$oid": "66a000000000000000000001"
+    },
+    "reaction": "like",
+    "comment": "Odlican teren i ljubazno osoblje.",
+    "createdAt": {
+      "$date": "2026-08-20T19:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "673000000000000000000002"
+    },
+    "reservationId": {
+      "$oid": "66d000000000000000000002"
+    },
+    "athleteUsername": "ana",
+    "facilityId": {
+      "$oid": "66a000000000000000000002"
+    },
+    "reaction": "like",
+    "comment": "Hala je uredna i dobro opremljena.",
+    "createdAt": {
+      "$date": "2026-08-22T20:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "673000000000000000000003"
+    },
+    "reservationId": {
+      "$oid": "66d000000000000000000003"
+    },
+    "athleteUsername": "marko",
+    "facilityId": {
+      "$oid": "66a000000000000000000003"
+    },
+    "reaction": "dislike",
+    "comment": "Oprema bi mogla da bude raznovrsnija.",
+    "createdAt": {
+      "$date": "2026-08-25T12:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "673000000000000000000004"
+    },
+    "reservationId": {
+      "$oid": "66d000000000000000000006"
+    },
+    "athleteUsername": "ana",
+    "facilityId": {
+      "$oid": "66a000000000000000000003"
+    },
+    "reaction": "like",
+    "comment": "Prijatan prostor za rekreativnu odbojku.",
+    "createdAt": {
+      "$date": "2026-08-28T15:00:00.000Z"
+    }
+  }
+]

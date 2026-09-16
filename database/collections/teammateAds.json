@@ -1,0 +1,53 @@
+[
+  {
+    "_id": {
+      "$oid": "66e000000000000000000001"
+    },
+    "authorUsername": "marko",
+    "sport": "Fudbal",
+    "city": "Beograd",
+    "startDateTime": {
+      "$date": "2026-09-12T18:00:00.000Z"
+    },
+    "endDateTime": {
+      "$date": "2026-09-12T20:00:00.000Z"
+    },
+    "playersNeeded": 2,
+    "status": "active",
+    "requests": [
+      {
+        "_id": {
+          "$oid": "66e100000000000000000001"
+        },
+        "athleteUsername": "ana",
+        "status": "pending"
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "66e000000000000000000002"
+    },
+    "authorUsername": "ana",
+    "sport": "Odbojka",
+    "city": "Novi Sad",
+    "startDateTime": {
+      "$date": "2026-08-30T16:00:00.000Z"
+    },
+    "endDateTime": {
+      "$date": "2026-08-30T18:00:00.000Z"
+    },
+    "playersNeeded": 1,
+    "status": "completed",
+    "requests": [
+      {
+        "_id": {
+          "$oid": "66e100000000000000000002"
+        },
+        "athleteUsername": "marko",
+        "status": "accepted"
+      }
+    ]
+  }
+]
+

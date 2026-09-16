@@ -1,0 +1,58 @@
+[
+  {
+    "_id": {
+      "$oid": "671000000000000000000001"
+    },
+    "facilityId": {
+      "$oid": "66a000000000000000000001"
+    },
+    "sport": "Tenis",
+    "name": "Teniske loptice - pakovanje",
+    "image": "uploads/products/teniske-loptice.jpg",
+    "price": 900,
+    "stock": 25,
+    "active": true
+  },
+  {
+    "_id": {
+      "$oid": "671000000000000000000002"
+    },
+    "facilityId": {
+      "$oid": "66a000000000000000000001"
+    },
+    "sport": "Fudbal",
+    "name": "Fudbalska lopta",
+    "image": "uploads/products/fudbalska-lopta.jpg",
+    "price": 3500,
+    "stock": 8,
+    "active": true
+  },
+  {
+    "_id": {
+      "$oid": "671000000000000000000003"
+    },
+    "facilityId": {
+      "$oid": "66a000000000000000000002"
+    },
+    "sport": "Kosarka",
+    "name": "Kosarkaska lopta",
+    "image": "uploads/products/kosarkaska-lopta.jpg",
+    "price": 4200,
+    "stock": 12,
+    "active": true
+  },
+  {
+    "_id": {
+      "$oid": "671000000000000000000004"
+    },
+    "facilityId": {
+      "$oid": "66a000000000000000000003"
+    },
+    "sport": "Fitnes",
+    "name": "Elasticna traka",
+    "image": "uploads/products/elasticna-traka.jpg",
+    "price": 1200,
+    "stock": 20,
+    "active": true
+  }
+]

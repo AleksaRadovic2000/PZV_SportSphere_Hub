@@ -1,0 +1,47 @@
+[
+  {
+    "_id": {
+      "$oid": "66f000000000000000000001"
+    },
+    "firstName": "Nikola",
+    "lastName": "Jovanovic",
+    "facilityId": {
+      "$oid": "66a000000000000000000001"
+    },
+    "sports": ["Tenis", "Fitnes"],
+    "specialization": "Kondiciona priprema i tehnika tenisa",
+    "averageRating": 4.8,
+    "pricePerHour": 2500,
+    "active": true
+  },
+  {
+    "_id": {
+      "$oid": "66f000000000000000000002"
+    },
+    "firstName": "Milica",
+    "lastName": "Stojanovic",
+    "facilityId": {
+      "$oid": "66a000000000000000000002"
+    },
+    "sports": ["Kosarka", "Odbojka"],
+    "specialization": "Rad sa pocetnicima i rekreativcima",
+    "averageRating": 4.6,
+    "pricePerHour": 2200,
+    "active": true
+  },
+  {
+    "_id": {
+      "$oid": "66f000000000000000000003"
+    },
+    "firstName": "Stefan",
+    "lastName": "Ilic",
+    "facilityId": {
+      "$oid": "66a000000000000000000003"
+    },
+    "sports": ["Fitnes"],
+    "specialization": "Funkcionalni trening",
+    "averageRating": 4.4,
+    "pricePerHour": 2000,
+    "active": false
+  }
+]

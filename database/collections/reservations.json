@@ -1,0 +1,129 @@
+[
+  {
+    "_id": {
+      "$oid": "66d000000000000000000001"
+    },
+    "athleteUsername": "marko",
+    "facilityId": {
+      "$oid": "66a000000000000000000001"
+    },
+    "resourceId": {
+      "$oid": "66b000000000000000000001"
+    },
+    "sport": "Tenis",
+    "startDateTime": {
+      "$date": "2026-08-20T16:00:00.000Z"
+    },
+    "endDateTime": {
+      "$date": "2026-08-20T18:00:00.000Z"
+    },
+    "price": 3000,
+    "status": "attended"
+  },
+  {
+    "_id": {
+      "$oid": "66d000000000000000000002"
+    },
+    "athleteUsername": "ana",
+    "facilityId": {
+      "$oid": "66a000000000000000000002"
+    },
+    "resourceId": {
+      "$oid": "66b000000000000000000003"
+    },
+    "sport": "Odbojka",
+    "startDateTime": {
+      "$date": "2026-08-22T17:00:00.000Z"
+    },
+    "endDateTime": {
+      "$date": "2026-08-22T19:00:00.000Z"
+    },
+    "price": 8000,
+    "status": "attended"
+  },
+  {
+    "_id": {
+      "$oid": "66d000000000000000000003"
+    },
+    "athleteUsername": "marko",
+    "facilityId": {
+      "$oid": "66a000000000000000000003"
+    },
+    "resourceId": {
+      "$oid": "66b000000000000000000005"
+    },
+    "sport": "Fitnes",
+    "startDateTime": {
+      "$date": "2026-08-25T10:00:00.000Z"
+    },
+    "endDateTime": {
+      "$date": "2026-08-25T11:00:00.000Z"
+    },
+    "price": 2000,
+    "status": "attended"
+  },
+  {
+    "_id": {
+      "$oid": "66d000000000000000000004"
+    },
+    "athleteUsername": "marko",
+    "facilityId": {
+      "$oid": "66a000000000000000000001"
+    },
+    "resourceId": {
+      "$oid": "66b000000000000000000002"
+    },
+    "sport": "Fudbal",
+    "startDateTime": {
+      "$date": "2026-09-10T18:00:00.000Z"
+    },
+    "endDateTime": {
+      "$date": "2026-09-10T20:00:00.000Z"
+    },
+    "price": 10000,
+    "status": "scheduled"
+  },
+  {
+    "_id": {
+      "$oid": "66d000000000000000000005"
+    },
+    "athleteUsername": "ana",
+    "facilityId": {
+      "$oid": "66a000000000000000000001"
+    },
+    "resourceId": {
+      "$oid": "66b000000000000000000001"
+    },
+    "sport": "Tenis",
+    "startDateTime": {
+      "$date": "2026-08-15T09:00:00.000Z"
+    },
+    "endDateTime": {
+      "$date": "2026-08-15T10:00:00.000Z"
+    },
+    "price": 1500,
+    "status": "no_show"
+  },
+  {
+    "_id": {
+      "$oid": "66d000000000000000000006"
+    },
+    "athleteUsername": "ana",
+    "facilityId": {
+      "$oid": "66a000000000000000000003"
+    },
+    "resourceId": {
+      "$oid": "66b000000000000000000005"
+    },
+    "sport": "Odbojka",
+    "startDateTime": {
+      "$date": "2026-08-28T12:00:00.000Z"
+    },
+    "endDateTime": {
+      "$date": "2026-08-28T14:00:00.000Z"
+    },
+    "price": 6400,
+    "status": "attended"
+  }
+]
+
