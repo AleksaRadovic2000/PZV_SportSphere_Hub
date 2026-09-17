@@ -35,6 +35,53 @@ export class UserService {
     return this.http.post<UserResponse>(`${this.uri}/register`, formData);
   }
 
+  getProfile(username: string) {
+    return this.http.get<User>(`${this.uri}/profile/${username}`);
+  }
+
+  getAllUsers() {
+    return this.http.get<User[]>(`${this.uri}/all`);
+  }
+
+  getPendingUsers() {
+    return this.http.get<User[]>(`${this.uri}/pending`);
+  }
+
+  approveUser(username: string) {
+    return this.http.post<Message>(`${this.uri}/approve`, { username });
+  }
+
+  rejectUser(username: string) {
+    return this.http.post<Message>(`${this.uri}/reject`, { username });
+  }
+
+  adminUpdateUser(user: User) {
+    return this.http.post<UserResponse>(`${this.uri}/admin-update`, user);
+  }
+
+  deleteUser(username: string) {
+    return this.http.post<Message>(`${this.uri}/delete`, { username });
+  }
+
+  updateProfile(user: User, profileImage: File | null) {
+    const formData = new FormData();
+    formData.append('user', JSON.stringify(user));
+
+    if (profileImage) {
+      formData.append('profileImage', profileImage);
+    }
+
+    return this.http.post<UserResponse>(`${this.uri}/update-profile`, formData);
+  }
+
+  getProfileImageUrl(profileImage: string) {
+    if (!profileImage) {
+      return '';
+    }
+
+    return `${environment.apiUrl}/${profileImage}`;
+  }
+
   generateAvatar(seed: string) {
     return this.http.post(`${this.uri}/generate-avatar`, { seed }, { responseType: 'blob' });
   }

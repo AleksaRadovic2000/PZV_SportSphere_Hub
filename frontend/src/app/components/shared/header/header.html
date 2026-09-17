@@ -9,13 +9,18 @@
 
     <div class="flex flex-wrap items-center justify-center gap-4">
       @if (loggedUser; as user) {
-        <a class="text-white no-underline hover:underline" [routerLink]="homeRoute">
-          @if (user.role === 'admin') {
+        @if (user.role === 'admin') {
+          <a class="text-white no-underline hover:underline" routerLink="/admin/requests">
             Zahtevi
-          } @else {
+          </a>
+          <a class="text-white no-underline hover:underline" routerLink="/admin/users">
+            Korisnici
+          </a>
+        } @else {
+          <a class="text-white no-underline hover:underline" [routerLink]="homeRoute">
             Profil
-          }
-        </a>
+          </a>
+        }
 
         <button
           class="bg-transparent text-white border-0 p-0 cursor-pointer hover:underline"

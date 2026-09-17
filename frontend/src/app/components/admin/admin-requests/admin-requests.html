@@ -1,5 +1,55 @@
 <section class="bg-surface border rounded-lg shadow p-6">
-  <h1 class="text-2xl mt-2 mb-4">Zahtevi za registraciju</h1>
-  <p class="m-0">Dobrodosli, {{ user?.firstName }} {{ user?.lastName }}.</p>
-  <p class="text-muted mb-2">Obrada zahteva bice dodata u USER-04 tiketu.</p>
+  <h1 class="text-2xl mt-2 mb-6">Zahtevi za registraciju</h1>
+
+  @if (message) {
+    <p [class]="success ? 'text-success' : 'text-danger'">{{ message }}</p>
+  }
+
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="border-b text-left">
+          <th class="p-2">Korisnicko ime</th>
+          <th class="p-2">Ime i prezime</th>
+          <th class="p-2">Email</th>
+          <th class="p-2">Uloga</th>
+          <th class="p-2">Naziv objekta</th>
+          <th class="p-2">Akcije</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of users; track user._id) {
+          <tr class="border-b">
+            <td class="p-2">{{ user.username }}</td>
+            <td class="p-2">{{ user.firstName }} {{ user.lastName }}</td>
+            <td class="p-2">{{ user.email }}</td>
+            <td class="p-2">{{ user.role }}</td>
+            <td class="p-2">{{ user.companyName || '-' }}</td>
+            <td class="p-2">
+              <div class="flex flex-col gap-2 sm:flex-row">
+                <button
+                  class="bg-success text-white border-0 rounded px-3 py-2 cursor-pointer"
+                  type="button"
+                  (click)="approveUser(user.username)"
+                >
+                  Odobri
+                </button>
+                <button
+                  class="bg-danger text-white border-0 rounded px-3 py-2 cursor-pointer"
+                  type="button"
+                  (click)="rejectUser(user.username)"
+                >
+                  Odbij
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td class="p-4 text-center" colspan="6">Nema zahteva za registraciju.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
 </section>

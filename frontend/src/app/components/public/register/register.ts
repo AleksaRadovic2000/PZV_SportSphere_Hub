@@ -1,23 +1,20 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { RegisterUser } from '../../../models/user';
-import { Sport } from '../../../models/sport';
-import { SportService } from '../../../services/sport';
 import { UserService } from '../../../services/user';
+import { SportSelector } from '../../shared/sport-selector/sport-selector';
 
 @Component({
   selector: 'app-register',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, SportSelector],
   templateUrl: './register.html',
 })
-export class Register implements OnInit {
+export class Register {
   private userService = inject(UserService);
-  private sportService = inject(SportService);
 
   user = new RegisterUser();
 
-  sports: Sport[] = [];
   passwordConfirmation = '';
   profileImage: File | null = null;
   profileImagePreview = '';
@@ -26,17 +23,6 @@ export class Register implements OnInit {
   message = '';
   success = false;
   loading = false;
-
-  ngOnInit() {
-    this.sportService.getAllSports().subscribe({
-      next: (sports) => {
-        this.sports = sports;
-      },
-      error: () => {
-        this.message = 'Lista sportova nije dostupna.';
-      },
-    });
-  }
 
   validatePassword() {
     return /^(?=[A-Za-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,12}$/.test(

@@ -1,0 +1,149 @@
+<section class="bg-surface border rounded-lg shadow p-6">
+  <h1 class="text-2xl mt-2 mb-6">Korisnici</h1>
+
+  @if (message) {
+    <p [class]="success ? 'text-success' : 'text-danger'">{{ message }}</p>
+  }
+
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="border-b text-left">
+          <th class="p-2">Korisnicko ime</th>
+          <th class="p-2">Ime i prezime</th>
+          <th class="p-2">Email</th>
+          <th class="p-2">Uloga</th>
+          <th class="p-2">Status</th>
+          <th class="p-2">Akcija</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of users; track user._id) {
+          <tr class="border-b">
+            <td class="p-2">{{ user.username }}</td>
+            <td class="p-2">{{ user.firstName }} {{ user.lastName }}</td>
+            <td class="p-2">{{ user.email }}</td>
+            <td class="p-2">{{ user.role }}</td>
+            <td class="p-2">{{ user.status }}</td>
+            <td class="p-2">
+              <button
+                class="bg-primary text-white border-0 rounded px-3 py-2 cursor-pointer hover:bg-primary-dark"
+                type="button"
+                (click)="selectUser(user)"
+              >
+                Izaberi
+              </button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td class="p-4 text-center" colspan="6">Nema korisnika za prikaz.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (selectedUser) {
+    <form class="flex flex-col gap-4 mt-6" (ngSubmit)="updateUser()">
+      <h2 class="text-xl m-0">Izmena korisnika</h2>
+
+      <div class="flex flex-col gap-4 md:flex-row">
+        <div class="flex-1">
+          <label class="block font-medium mb-2" for="admin-username">Korisnicko ime</label>
+          <input
+            id="admin-username"
+            class="w-full border rounded p-2"
+            name="username"
+            [(ngModel)]="selectedUser.username"
+            readonly
+          />
+        </div>
+
+        <div class="flex-1">
+          <label class="block font-medium mb-2" for="admin-role">Uloga</label>
+          <input
+            id="admin-role"
+            class="w-full border rounded p-2"
+            name="role"
+            [(ngModel)]="selectedUser.role"
+            readonly
+          />
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4 md:flex-row">
+        <div class="flex-1">
+          <label class="block font-medium mb-2" for="admin-first-name">Ime</label>
+          <input
+            id="admin-first-name"
+            class="w-full border rounded p-2 focus:outline-primary"
+            name="firstName"
+            [(ngModel)]="selectedUser.firstName"
+          />
+        </div>
+
+        <div class="flex-1">
+          <label class="block font-medium mb-2" for="admin-last-name">Prezime</label>
+          <input
+            id="admin-last-name"
+            class="w-full border rounded p-2 focus:outline-primary"
+            name="lastName"
+            [(ngModel)]="selectedUser.lastName"
+          />
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4 md:flex-row">
+        <div class="flex-1">
+          <label class="block font-medium mb-2" for="admin-phone">Telefon</label>
+          <input
+            id="admin-phone"
+            class="w-full border rounded p-2 focus:outline-primary"
+            name="phone"
+            [(ngModel)]="selectedUser.phone"
+          />
+        </div>
+
+        <div class="flex-1">
+          <label class="block font-medium mb-2" for="admin-email">Email</label>
+          <input
+            id="admin-email"
+            class="w-full border rounded p-2 focus:outline-primary"
+            name="email"
+            type="email"
+            [(ngModel)]="selectedUser.email"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label class="block font-medium mb-2" for="admin-status">Status</label>
+        <input
+          id="admin-status"
+          class="w-full border rounded p-2"
+          name="status"
+          [(ngModel)]="selectedUser.status"
+          readonly
+        />
+      </div>
+
+      <div class="flex flex-col gap-3 sm:flex-row">
+        <button
+          class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer hover:bg-primary-dark"
+          type="submit"
+        >
+          Sacuvaj izmene
+        </button>
+
+        <button
+          class="bg-danger text-white border-0 rounded px-4 py-2 cursor-pointer"
+          type="button"
+          (click)="deleteUser()"
+        >
+          Obrisi korisnika
+        </button>
+      </div>
+    </form>
+  }
+</section>

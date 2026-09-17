@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { AdminRequests } from './components/admin/admin-requests/admin-requests';
+import { AdminUsers } from './components/admin/admin-users/admin-users';
 import { AthleteProfile } from './components/athlete/athlete-profile/athlete-profile';
 import { EmployeeProfile } from './components/employee/employee-profile/employee-profile';
 import { AdminLogin } from './components/public/admin-login/admin-login';
@@ -45,6 +46,12 @@ export const routes: Routes = [
   {
     path: 'admin/requests',
     component: AdminRequests,
+    canActivate: [roleGuard],
+    data: { roles: ['admin'] },
+  },
+  {
+    path: 'admin/users',
+    component: AdminUsers,
     canActivate: [roleGuard],
     data: { roles: ['admin'] },
   },
