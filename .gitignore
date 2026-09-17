@@ -141,3 +141,7 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Runtime uploads
+backend/uploads/profiles/*
+!backend/uploads/profiles/default-avatar.png

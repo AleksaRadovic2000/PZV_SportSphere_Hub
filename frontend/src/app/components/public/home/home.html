@@ -1,0 +1,46 @@
+<section class="max-w-md mx-auto bg-surface border rounded-lg shadow p-6">
+  <h1 class="text-2xl text-center mt-2 mb-2">SportSphere Hub</h1>
+  <p class="text-muted text-center mt-2 mb-6">Prijava sportiste ili zaposlenog</p>
+
+  <form class="flex flex-col gap-4" (ngSubmit)="login()">
+    <div>
+      <label class="block font-medium mb-2" for="username">Korisnicko ime</label>
+      <input
+        id="username"
+        class="w-full border rounded p-2 focus:outline-primary"
+        name="username"
+        [(ngModel)]="username"
+        autocomplete="username"
+      />
+    </div>
+
+    <div>
+      <label class="block font-medium mb-2" for="password">Lozinka</label>
+      <input
+        id="password"
+        class="w-full border rounded p-2 focus:outline-primary"
+        name="password"
+        type="password"
+        [(ngModel)]="password"
+        autocomplete="current-password"
+      />
+    </div>
+
+    @if (message) {
+      <p class="text-danger m-0">{{ message }}</p>
+    }
+
+    <button
+      class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer transition-colors hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed"
+      type="submit"
+      [disabled]="loading"
+    >
+      Prijavi se
+    </button>
+  </form>
+
+  <div class="flex flex-col items-center gap-2 mt-6">
+    <a class="text-primary" routerLink="/register">Registracija</a>
+    <a class="text-primary" routerLink="/forgot-password">Zaboravljena lozinka</a>
+  </div>
+</section>

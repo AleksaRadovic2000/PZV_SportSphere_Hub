@@ -2,11 +2,34 @@
   <nav class="container flex flex-col items-center justify-between gap-3 py-4 sm:flex-row">
     <a
       class="text-xl font-bold text-white no-underline transition-colors hover:text-accent"
-      routerLink="/"
+      [routerLink]="homeRoute"
     >
       SportSphere Hub
     </a>
 
-    <a class="text-white no-underline hover:underline" routerLink="/">Pocetna</a>
+    <div class="flex flex-wrap items-center justify-center gap-4">
+      @if (loggedUser; as user) {
+        <a class="text-white no-underline hover:underline" [routerLink]="homeRoute">
+          @if (user.role === 'admin') {
+            Zahtevi
+          } @else {
+            Profil
+          }
+        </a>
+
+        <button
+          class="bg-transparent text-white border-0 p-0 cursor-pointer hover:underline"
+          type="button"
+          (click)="logout()"
+        >
+          Odjava
+        </button>
+      } @else {
+        <a class="text-white no-underline hover:underline" routerLink="/">Prijava</a>
+        <a class="text-white no-underline hover:underline" routerLink="/register">
+          Registracija
+        </a>
+      }
+    </div>
   </nav>
 </header>

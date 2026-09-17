@@ -1,0 +1,237 @@
+<section class="max-w-xl mx-auto bg-surface border rounded-lg shadow p-6 md:p-6">
+  <h1 class="text-2xl text-center mt-2 mb-6">Registracija</h1>
+
+  <form class="flex flex-col gap-4" (ngSubmit)="register()">
+    <div class="flex flex-col gap-4 md:flex-row">
+      <div class="flex-1">
+        <label class="block font-medium mb-2" for="role">Tip korisnika</label>
+        <select
+          id="role"
+          class="w-full border rounded p-2 focus:outline-primary"
+          name="role"
+          [(ngModel)]="user.role"
+        >
+          <option value="athlete">Sportista</option>
+          <option value="employee">Zaposleni</option>
+        </select>
+      </div>
+
+      <div class="flex-1">
+        <label class="block font-medium mb-2" for="username">Korisnicko ime</label>
+        <input
+          id="username"
+          class="w-full border rounded p-2 focus:outline-primary"
+          name="username"
+          [(ngModel)]="user.username"
+          autocomplete="username"
+        />
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-4 md:flex-row">
+      <div class="flex-1">
+        <label class="block font-medium mb-2" for="first-name">Ime</label>
+        <input
+          id="first-name"
+          class="w-full border rounded p-2 focus:outline-primary"
+          name="firstName"
+          [(ngModel)]="user.firstName"
+        />
+      </div>
+
+      <div class="flex-1">
+        <label class="block font-medium mb-2" for="last-name">Prezime</label>
+        <input
+          id="last-name"
+          class="w-full border rounded p-2 focus:outline-primary"
+          name="lastName"
+          [(ngModel)]="user.lastName"
+        />
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-4 md:flex-row">
+      <div class="flex-1">
+        <label class="block font-medium mb-2" for="phone">Telefon</label>
+        <input
+          id="phone"
+          class="w-full border rounded p-2 focus:outline-primary"
+          name="phone"
+          [(ngModel)]="user.phone"
+        />
+      </div>
+
+      <div class="flex-1">
+        <label class="block font-medium mb-2" for="email">Email</label>
+        <input
+          id="email"
+          class="w-full border rounded p-2 focus:outline-primary"
+          name="email"
+          type="email"
+          [(ngModel)]="user.email"
+          autocomplete="email"
+        />
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-4 md:flex-row">
+      <div class="flex-1">
+        <label class="block font-medium mb-2" for="password">Lozinka</label>
+        <input
+          id="password"
+          class="w-full border rounded p-2 focus:outline-primary"
+          name="password"
+          type="password"
+          [(ngModel)]="user.password"
+          autocomplete="new-password"
+        />
+      </div>
+
+      <div class="flex-1">
+        <label class="block font-medium mb-2" for="password-confirmation">
+          Ponovljena lozinka
+        </label>
+        <input
+          id="password-confirmation"
+          class="w-full border rounded p-2 focus:outline-primary"
+          name="passwordConfirmation"
+          type="password"
+          [(ngModel)]="passwordConfirmation"
+          autocomplete="new-password"
+        />
+      </div>
+    </div>
+
+    <div>
+      <label class="block font-medium mb-2" for="sports">Omiljeni sportovi (najvise 5)</label>
+      <select
+        id="sports"
+        class="w-full border rounded p-2 focus:outline-primary"
+        name="favouriteSports"
+        multiple
+        size="6"
+        [(ngModel)]="user.favouriteSports"
+      >
+        @for (sport of sports; track sport.name) {
+          <option [value]="sport.name">{{ sport.name }}</option>
+        }
+      </select>
+    </div>
+
+    @if (user.role === 'employee') {
+      <div class="flex flex-col gap-4 md:flex-row">
+        <div class="flex-1">
+          <label class="block font-medium mb-2" for="company-name">Naziv objekta</label>
+          <input
+            id="company-name"
+            class="w-full border rounded p-2 focus:outline-primary"
+            name="companyName"
+            [(ngModel)]="user.companyName"
+          />
+        </div>
+
+        <div class="flex-1">
+          <label class="block font-medium mb-2" for="company-address">Adresa sedista</label>
+          <input
+            id="company-address"
+            class="w-full border rounded p-2 focus:outline-primary"
+            name="companyAddress"
+            [(ngModel)]="user.companyAddress"
+          />
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4 md:flex-row">
+        <div class="flex-1">
+          <label class="block font-medium mb-2" for="registration-number">Maticni broj</label>
+          <input
+            id="registration-number"
+            class="w-full border rounded p-2 focus:outline-primary"
+            name="registrationNumber"
+            [(ngModel)]="user.registrationNumber"
+          />
+        </div>
+
+        <div class="flex-1">
+          <label class="block font-medium mb-2" for="tax-id">PIB</label>
+          <input
+            id="tax-id"
+            class="w-full border rounded p-2 focus:outline-primary"
+            name="taxId"
+            [(ngModel)]="user.taxId"
+          />
+        </div>
+      </div>
+    }
+
+    <div>
+      <label class="block font-medium mb-2" for="profile-image">Profilna slika</label>
+      <input
+        id="profile-image"
+        class="w-full border rounded p-2"
+        type="file"
+        accept="image/png,image/jpeg"
+        (change)="onProfileImageSelected($event)"
+      />
+    </div>
+
+    <div class="flex flex-col gap-4">
+      <button
+        class="bg-accent border-0 rounded px-4 py-2 cursor-pointer"
+        type="button"
+        (click)="generateAvatar()"
+      >
+        Generisi avatar
+      </button>
+
+      @if (generatedAvatarPreview) {
+        <div class="flex flex-col items-center gap-4">
+          <img
+            class="border rounded-full p-2"
+            width="160"
+            height="160"
+            [src]="generatedAvatarPreview"
+            alt="Generisani avatar"
+          />
+          <button
+            class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer"
+            type="button"
+            (click)="saveGeneratedAvatar()"
+          >
+            Sacuvaj kao profilnu sliku
+          </button>
+        </div>
+      }
+
+      @if (profileImagePreview) {
+        <div class="flex flex-col items-center gap-2">
+          <p class="m-0 font-medium">Izabrana profilna slika</p>
+          <img
+            class="border rounded-full p-2"
+            width="160"
+            height="160"
+            [src]="profileImagePreview"
+            alt="Profilna slika"
+          />
+        </div>
+      }
+    </div>
+
+    @if (message) {
+      <p [class]="success ? 'text-success m-0' : 'text-danger m-0'">
+        {{ message }}
+      </p>
+    }
+
+    <div class="flex flex-col gap-4">
+      <button
+        class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer transition-colors hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed"
+        type="submit"
+        [disabled]="loading"
+      >
+        Posalji zahtev za registraciju
+      </button>
+      <a class="text-primary text-center" routerLink="/">Nazad na prijavu</a>
+    </div>
+  </form>
+</section>
