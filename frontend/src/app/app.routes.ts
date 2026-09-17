@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { AdminRequests } from './components/admin/admin-requests/admin-requests';
 import { AdminUsers } from './components/admin/admin-users/admin-users';
 import { AthleteProfile } from './components/athlete/athlete-profile/athlete-profile';
+import { AthleteFacilitySearch } from './components/athlete/athlete-facility-search/athlete-facility-search';
 import { EmployeeProfile } from './components/employee/employee-profile/employee-profile';
 import { EmployeeFacilities } from './components/employee/employee-facilities/employee-facilities';
 import { FacilityForm } from './components/employee/facility-form/facility-form';
@@ -41,6 +42,12 @@ export const routes: Routes = [
   {
     path: 'athlete/profile',
     component: AthleteProfile,
+    canActivate: [roleGuard],
+    data: { roles: ['athlete'] },
+  },
+  {
+    path: 'athlete/facilities',
+    component: AthleteFacilitySearch,
     canActivate: [roleGuard],
     data: { roles: ['athlete'] },
   },

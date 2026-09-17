@@ -60,12 +60,19 @@ export class FacilityService {
     return this.http.get<string[]>(`${this.uri}/cities`);
   }
 
-  search(name: string, cities: string[], sport: string, resourceType: string) {
+  search(
+    name: string,
+    cities: string[],
+    sport: string,
+    resourceType: string,
+    onlyAvailableToday = false,
+  ) {
     return this.http.post<Facility[]>(`${this.uri}/search`, {
       name,
       cities,
       sport,
       resourceType,
+      onlyAvailableToday,
     });
   }
 

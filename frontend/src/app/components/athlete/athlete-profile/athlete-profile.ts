@@ -1,6 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { AthleteReservation } from '../../../models/reservation';
 import { User } from '../../../models/user';
+import { ReservationService } from '../../../services/reservation';
 import { UserService } from '../../../services/user';
 import { SportSelector } from '../../shared/sport-selector/sport-selector';
 
@@ -11,6 +13,7 @@ import { SportSelector } from '../../shared/sport-selector/sport-selector';
 })
 export class AthleteProfile implements OnInit {
   private userService = inject(UserService);
+  private reservationService = inject(ReservationService);
 
   user = new User();
   profileImage: File | null = null;
@@ -18,6 +21,12 @@ export class AthleteProfile implements OnInit {
   message = '';
   success = false;
   loading = false;
+  reservations: AthleteReservation[] = [];
+  reservationResults: AthleteReservation[] = [];
+  reservationMessage = '';
+  reservationSuccess = false;
+  reservationSortColumn = '';
+  reservationSortDirection = 'asc';
 
   ngOnInit() {
     let loggedUser = this.userService.getLoggedUser();
@@ -35,6 +44,8 @@ export class AthleteProfile implements OnInit {
         this.message = error.error?.message || 'Profil nije moguce ucitati.';
       },
     });
+
+    this.loadReservations();
   }
 
   onProfileImageSelected(event: Event) {
@@ -99,5 +110,88 @@ export class AthleteProfile implements OnInit {
         this.loading = false;
       },
     });
+  }
+
+  loadReservations() {
+    const user = this.userService.getLoggedUser();
+
+    if (!user) {
+      return;
+    }
+
+    this.reservationService.getAthleteReservations(user.username).subscribe({
+      next: (reservations) => {
+        this.reservationResults = reservations;
+        this.reservations = [...reservations];
+      },
+      error: (error) => {
+        this.reservationMessage = error.error?.message || 'Rezervacije nije moguce ucitati.';
+      },
+    });
+  }
+
+  sortReservations(column: string) {
+    if (this.reservationSortColumn === column) {
+      this.reservationSortDirection = this.reservationSortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.reservationSortColumn = column;
+      this.reservationSortDirection = 'asc';
+    }
+
+    const direction = this.reservationSortDirection === 'asc' ? 1 : -1;
+    this.reservations = [...this.reservationResults].sort((first, second) => {
+      const firstValue = this.getReservationSortValue(first, column);
+      const secondValue = this.getReservationSortValue(second, column);
+      return firstValue.localeCompare(secondValue) * direction;
+    });
+  }
+
+  canCancel(reservation: AthleteReservation) {
+    const hoursUntilStart =
+      (new Date(reservation.startDateTime).getTime() - Date.now()) / (60 * 60 * 1000);
+    return reservation.status === 'scheduled' && hoursUntilStart >= 12;
+  }
+
+  cancelReservation(reservation: AthleteReservation) {
+    this.reservationMessage = '';
+    this.reservationSuccess = false;
+    this.reservationService.cancelReservation(reservation._id, this.user.username).subscribe({
+      next: (response) => {
+        this.reservationMessage = response.message;
+        this.reservationSuccess = true;
+        this.loadReservations();
+      },
+      error: (error) => {
+        this.reservationMessage = error.error?.message || 'Otkazivanje rezervacije nije uspelo.';
+      },
+    });
+  }
+
+  formatDateTime(value: string) {
+    return new Date(value).toLocaleString('sr-Latn-RS');
+  }
+
+  private getReservationSortValue(reservation: AthleteReservation, column: string) {
+    if (column === 'city') {
+      return reservation.city;
+    }
+
+    if (column === 'resource') {
+      return reservation.resourceName;
+    }
+
+    if (column === 'sport') {
+      return reservation.sport;
+    }
+
+    if (column === 'interval') {
+      return reservation.startDateTime;
+    }
+
+    if (column === 'status') {
+      return reservation.status;
+    }
+
+    return reservation.facilityName;
   }
 }
