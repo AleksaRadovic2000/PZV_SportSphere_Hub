@@ -1,46 +1,134 @@
-<section class="max-w-md mx-auto bg-surface border rounded-lg shadow p-6">
-  <h1 class="text-2xl text-center mt-2 mb-2">SportSphere Hub</h1>
-  <p class="text-muted text-center mt-2 mb-6">Prijava sportiste ili zaposlenog</p>
+<div class="flex flex-col gap-8">
+  <section class="max-w-md mx-auto bg-surface border rounded-lg shadow p-6 w-full">
+    <h1 class="text-2xl text-center mt-2 mb-2">SportSphere Hub</h1>
+    <p class="text-muted text-center mt-2 mb-6">Prijava sportiste ili zaposlenog</p>
 
-  <form class="flex flex-col gap-4" (ngSubmit)="login()">
-    <div>
-      <label class="block font-medium mb-2" for="username">Korisnicko ime</label>
-      <input
-        id="username"
-        class="w-full border rounded p-2 focus:outline-primary"
-        name="username"
-        [(ngModel)]="username"
-        autocomplete="username"
-      />
+    <form class="flex flex-col gap-4" (ngSubmit)="login()">
+      <div>
+        <label class="block font-medium mb-2" for="username">Korisnicko ime</label>
+        <input id="username" class="w-full border rounded p-2" name="username" [(ngModel)]="username" />
+      </div>
+      <div>
+        <label class="block font-medium mb-2" for="password">Lozinka</label>
+        <input id="password" class="w-full border rounded p-2" name="password" type="password" [(ngModel)]="password" />
+      </div>
+      @if (message) {
+        <p class="text-danger m-0">{{ message }}</p>
+      }
+      <button class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer" type="submit" [disabled]="loading">
+        Prijavi se
+      </button>
+    </form>
+
+    <div class="flex flex-col items-center gap-2 mt-6">
+      <a class="text-primary" routerLink="/register">Registracija</a>
+      <a class="text-primary" routerLink="/forgot-password">Zaboravljena lozinka</a>
     </div>
+  </section>
 
-    <div>
-      <label class="block font-medium mb-2" for="password">Lozinka</label>
-      <input
-        id="password"
-        class="w-full border rounded p-2 focus:outline-primary"
-        name="password"
-        type="password"
-        [(ngModel)]="password"
-        autocomplete="current-password"
-      />
+  @if (publicMessage) {
+    <p class="text-danger text-center m-0">{{ publicMessage }}</p>
+  }
+
+  <section>
+    <h2 class="text-2xl text-center mt-2 mb-6">Aktivni sportski objekti</h2>
+    <p class="text-3xl font-bold text-primary text-center mb-6">{{ publicInfo.activeCount }}</p>
+    <div class="flex flex-col gap-4 md:flex-row">
+      @for (facility of publicInfo.topFacilities; track facility._id) {
+        <article class="flex-1 bg-surface border rounded-lg shadow p-4">
+          <h3 class="text-lg mt-2 mb-2">{{ facility.name }}</h3>
+          <p class="text-muted">{{ facility.city }}</p>
+          <p class="m-0">Svidjanja: {{ facility.likes }}</p>
+        </article>
+      } @empty {
+        <p class="text-muted text-center w-full">Nema aktivnih objekata.</p>
+      }
     </div>
+  </section>
 
-    @if (message) {
-      <p class="text-danger m-0">{{ message }}</p>
-    }
+  <section>
+    <h2 class="text-2xl text-center mt-2 mb-6">Aktuelne promocije</h2>
+    <div class="flex flex-col gap-4 md:flex-row">
+      @for (promotion of promotions; track promotion._id) {
+        <article class="flex-1 bg-surface border rounded-lg shadow p-4">
+          <h3 class="text-lg mt-2 mb-2">{{ promotion.name }}</h3>
+          <p class="m-0">{{ promotion.facilityName }} - {{ promotion.sport }}</p>
+          <p class="text-primary font-bold mb-2">Popust: {{ formatPromotionDiscount(promotion) }}</p>
+          <p class="text-sm text-muted m-0">
+            {{ promotion.startDate.slice(0, 10) }} - {{ promotion.endDate.slice(0, 10) }}
+          </p>
+        </article>
+      } @empty {
+        <p class="text-muted text-center w-full">Trenutno nema aktivnih promocija.</p>
+      }
+    </div>
+  </section>
 
-    <button
-      class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer transition-colors hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed"
-      type="submit"
-      [disabled]="loading"
-    >
-      Prijavi se
-    </button>
-  </form>
+  <section class="bg-surface border rounded-lg shadow p-6">
+    <h2 class="text-2xl mt-2 mb-6">Pretraga objekata</h2>
+    <form class="flex flex-col gap-4" (ngSubmit)="searchFacilities()">
+      <div class="flex flex-col gap-4 md:flex-row">
+        <div class="flex-1">
+          <label class="block font-medium mb-2" for="search-name">Naziv</label>
+          <input id="search-name" class="w-full border rounded p-2" name="searchName" [(ngModel)]="searchName" />
+        </div>
+        <div class="flex-1">
+          <label class="block font-medium mb-2" for="search-sport">Sport</label>
+          <select id="search-sport" class="w-full border rounded p-2" name="selectedSport" [(ngModel)]="selectedSport">
+            <option value="">Svi sportovi</option>
+            @for (sport of sports; track sport.name) {
+              <option [value]="sport.name">{{ sport.name }}</option>
+            }
+          </select>
+        </div>
+        <div class="flex-1">
+          <label class="block font-medium mb-2" for="resource-type">Tip terena</label>
+          <select id="resource-type" class="w-full border rounded p-2" name="resourceType" [(ngModel)]="resourceType">
+            <option value="">Svi tipovi</option>
+            <option value="outdoor">Otvoreni teren</option>
+            <option value="indoor">Zatvoreni teren ili hala</option>
+          </select>
+        </div>
+      </div>
 
-  <div class="flex flex-col items-center gap-2 mt-6">
-    <a class="text-primary" routerLink="/register">Registracija</a>
-    <a class="text-primary" routerLink="/forgot-password">Zaboravljena lozinka</a>
-  </div>
-</section>
+      <div>
+        <label class="block font-medium mb-2" for="search-cities">Gradovi</label>
+        <p class="text-sm text-muted mt-2 mb-2">Za izbor vise gradova drzite Cmd na Mac-u ili Ctrl na Windows-u i Linux-u.</p>
+        <select id="search-cities" class="w-full border rounded p-2" name="selectedCities" multiple size="4" [(ngModel)]="selectedCities">
+          @for (city of cities; track city) {
+            <option [value]="city">{{ city }}</option>
+          }
+        </select>
+      </div>
+
+      <button class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer" type="submit">Pretrazi</button>
+    </form>
+
+    <div class="overflow-x-auto mt-6">
+      <table class="w-full border-collapse">
+        <thead>
+          <tr class="border-b text-left">
+            <th class="p-2 cursor-pointer" (click)="sortBy('name')">Naziv</th>
+            <th class="p-2 cursor-pointer" (click)="sortBy('city')">Grad</th>
+            <th class="p-2">Adresa</th>
+            <th class="p-2 cursor-pointer" (click)="sortBy('sport')">Sportovi</th>
+            <th class="p-2">Akcija</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (facility of facilities; track facility._id) {
+            <tr class="border-b">
+              <td class="p-2">{{ facility.name }}</td>
+              <td class="p-2">{{ facility.city }}</td>
+              <td class="p-2">{{ facility.address }}</td>
+              <td class="p-2">{{ getSports(facility) }}</td>
+              <td class="p-2"><a class="text-primary" [routerLink]="['/facilities', facility._id]">Detalji</a></td>
+            </tr>
+          } @empty {
+            <tr><td class="p-4 text-center" colspan="5">Nema rezultata pretrage.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

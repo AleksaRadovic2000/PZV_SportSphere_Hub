@@ -16,6 +16,13 @@
           <a class="text-white no-underline hover:underline" routerLink="/admin/users">
             Korisnici
           </a>
+        } @else if (user.role === 'employee') {
+          <a class="text-white no-underline hover:underline" [routerLink]="homeRoute">
+            Profil
+          </a>
+          <a class="text-white no-underline hover:underline" routerLink="/employee/facilities">
+            Objekti
+          </a>
         } @else {
           <a class="text-white no-underline hover:underline" [routerLink]="homeRoute">
             Profil

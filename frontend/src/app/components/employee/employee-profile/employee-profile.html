@@ -146,3 +146,39 @@
     </button>
   </form>
 </section>
+
+<section class="bg-surface border rounded-lg shadow p-6 mt-6">
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center justify-between mb-4">
+    <h2 class="text-xl m-0">Objekti koje vodim</h2>
+    <a class="text-primary" routerLink="/employee/facilities">Upravljanje objektima</a>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="border-b text-left">
+          <th class="p-2">Naziv</th>
+          <th class="p-2">Grad</th>
+          <th class="p-2">Sportovi</th>
+          <th class="p-2">Resursi</th>
+          <th class="p-2">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (facility of facilities; track facility._id) {
+          <tr class="border-b">
+            <td class="p-2">{{ facility.name }}</td>
+            <td class="p-2">{{ facility.city }}</td>
+            <td class="p-2">{{ getSports(facility) }}</td>
+            <td class="p-2">{{ facility.resources.length }}</td>
+            <td class="p-2">{{ facility.status }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td class="p-4 text-center" colspan="5">Nemate sportske objekte.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

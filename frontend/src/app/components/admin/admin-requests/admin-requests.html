@@ -53,3 +53,57 @@
     </table>
   </div>
 </section>
+
+<section class="bg-surface border rounded-lg shadow p-6 mt-6">
+  <h2 class="text-2xl mt-2 mb-6">Zahtevi za sportske objekte</h2>
+
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="border-b text-left">
+          <th class="p-2">Naziv</th>
+          <th class="p-2">Grad i adresa</th>
+          <th class="p-2">Zaposleni</th>
+          <th class="p-2">Resursi</th>
+          <th class="p-2">Akcije</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (facility of facilities; track facility._id) {
+          <tr class="border-b">
+            <td class="p-2">{{ facility.name }}</td>
+            <td class="p-2">{{ facility.city }}, {{ facility.address }}</td>
+            <td class="p-2">{{ facility.employeeUsernames.join(', ') }}</td>
+            <td class="p-2">
+              @for (resource of facility.resources; track resource._id || $index) {
+                <div>{{ resource.name }} ({{ resource.type }}, {{ resource.capacity }})</div>
+              }
+            </td>
+            <td class="p-2">
+              <div class="flex flex-col gap-2 sm:flex-row">
+                <button
+                  class="bg-success text-white border-0 rounded px-3 py-2 cursor-pointer"
+                  type="button"
+                  (click)="approveFacility(facility._id)"
+                >
+                  Odobri
+                </button>
+                <button
+                  class="bg-danger text-white border-0 rounded px-3 py-2 cursor-pointer"
+                  type="button"
+                  (click)="rejectFacility(facility._id)"
+                >
+                  Odbij
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td class="p-4 text-center" colspan="5">Nema zahteva za sportske objekte.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

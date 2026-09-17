@@ -1,0 +1,71 @@
+@if (message) {
+  <section class="max-w-xl mx-auto bg-surface border rounded-lg shadow p-6 text-center">
+    <p class="text-danger">{{ message }}</p>
+    <a class="text-primary" routerLink="/">Nazad na pocetnu stranu</a>
+  </section>
+} @else {
+  <section class="flex flex-col gap-6">
+    <div class="bg-surface border rounded-lg shadow p-6">
+      <a class="text-primary" routerLink="/">Nazad na pretragu</a>
+      <h1 class="text-3xl mb-2">{{ details.facility.name }}</h1>
+      <p class="text-lg text-muted mt-2">{{ details.facility.city }}, {{ details.facility.address }}</p>
+      <p>{{ details.facility.description }}</p>
+      <div class="flex gap-4">
+        <span>Svidjanja: {{ details.likes }}</span>
+        <span>Nesvidjanja: {{ details.dislikes }}</span>
+      </div>
+    </div>
+
+    @if (details.facility.images.length) {
+      <div>
+        <h2 class="text-2xl mb-4">Galerija</h2>
+        <div class="flex flex-wrap gap-4">
+          @for (image of details.facility.images; track image) {
+            <img
+              class="border rounded-lg shadow-sm"
+              width="320"
+              height="220"
+              [src]="getImageUrl(image)"
+              [alt]="details.facility.name"
+            />
+          }
+        </div>
+      </div>
+    }
+
+    <div class="bg-surface border rounded-lg shadow p-6">
+      <h2 class="text-2xl mt-2 mb-4">Tereni, hale i cenovnik</h2>
+      <div class="flex flex-col gap-4">
+        @for (resource of details.facility.resources; track resource._id) {
+          <article class="border rounded p-4">
+            <h3 class="text-xl mt-2 mb-2">{{ resource.name }}</h3>
+            <p>Tip: {{ resource.type }} | Kapacitet: {{ resource.capacity }}</p>
+            <p>{{ resource.equipmentDescription }}</p>
+            <div class="overflow-x-auto">
+              <table class="w-full border-collapse">
+                <thead><tr class="border-b text-left"><th class="p-2">Sport</th><th class="p-2">Cena po satu</th></tr></thead>
+                <tbody>
+                  @for (price of resource.sportPrices; track price.sport) {
+                    <tr class="border-b"><td class="p-2">{{ price.sport }}</td><td class="p-2">{{ price.pricePerHour }} RSD</td></tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </article>
+        }
+      </div>
+    </div>
+
+    <div class="bg-surface border rounded-lg shadow p-6">
+      <h2 class="text-2xl mt-2 mb-4">Radno vreme</h2>
+      <div class="flex flex-wrap gap-4">
+        @for (hours of details.facility.workingHours; track hours.day) {
+          <div class="border rounded p-3">
+            <strong>{{ getDayName(hours.day) }}</strong>
+            <div>{{ hours.from }} - {{ hours.to }}</div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+}

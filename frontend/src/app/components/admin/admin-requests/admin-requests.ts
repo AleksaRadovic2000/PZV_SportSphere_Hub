@@ -1,5 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { Facility } from '../../../models/facility';
 import { User } from '../../../models/user';
+import { FacilityService } from '../../../services/facility';
 import { UserService } from '../../../services/user';
 
 @Component({
@@ -9,13 +11,16 @@ import { UserService } from '../../../services/user';
 })
 export class AdminRequests implements OnInit {
   private userService = inject(UserService);
+  private facilityService = inject(FacilityService);
 
   users: User[] = [];
+  facilities: Facility[] = [];
   message = '';
   success = false;
 
   ngOnInit() {
     this.loadPendingUsers();
+    this.loadPendingFacilities();
   }
 
   loadPendingUsers() {
@@ -53,6 +58,46 @@ export class AdminRequests implements OnInit {
       },
       error: (error) => {
         this.message = error.error?.message || 'Odbijanje zahteva nije uspelo.';
+        this.success = false;
+      },
+    });
+  }
+
+  loadPendingFacilities() {
+    this.facilityService.getPending().subscribe({
+      next: (facilities) => {
+        this.facilities = facilities;
+      },
+      error: (error) => {
+        this.message = error.error?.message || 'Zahteve za objekte nije moguce ucitati.';
+        this.success = false;
+      },
+    });
+  }
+
+  approveFacility(id: string) {
+    this.facilityService.approve(id).subscribe({
+      next: (response) => {
+        this.message = response.message;
+        this.success = true;
+        this.loadPendingFacilities();
+      },
+      error: (error) => {
+        this.message = error.error?.message || 'Odobravanje objekta nije uspelo.';
+        this.success = false;
+      },
+    });
+  }
+
+  rejectFacility(id: string) {
+    this.facilityService.reject(id).subscribe({
+      next: (response) => {
+        this.message = response.message;
+        this.success = true;
+        this.loadPendingFacilities();
+      },
+      error: (error) => {
+        this.message = error.error?.message || 'Odbijanje objekta nije uspelo.';
         this.success = false;
       },
     });

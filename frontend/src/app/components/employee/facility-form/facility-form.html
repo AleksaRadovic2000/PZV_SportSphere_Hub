@@ -1,0 +1,282 @@
+<section class="bg-surface border rounded-lg shadow p-6">
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center justify-between mb-6">
+    <h1 class="text-2xl m-0">{{ editMode ? 'Izmena objekta' : 'Novi sportski objekat' }}</h1>
+    <a class="text-primary" routerLink="/employee/facilities">Nazad na objekte</a>
+  </div>
+
+  <form class="flex flex-col gap-6" (ngSubmit)="save()">
+    <div class="flex flex-col gap-4 md:flex-row">
+      <div class="flex-1">
+        <label class="block font-medium mb-2" for="facility-name">Naziv</label>
+        <input
+          id="facility-name"
+          class="w-full border rounded p-2 focus:outline-primary"
+          name="name"
+          [(ngModel)]="facility.name"
+        />
+      </div>
+      <div class="flex-1">
+        <label class="block font-medium mb-2" for="facility-city">Grad</label>
+        <input
+          id="facility-city"
+          class="w-full border rounded p-2 focus:outline-primary"
+          name="city"
+          [(ngModel)]="facility.city"
+        />
+      </div>
+      <div class="flex-1">
+        <label class="block font-medium mb-2" for="facility-address">Adresa</label>
+        <input
+          id="facility-address"
+          class="w-full border rounded p-2 focus:outline-primary"
+          name="address"
+          [(ngModel)]="facility.address"
+        />
+      </div>
+    </div>
+
+    <div>
+      <label class="block font-medium mb-2" for="facility-description">Opis</label>
+      <textarea
+        id="facility-description"
+        class="w-full border rounded p-2 focus:outline-primary"
+        name="description"
+        rows="4"
+        [(ngModel)]="facility.description"
+      ></textarea>
+    </div>
+
+    <div class="flex flex-col gap-4 md:flex-row">
+      <div class="flex-1">
+        <label class="block font-medium mb-2" for="allowed-no-shows">
+          Dozvoljeni nedolasci
+        </label>
+        <input
+          id="allowed-no-shows"
+          class="w-full border rounded p-2 focus:outline-primary"
+          name="allowedNoShows"
+          type="number"
+          min="0"
+          [(ngModel)]="facility.allowedNoShows"
+        />
+      </div>
+      <div class="flex-1">
+        <label class="block font-medium mb-2" for="latitude">Geografska sirina</label>
+        <input
+          id="latitude"
+          class="w-full border rounded p-2 focus:outline-primary"
+          name="latitude"
+          type="number"
+          step="any"
+          [(ngModel)]="facility.location.latitude"
+        />
+      </div>
+      <div class="flex-1">
+        <label class="block font-medium mb-2" for="longitude">Geografska duzina</label>
+        <input
+          id="longitude"
+          class="w-full border rounded p-2 focus:outline-primary"
+          name="longitude"
+          type="number"
+          step="any"
+          [(ngModel)]="facility.location.longitude"
+        />
+      </div>
+    </div>
+
+    <div class="border rounded p-4">
+      <div class="flex items-center justify-between gap-3 mb-4">
+        <h2 class="text-xl m-0">Radno vreme</h2>
+        <button
+          class="bg-primary text-white border-0 rounded px-3 py-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          type="button"
+          (click)="addWorkingHours()"
+          [disabled]="facility.workingHours.length >= 7"
+        >
+          Dodaj dan
+        </button>
+      </div>
+
+      <div class="flex flex-col gap-3">
+        @for (hours of facility.workingHours; track $index; let hoursIndex = $index) {
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <select
+              class="flex-1 border rounded p-2"
+              [name]="'day-' + hoursIndex"
+              [(ngModel)]="hours.day"
+            >
+              <option [ngValue]="1" [disabled]="isDaySelected(1, hoursIndex)">Ponedeljak</option>
+              <option [ngValue]="2" [disabled]="isDaySelected(2, hoursIndex)">Utorak</option>
+              <option [ngValue]="3" [disabled]="isDaySelected(3, hoursIndex)">Sreda</option>
+              <option [ngValue]="4" [disabled]="isDaySelected(4, hoursIndex)">Cetvrtak</option>
+              <option [ngValue]="5" [disabled]="isDaySelected(5, hoursIndex)">Petak</option>
+              <option [ngValue]="6" [disabled]="isDaySelected(6, hoursIndex)">Subota</option>
+              <option [ngValue]="7" [disabled]="isDaySelected(7, hoursIndex)">Nedelja</option>
+            </select>
+            <input
+              class="flex-1 border rounded p-2"
+              [name]="'from-' + hoursIndex"
+              type="time"
+              [(ngModel)]="hours.from"
+            />
+            <input
+              class="flex-1 border rounded p-2"
+              [name]="'to-' + hoursIndex"
+              type="time"
+              [(ngModel)]="hours.to"
+            />
+            <button
+              class="bg-danger text-white border-0 rounded px-3 py-2 cursor-pointer"
+              type="button"
+              (click)="removeWorkingHours(hoursIndex)"
+            >
+              Ukloni
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-4">
+      <div class="flex items-center justify-between gap-3">
+        <h2 class="text-xl m-0">Tereni i hale</h2>
+        <button
+          class="bg-primary text-white border-0 rounded px-3 py-2 cursor-pointer"
+          type="button"
+          (click)="addResource()"
+        >
+          Dodaj resurs
+        </button>
+      </div>
+
+      @for (resource of facility.resources; track $index; let resourceIndex = $index) {
+        <div class="border rounded p-4 flex flex-col gap-4">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-center justify-between">
+            <h3 class="text-lg m-0">Resurs {{ resourceIndex + 1 }}</h3>
+            <button
+              class="bg-danger text-white border-0 rounded px-3 py-2 cursor-pointer"
+              type="button"
+              (click)="removeResource(resourceIndex)"
+            >
+              Ukloni resurs
+            </button>
+          </div>
+
+          <div class="flex flex-col gap-4 md:flex-row">
+            <div class="flex-1">
+              <label class="block font-medium mb-2">Naziv</label>
+              <input
+                class="w-full border rounded p-2"
+                [name]="'resource-name-' + resourceIndex"
+                [(ngModel)]="resource.name"
+              />
+            </div>
+            <div class="flex-1">
+              <label class="block font-medium mb-2">Tip</label>
+              <select
+                class="w-full border rounded p-2"
+                [name]="'resource-type-' + resourceIndex"
+                [(ngModel)]="resource.type"
+              >
+                <option value="outdoor">Otvoreni teren</option>
+                <option value="indoor">Zatvoreni teren</option>
+                <option value="hall">Hala</option>
+              </select>
+            </div>
+            <div class="flex-1">
+              <label class="block font-medium mb-2">Kapacitet</label>
+              <input
+                class="w-full border rounded p-2"
+                [name]="'capacity-' + resourceIndex"
+                type="number"
+                min="1"
+                [(ngModel)]="resource.capacity"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-medium mb-2">Opis opreme</label>
+            <textarea
+              class="w-full border rounded p-2"
+              [name]="'equipment-' + resourceIndex"
+              maxlength="300"
+              rows="3"
+              [(ngModel)]="resource.equipmentDescription"
+            ></textarea>
+          </div>
+
+          <div class="flex items-center justify-between gap-3">
+            <h4 class="text-base m-0">Sportovi i cene</h4>
+            <button
+              class="bg-primary text-white border-0 rounded px-3 py-2 cursor-pointer"
+              type="button"
+              (click)="addSportPrice(resource)"
+            >
+              Dodaj sport
+            </button>
+          </div>
+
+          @for (price of resource.sportPrices; track $index; let priceIndex = $index) {
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <select
+                class="flex-1 border rounded p-2"
+                [name]="'sport-' + resourceIndex + '-' + priceIndex"
+                [(ngModel)]="price.sport"
+              >
+                <option value="">Izaberite sport</option>
+                @for (sport of sports; track sport.name) {
+                  <option [value]="sport.name">{{ sport.name }}</option>
+                }
+              </select>
+              <input
+                class="flex-1 border rounded p-2"
+                [name]="'price-' + resourceIndex + '-' + priceIndex"
+                type="number"
+                min="1"
+                placeholder="Cena po satu"
+                [(ngModel)]="price.pricePerHour"
+              />
+              <button
+                class="bg-danger text-white border-0 rounded px-3 py-2 cursor-pointer"
+                type="button"
+                (click)="removeSportPrice(resource, priceIndex)"
+              >
+                Ukloni
+              </button>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <div>
+      <label class="block font-medium mb-2" for="facility-images">
+        Slike objekta (najvise 6 novih slika)
+      </label>
+      <input
+        id="facility-images"
+        class="w-full border rounded p-2"
+        type="file"
+        accept="image/png,image/jpeg"
+        multiple
+        (change)="selectImages($event)"
+      />
+      @if (facility.images.length) {
+        <p class="text-sm text-muted mb-0">Postojece slike: {{ facility.images.length }}</p>
+      }
+    </div>
+
+    @if (message) {
+      <p [class]="success ? 'text-success m-0' : 'text-danger m-0'">{{ message }}</p>
+    }
+
+    <button
+      class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer disabled:opacity-50"
+      type="submit"
+      [disabled]="loading"
+    >
+      Sacuvaj objekat
+    </button>
+  </form>
+</section>

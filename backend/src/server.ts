@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import path from "path";
+import facilityRouter from "./routers/facility.router";
 import sportRouter from "./routers/sport.router";
 import userRouter from "./routers/user.router";
 
@@ -24,6 +25,7 @@ app.get("/", (_req, res) => {
 });
 
 const router = express.Router();
+router.use("/facilities", facilityRouter);
 router.use("/users", userRouter);
 router.use("/sports", sportRouter);
 app.use("/", router);
