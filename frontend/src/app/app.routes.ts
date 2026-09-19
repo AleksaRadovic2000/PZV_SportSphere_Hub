@@ -3,9 +3,12 @@ import { AdminRequests } from './components/admin/admin-requests/admin-requests'
 import { AdminUsers } from './components/admin/admin-users/admin-users';
 import { AthleteProfile } from './components/athlete/athlete-profile/athlete-profile';
 import { AthleteFacilitySearch } from './components/athlete/athlete-facility-search/athlete-facility-search';
+import { TeammateAds } from './components/athlete/teammate-ads/teammate-ads';
+import { AthleteTournaments } from './components/athlete/athlete-tournaments/athlete-tournaments';
 import { EmployeeProfile } from './components/employee/employee-profile/employee-profile';
 import { EmployeeFacilities } from './components/employee/employee-facilities/employee-facilities';
 import { FacilityForm } from './components/employee/facility-form/facility-form';
+import { EmployeeTournaments } from './components/employee/employee-tournaments/employee-tournaments';
 import { AdminLogin } from './components/public/admin-login/admin-login';
 import { ForgotPassword } from './components/public/forgot-password/forgot-password';
 import { Home } from './components/public/home/home';
@@ -52,6 +55,18 @@ export const routes: Routes = [
     data: { roles: ['athlete'] },
   },
   {
+    path: 'athlete/teammates',
+    component: TeammateAds,
+    canActivate: [roleGuard],
+    data: { roles: ['athlete'] },
+  },
+  {
+    path: 'athlete/tournaments',
+    component: AthleteTournaments,
+    canActivate: [roleGuard],
+    data: { roles: ['athlete'] },
+  },
+  {
     path: 'employee/profile',
     component: EmployeeProfile,
     canActivate: [roleGuard],
@@ -66,6 +81,12 @@ export const routes: Routes = [
   {
     path: 'employee/facilities/new',
     component: FacilityForm,
+    canActivate: [roleGuard],
+    data: { roles: ['employee'] },
+  },
+  {
+    path: 'employee/tournaments',
+    component: EmployeeTournaments,
     canActivate: [roleGuard],
     data: { roles: ['employee'] },
   },

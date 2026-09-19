@@ -7,10 +7,10 @@
     "sport": "Fudbal",
     "city": "Beograd",
     "startDateTime": {
-      "$date": "2026-09-12T18:00:00.000Z"
+      "$date": "2026-10-12T18:00:00.000Z"
     },
     "endDateTime": {
-      "$date": "2026-09-12T20:00:00.000Z"
+      "$date": "2026-10-12T20:00:00.000Z"
     },
     "playersNeeded": 2,
     "status": "active",
@@ -50,4 +50,3 @@
     ]
   }
 ]
-

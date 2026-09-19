@@ -1,0 +1,132 @@
+<div class="flex flex-col gap-6">
+  <section class="bg-surface border rounded-lg shadow p-6">
+    <h1 class="text-2xl mt-2 mb-6">Pronadji saigrace</h1>
+
+    <form class="flex flex-col gap-4" (ngSubmit)="createAd()">
+      <div class="flex flex-col gap-4 md:flex-row">
+        <div class="flex-1">
+          <label class="block font-medium mb-2" for="ad-sport">Sport</label>
+          <select id="ad-sport" class="w-full border rounded p-2" name="sport" [(ngModel)]="sport">
+            <option value="">Izaberite sport</option>
+            @for (item of sports; track item.name) {
+              <option [value]="item.name">{{ item.name }}</option>
+            }
+          </select>
+        </div>
+        <div class="flex-1">
+          <label class="block font-medium mb-2" for="ad-city">Grad</label>
+          <input id="ad-city" class="w-full border rounded p-2" name="city" [(ngModel)]="city" />
+        </div>
+        <div class="flex-1">
+          <label class="block font-medium mb-2" for="players-needed">Nedostaje igraca</label>
+          <input id="players-needed" class="w-full border rounded p-2" name="playersNeeded" type="number" min="1" [(ngModel)]="playersNeeded" />
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4 md:flex-row">
+        <div class="flex-1">
+          <label class="block font-medium mb-2" for="ad-date">Datum</label>
+          <input id="ad-date" class="w-full border rounded p-2" name="date" type="date" [(ngModel)]="date" />
+        </div>
+        <div class="flex-1">
+          <label class="block font-medium mb-2" for="ad-start">Pocetak</label>
+          <input id="ad-start" class="w-full border rounded p-2" name="startTime" type="time" [(ngModel)]="startTime" />
+        </div>
+        <div class="flex-1">
+          <label class="block font-medium mb-2" for="ad-end">Kraj</label>
+          <input id="ad-end" class="w-full border rounded p-2" name="endTime" type="time" [(ngModel)]="endTime" />
+        </div>
+      </div>
+
+      <button class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer" type="submit">
+        Objavi oglas
+      </button>
+    </form>
+
+    @if (message) {
+      <p [class]="success ? 'text-success mt-4' : 'text-danger mt-4'">{{ message }}</p>
+    }
+  </section>
+
+  <section class="bg-surface border rounded-lg shadow p-6">
+    <h2 class="text-2xl mt-2 mb-6">Aktivni oglasi</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse">
+        <thead>
+          <tr class="border-b text-left">
+            <th class="p-2">Autor</th><th class="p-2">Sport</th><th class="p-2">Grad</th><th class="p-2">Termin</th><th class="p-2">Nedostaje</th><th class="p-2">Akcija</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (ad of activeAds; track ad._id) {
+            <tr class="border-b">
+              <td class="p-2">{{ ad.authorUsername }}</td>
+              <td class="p-2">{{ ad.sport }}</td>
+              <td class="p-2">{{ ad.city }}</td>
+              <td class="p-2">{{ formatDateTime(ad.startDateTime) }} - {{ formatDateTime(ad.endDateTime) }}</td>
+              <td class="p-2">{{ ad.playersNeeded }}</td>
+              <td class="p-2">
+                @if (!isMyAd(ad) && !getMyRequestStatus(ad)) {
+                  <button class="bg-primary text-white border-0 rounded px-3 py-2 cursor-pointer" type="button" (click)="joinAd(ad)">Pridruzi se</button>
+                } @else if (getMyRequestStatus(ad)) {
+                  <span>{{ getMyRequestStatus(ad) }}</span>
+                } @else {
+                  <span class="text-muted">Moj oglas</span>
+                }
+              </td>
+            </tr>
+          } @empty {
+            <tr><td class="p-4 text-center" colspan="6">Nema aktivnih oglasa.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="bg-surface border rounded-lg shadow p-6">
+    <h2 class="text-2xl mt-2 mb-6">Moji oglasi</h2>
+    <div class="flex flex-col gap-4">
+      @for (ad of myAds; track ad._id) {
+        <article class="border rounded p-4">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-center justify-between">
+            <div>
+              <h3 class="text-xl mt-2 mb-2">{{ ad.sport }} - {{ ad.city }}</h3>
+              <p class="m-0">{{ formatDateTime(ad.startDateTime) }} - {{ formatDateTime(ad.endDateTime) }}</p>
+              <p class="text-muted mb-0">Status: {{ ad.status }} | Nedostaje igraca: {{ ad.playersNeeded }}</p>
+            </div>
+            @if (ad.status === 'active') {
+              <button class="bg-danger text-white border-0 rounded px-3 py-2 cursor-pointer" type="button" (click)="closeAd(ad)">Zatvori oglas</button>
+            }
+          </div>
+
+          <h4 class="text-lg mb-2">Zahtevi</h4>
+          <div class="overflow-x-auto">
+            <table class="w-full border-collapse">
+              <thead><tr class="border-b text-left"><th class="p-2">Sportista</th><th class="p-2">Status</th><th class="p-2">Akcija</th></tr></thead>
+              <tbody>
+                @for (request of ad.requests; track request._id) {
+                  <tr class="border-b">
+                    <td class="p-2">{{ request.athleteUsername }}</td>
+                    <td class="p-2">{{ request.status }}</td>
+                    <td class="p-2">
+                      @if (request.status === 'pending' && ad.status === 'active') {
+                        <div class="flex flex-col gap-2 sm:flex-row">
+                          <button class="bg-success text-white border-0 rounded px-3 py-2 cursor-pointer" type="button" (click)="resolveRequest(ad, request._id, 'accepted')">Prihvati</button>
+                          <button class="bg-danger text-white border-0 rounded px-3 py-2 cursor-pointer" type="button" (click)="resolveRequest(ad, request._id, 'rejected')">Odbij</button>
+                        </div>
+                      }
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr><td class="p-3 text-center" colspan="3">Nema zahteva.</td></tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </article>
+      } @empty {
+        <p class="text-muted text-center">Nemate oglase.</p>
+      }
+    </div>
+  </section>
+</div>
