@@ -5,10 +5,14 @@ import { AthleteProfile } from './components/athlete/athlete-profile/athlete-pro
 import { AthleteFacilitySearch } from './components/athlete/athlete-facility-search/athlete-facility-search';
 import { TeammateAds } from './components/athlete/teammate-ads/teammate-ads';
 import { AthleteTournaments } from './components/athlete/athlete-tournaments/athlete-tournaments';
+import { AthleteTrainings } from './components/athlete/athlete-trainings/athlete-trainings';
+import { AthleteShop } from './components/athlete/athlete-shop/athlete-shop';
 import { EmployeeProfile } from './components/employee/employee-profile/employee-profile';
 import { EmployeeFacilities } from './components/employee/employee-facilities/employee-facilities';
 import { FacilityForm } from './components/employee/facility-form/facility-form';
 import { EmployeeTournaments } from './components/employee/employee-tournaments/employee-tournaments';
+import { EmployeeOperations } from './components/employee/employee-operations/employee-operations';
+import { EmployeeCatalog } from './components/employee/employee-catalog/employee-catalog';
 import { AdminLogin } from './components/public/admin-login/admin-login';
 import { ForgotPassword } from './components/public/forgot-password/forgot-password';
 import { Home } from './components/public/home/home';
@@ -67,6 +71,18 @@ export const routes: Routes = [
     data: { roles: ['athlete'] },
   },
   {
+    path: 'athlete/trainings',
+    component: AthleteTrainings,
+    canActivate: [roleGuard],
+    data: { roles: ['athlete'] },
+  },
+  {
+    path: 'athlete/shop',
+    component: AthleteShop,
+    canActivate: [roleGuard],
+    data: { roles: ['athlete'] },
+  },
+  {
     path: 'employee/profile',
     component: EmployeeProfile,
     canActivate: [roleGuard],
@@ -87,6 +103,18 @@ export const routes: Routes = [
   {
     path: 'employee/tournaments',
     component: EmployeeTournaments,
+    canActivate: [roleGuard],
+    data: { roles: ['employee'] },
+  },
+  {
+    path: 'employee/operations',
+    component: EmployeeOperations,
+    canActivate: [roleGuard],
+    data: { roles: ['employee'] },
+  },
+  {
+    path: 'employee/catalog',
+    component: EmployeeCatalog,
     canActivate: [roleGuard],
     data: { roles: ['employee'] },
   },

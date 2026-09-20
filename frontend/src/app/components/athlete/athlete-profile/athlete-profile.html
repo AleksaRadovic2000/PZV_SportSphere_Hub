@@ -100,6 +100,75 @@
 </section>
 
 <section class="bg-surface border rounded-lg shadow p-6 mt-6">
+  <h2 class="text-2xl mt-2 mb-6">Moje porudzbine</h2>
+
+  @if (orderMessage) {
+    <p [class]="orderSuccess ? 'text-success' : 'text-danger'">{{ orderMessage }}</p>
+  }
+
+  <h3 class="text-xl mb-4">Aktivne porudzbine</h3>
+  <div class="flex flex-col gap-4">
+    @for (order of activeOrders; track order._id) {
+      <article class="border rounded p-4">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center justify-between">
+          <div><strong>{{ order.facilityName }}</strong><p class="text-muted mb-0">{{ formatDateTime(order.createdAt) }} | {{ order.totalPrice }} RSD | {{ order.status }}</p></div>
+          <button class="bg-danger text-white border-0 rounded px-3 py-2 cursor-pointer" type="button" (click)="cancelOrder(order)">Otkazi</button>
+        </div>
+        <ul class="mb-0">@for (item of order.items; track item._id) {<li>{{ item.productName }} - {{ item.quantity }} x {{ item.unitPrice }} RSD</li>}</ul>
+      </article>
+    } @empty {
+      <p class="text-muted">Nemate aktivne porudzbine.</p>
+    }
+  </div>
+
+  <h3 class="text-xl mt-6 mb-4">Istorija porudzbina</h3>
+  <div class="flex flex-col gap-4">
+    @for (order of orderHistory; track order._id) {
+      <article class="border rounded p-4">
+        <strong>{{ order.facilityName }}</strong>
+        <p class="text-muted">{{ formatDateTime(order.createdAt) }} | {{ order.totalPrice }} RSD | {{ order.status }}</p>
+        <ul class="mb-0">@for (item of order.items; track item._id) {<li>{{ item.productName }} - {{ item.quantity }} x {{ item.unitPrice }} RSD</li>}</ul>
+      </article>
+    } @empty {
+      <p class="text-muted">Istorija porudzbina je prazna.</p>
+    }
+  </div>
+</section>
+
+<section class="bg-surface border rounded-lg shadow p-6 mt-6">
+  <h2 class="text-2xl mt-2 mb-6">Moji individualni treninzi</h2>
+
+  @if (trainingMessage) {
+    <p class="text-danger">{{ trainingMessage }}</p>
+  }
+
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="border-b text-left">
+          <th class="p-2">Trener</th><th class="p-2">Objekat</th><th class="p-2">Teren ili hala</th><th class="p-2">Sport</th><th class="p-2">Termin</th><th class="p-2">Cena</th><th class="p-2">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (training of trainings; track training._id) {
+          <tr class="border-b">
+            <td class="p-2">{{ training.trainerName }}</td>
+            <td class="p-2">{{ training.facilityName }}</td>
+            <td class="p-2">{{ training.resourceName }}</td>
+            <td class="p-2">{{ training.sport }}</td>
+            <td class="p-2">{{ formatDateTime(training.startDateTime) }} - {{ formatDateTime(training.endDateTime) }}</td>
+            <td class="p-2">{{ training.price }} RSD</td>
+            <td class="p-2">{{ training.status }}</td>
+          </tr>
+        } @empty {
+          <tr><td class="p-4 text-center" colspan="7">Nemate individualne treninge.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="bg-surface border rounded-lg shadow p-6 mt-6">
   <h2 class="text-2xl mt-2 mb-6">Moje rezervacije</h2>
 
   @if (reservationMessage) {

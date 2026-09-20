@@ -39,10 +39,10 @@
     },
     "sport": "Kosarka",
     "startDateTime": {
-      "$date": "2026-09-11T15:00:00.000Z"
+      "$date": "2026-10-12T15:00:00.000Z"
     },
     "endDateTime": {
-      "$date": "2026-09-11T16:00:00.000Z"
+      "$date": "2026-10-12T16:00:00.000Z"
     },
     "price": 2200,
     "status": "scheduled"

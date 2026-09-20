@@ -5,8 +5,10 @@ import path from "path";
 import facilityRouter from "./routers/facility.router";
 import reservationRouter from "./routers/reservation.router";
 import sportRouter from "./routers/sport.router";
+import shopRouter from "./routers/shop.router";
 import teammateAdRouter from "./routers/teammate-ad.router";
 import tournamentRouter from "./routers/tournament.router";
+import trainingRouter from "./routers/training.router";
 import userRouter from "./routers/user.router";
 
 const app = express();
@@ -32,8 +34,10 @@ router.use("/facilities", facilityRouter);
 router.use("/reservations", reservationRouter);
 router.use("/users", userRouter);
 router.use("/sports", sportRouter);
+router.use("/shop", shopRouter);
 router.use("/teammate-ads", teammateAdRouter);
 router.use("/tournaments", tournamentRouter);
+router.use("/trainings", trainingRouter);
 app.use("/", router);
 
 app.use(

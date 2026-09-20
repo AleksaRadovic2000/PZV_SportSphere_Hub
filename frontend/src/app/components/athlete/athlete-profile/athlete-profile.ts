@@ -1,8 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AthleteReservation } from '../../../models/reservation';
+import { Order } from '../../../models/shop';
+import { Training } from '../../../models/training';
 import { User } from '../../../models/user';
 import { ReservationService } from '../../../services/reservation';
+import { ShopService } from '../../../services/shop';
+import { TrainingService } from '../../../services/training';
 import { UserService } from '../../../services/user';
 import { SportSelector } from '../../shared/sport-selector/sport-selector';
 
@@ -14,6 +18,8 @@ import { SportSelector } from '../../shared/sport-selector/sport-selector';
 export class AthleteProfile implements OnInit {
   private userService = inject(UserService);
   private reservationService = inject(ReservationService);
+  private trainingService = inject(TrainingService);
+  private shopService = inject(ShopService);
 
   user = new User();
   profileImage: File | null = null;
@@ -27,6 +33,11 @@ export class AthleteProfile implements OnInit {
   reservationSuccess = false;
   reservationSortColumn = '';
   reservationSortDirection = 'asc';
+  trainings: Training[] = [];
+  trainingMessage = '';
+  orders: Order[] = [];
+  orderMessage = '';
+  orderSuccess = false;
 
   ngOnInit() {
     let loggedUser = this.userService.getLoggedUser();
@@ -46,6 +57,8 @@ export class AthleteProfile implements OnInit {
     });
 
     this.loadReservations();
+    this.loadTrainings();
+    this.loadOrders();
   }
 
   onProfileImageSelected(event: Event) {
@@ -126,6 +139,63 @@ export class AthleteProfile implements OnInit {
       },
       error: (error) => {
         this.reservationMessage = error.error?.message || 'Rezervacije nije moguce ucitati.';
+      },
+    });
+  }
+
+  loadTrainings() {
+    const user = this.userService.getLoggedUser();
+
+    if (!user) {
+      return;
+    }
+
+    this.trainingService.getAthleteTrainings(user.username).subscribe({
+      next: (trainings) => {
+        this.trainings = trainings;
+      },
+      error: (error) => {
+        this.trainingMessage = error.error?.message || 'Treninge nije moguce ucitati.';
+      },
+    });
+  }
+
+  loadOrders() {
+    const user = this.userService.getLoggedUser();
+
+    if (!user) {
+      return;
+    }
+
+    this.shopService.getAthleteOrders(user.username).subscribe({
+      next: (orders) => {
+        this.orders = orders;
+      },
+      error: (error) => {
+        this.orderMessage = error.error?.message || 'Porudzbine nije moguce ucitati.';
+        this.orderSuccess = false;
+      },
+    });
+  }
+
+  get activeOrders() {
+    return this.orders.filter((order) => ['ordered', 'accepted'].includes(order.status));
+  }
+
+  get orderHistory() {
+    return this.orders.filter((order) => ['collected', 'cancelled'].includes(order.status));
+  }
+
+  cancelOrder(order: Order) {
+    this.shopService.cancelOrder(order._id, this.user.username).subscribe({
+      next: (response) => {
+        this.orderMessage = response.message;
+        this.orderSuccess = true;
+        this.loadOrders();
+      },
+      error: (error) => {
+        this.orderMessage = error.error?.message || 'Otkazivanje porudzbine nije uspelo.';
+        this.orderSuccess = false;
       },
     });
   }

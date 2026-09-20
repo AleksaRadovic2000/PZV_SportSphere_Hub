@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import FacilityModel from "../models/facility";
 import FacilityReviewModel from "../models/facility-review";
 import ReservationModel from "../models/reservation";
+import TrainingModel from "../models/training";
 
 export class PublicFacilityController {
   getPublicInfo = async (_req: express.Request, res: express.Response) => {
@@ -220,6 +221,12 @@ export class PublicFacilityController {
       startDateTime: { $lt: endOfDay },
       endDateTime: { $gt: startOfDay },
     });
+    const trainings = await TrainingModel.find({
+      resourceId: { $in: resourceIds },
+      status: "scheduled",
+      startDateTime: { $lt: endOfDay },
+      endDateTime: { $gt: startOfDay },
+    });
 
     const workingStart = this.timeToMinutes(workingHours.from);
     const workingEnd = this.timeToMinutes(workingHours.to);
@@ -243,7 +250,14 @@ export class PublicFacilityController {
             reservation.endDateTime > slotStart,
         );
 
-        if (!occupied) {
+        const occupiedByTraining = trainings.some(
+          (training) =>
+            training.resourceId.toString() === resource._id.toString() &&
+            training.startDateTime < slotEnd &&
+            training.endDateTime > slotStart,
+        );
+
+        if (!occupied && !occupiedByTraining) {
           return true;
         }
       }

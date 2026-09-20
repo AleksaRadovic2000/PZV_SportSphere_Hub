@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import FacilityModel from "../models/facility";
 import ReservationModel from "../models/reservation";
+import TrainingModel from "../models/training";
 import UserModel from "../models/user";
 
 const hourInMilliseconds = 60 * 60 * 1000;
@@ -30,7 +31,32 @@ export class ReservationController {
         endDateTime: { $gt: rangeStart },
       }).sort({ startDateTime: 1 });
 
-      res.json(reservations);
+      const trainings = await TrainingModel.find({
+        resourceId,
+        status: "scheduled",
+        startDateTime: { $lt: rangeEnd },
+        endDateTime: { $gt: rangeStart },
+      }).sort({ startDateTime: 1 });
+
+      const schedule = [
+        ...reservations.map((reservation) => ({
+          _id: reservation._id,
+          startDateTime: reservation.startDateTime,
+          endDateTime: reservation.endDateTime,
+          type: "reservation",
+        })),
+        ...trainings.map((training) => ({
+          _id: training._id,
+          startDateTime: training.startDateTime,
+          endDateTime: training.endDateTime,
+          type: "training",
+        })),
+      ].sort(
+        (first, second) =>
+          new Date(first.startDateTime).getTime() - new Date(second.startDateTime).getTime(),
+      );
+
+      res.json(schedule);
     } catch (error) {
       console.error("Failed to load reservation schedule:", error);
       res.status(500).json({ message: "Failed to load reservation schedule" });
@@ -267,6 +293,17 @@ export class ReservationController {
 
     if (overlappingReservation) {
       return { message: "Selected time overlaps an existing reservation", pricePerHour: 0 };
+    }
+
+    const overlappingTraining = await TrainingModel.findOne({
+      resourceId,
+      status: "scheduled",
+      startDateTime: { $lt: endDateTime },
+      endDateTime: { $gt: startDateTime },
+    });
+
+    if (overlappingTraining) {
+      return { message: "Selected time overlaps an individual training", pricePerHour: 0 };
     }
 
     return { message: "", pricePerHour: sportPrice.pricePerHour };
