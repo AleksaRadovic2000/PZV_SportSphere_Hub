@@ -1,10 +1,14 @@
 import fs from "fs";
 import express from "express";
 import mongoose from "mongoose";
-import FacilityModel from "../models/facility";
-import SportModel from "../models/sport";
-import UserModel from "../models/user";
-import { validateFacility } from "../utils/facility-validation";
+import FacilityModel from "../../models/facility";
+import SportModel from "../../models/sport";
+import UserModel from "../../models/user";
+import { validateFacility } from "../../utils/validations/facility-validation";
+import {
+  getPromotionEndDate,
+  getPromotionStartDate,
+} from "../../utils/validations/promotion-validation";
 
 const removeUploadedFiles = (files: Express.Multer.File[]) => {
   files.forEach((file) => fs.unlink(file.path, () => undefined));
@@ -328,117 +332,6 @@ export class FacilityController {
     this.changeStatus(req, res, "rejected");
   };
 
-  addPromotion = async (req: express.Request, res: express.Response) => {
-    let facilityId = req.body.facilityId;
-    let employeeUsername = req.body.employeeUsername;
-    let promotion = req.body.promotion;
-
-    if (!mongoose.isValidObjectId(facilityId) || !employeeUsername) {
-      res.status(400).json({ message: "ID objekta i korisnicko ime zaposlenog su obavezni" });
-      return;
-    }
-
-    const validationMessage = this.validatePromotion(promotion);
-
-    if (validationMessage) {
-      res.status(400).json({ message: validationMessage });
-      return;
-    }
-
-    try {
-      const facility = await FacilityModel.findOne({
-        _id: facilityId,
-        employeeUsernames: employeeUsername,
-      });
-
-      if (!facility) {
-        res.status(403).json({ message: "Zaposleni ne upravlja ovim objektom" });
-        return;
-      }
-
-      const sport = await SportModel.findOne({ name: promotion.sport.trim() });
-
-      if (!sport) {
-        res.status(400).json({ message: "Izabrani sport ne postoji" });
-        return;
-      }
-
-      facility.promotions.push({
-        name: promotion.name.trim(),
-        sport: promotion.sport.trim(),
-        startDate: this.getPromotionStartDate(promotion.startDate),
-        endDate: this.getPromotionEndDate(promotion.endDate),
-        discountType: promotion.discountType,
-        discountValue: promotion.discountValue,
-      });
-      await facility.save();
-      res.status(201).json({ message: "Promocija je uspesno dodata", facility });
-    } catch (error) {
-      console.error("Kreiranje promocije nije uspelo:", error);
-      res.status(500).json({ message: "Kreiranje promocije nije uspelo" });
-    }
-  };
-
-  updatePromotion = async (req: express.Request, res: express.Response) => {
-    let facilityId = req.body.facilityId;
-    let employeeUsername = req.body.employeeUsername;
-    let promotion = req.body.promotion;
-
-    if (
-      !mongoose.isValidObjectId(facilityId) ||
-      !mongoose.isValidObjectId(promotion?._id) ||
-      !employeeUsername
-    ) {
-      res.status(400).json({ message: "Podaci za izmenu promocije nisu ispravni" });
-      return;
-    }
-
-    const validationMessage = this.validatePromotion(promotion);
-
-    if (validationMessage) {
-      res.status(400).json({ message: validationMessage });
-      return;
-    }
-
-    try {
-      const facility = await FacilityModel.findOne({
-        _id: facilityId,
-        employeeUsernames: employeeUsername,
-      });
-
-      if (!facility) {
-        res.status(403).json({ message: "Zaposleni ne upravlja ovim objektom" });
-        return;
-      }
-
-      const existingPromotion = facility.promotions.id(promotion._id);
-
-      if (!existingPromotion) {
-        res.status(404).json({ message: "Promocija nije pronadjena" });
-        return;
-      }
-
-      const sport = await SportModel.findOne({ name: promotion.sport.trim() });
-
-      if (!sport) {
-        res.status(400).json({ message: "Izabrani sport ne postoji" });
-        return;
-      }
-
-      existingPromotion.name = promotion.name.trim();
-      existingPromotion.sport = promotion.sport.trim();
-      existingPromotion.startDate = this.getPromotionStartDate(promotion.startDate);
-      existingPromotion.endDate = this.getPromotionEndDate(promotion.endDate);
-      existingPromotion.discountType = promotion.discountType;
-      existingPromotion.discountValue = promotion.discountValue;
-      await facility.save();
-      res.json({ message: "Promocija je uspesno izmenjena", facility });
-    } catch (error) {
-      console.error("Izmena promocije nije uspela:", error);
-      res.status(500).json({ message: "Izmena promocije nije uspela" });
-    }
-  };
-
   private changeStatus = async (
     req: express.Request,
     res: express.Response,
@@ -483,38 +376,11 @@ export class FacilityController {
     return numberOfSports === sports.size;
   };
 
-  private validatePromotion = (promotion: any) => {
-    if (!promotion || !promotion.name || !promotion.sport) {
-      return "Naziv promocije i sport su obavezni";
-    }
-
-    const startDate = this.getPromotionStartDate(promotion.startDate);
-    const endDate = this.getPromotionEndDate(promotion.endDate);
-
-    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime()) || endDate < startDate) {
-      return "Period promocije nije ispravan";
-    }
-
-    if (!["percentage", "fixed"].includes(promotion.discountType)) {
-      return "Tip popusta promocije nije ispravan";
-    }
-
-    if (typeof promotion.discountValue !== "number" || promotion.discountValue <= 0) {
-      return "Vrednost popusta promocije mora biti pozitivna";
-    }
-
-    if (promotion.discountType === "percentage" && promotion.discountValue > 100) {
-      return "Procentualni popust ne moze biti veci od 100";
-    }
-
-    return "";
-  };
-
   private prepareFacilityData = (data: any) => {
     const promotions = data.promotions.map((promotion: any) => ({
       ...promotion,
-      startDate: this.getPromotionStartDate(promotion.startDate),
-      endDate: this.getPromotionEndDate(promotion.endDate),
+      startDate: getPromotionStartDate(promotion.startDate),
+      endDate: getPromotionEndDate(promotion.endDate),
     }));
 
     return {
@@ -534,15 +400,4 @@ export class FacilityController {
     };
   };
 
-  private getPromotionEndDate = (value: string | Date) => {
-    const endDate = new Date(value);
-    endDate.setHours(23, 59, 59, 999);
-    return endDate;
-  };
-
-  private getPromotionStartDate = (value: string | Date) => {
-    const startDate = new Date(value);
-    startDate.setHours(0, 0, 0, 0);
-    return startDate;
-  };
 }

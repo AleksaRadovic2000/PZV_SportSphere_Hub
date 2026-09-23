@@ -17,6 +17,6 @@ const Training = new Schema({
     enum: ["scheduled", "cancelled", "attended", "no_show"],
     default: "scheduled",
   },
-});
+}, { versionKey: false });
 
 export default mongoose.model("TrainingModel", Training, "trainings");

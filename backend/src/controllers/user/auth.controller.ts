@@ -3,10 +3,10 @@ import fs from "fs";
 import express from "express";
 import bcrypt from "bcryptjs";
 import { toPng } from "jdenticon";
-import PasswordResetTokenModel from "../models/password-reset-token";
-import SportModel from "../models/sport";
-import UserModel from "../models/user";
-import { isPasswordValid } from "../utils/password";
+import PasswordResetTokenModel from "../../models/password-reset-token";
+import SportModel from "../../models/sport";
+import UserModel from "../../models/user";
+import { isPasswordValid } from "../../utils/validations/password";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const registrationNumberPattern = /^\d{8}$/;
@@ -338,7 +338,7 @@ export class AuthController {
       }
 
       if (!user.passwordHash) {
-        console.error(`Password hash is missing for user: ${user.username}`);
+        console.error(`Nedostaje hash lozinke za korisnika: ${user.username}`);
         res.status(500).json({
           message: "Lozinka korisnika nije podesena. Ponovo uvezite pocetnu bazu podataka",
         });

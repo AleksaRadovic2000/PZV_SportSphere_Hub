@@ -8,7 +8,8 @@ export class ReviewController {
     let reservationId = req.body.reservationId;
     let athleteUsername = req.body.athleteUsername;
     let reaction = req.body.reaction;
-    let comment = req.body.comment || "";
+    let commentValue = req.body.comment;
+    let comment = "";
 
     if (
       !mongoose.isValidObjectId(reservationId) ||
@@ -20,7 +21,10 @@ export class ReviewController {
     }
 
     athleteUsername = athleteUsername.trim();
-    comment = comment.trim();
+
+    if (typeof commentValue === "string") {
+      comment = commentValue.trim();
+    }
 
     if (comment.length > 500) {
       res.status(400).json({ message: "Komentar moze imati najvise 500 karaktera" });

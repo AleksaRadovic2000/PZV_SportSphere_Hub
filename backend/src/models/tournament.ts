@@ -13,7 +13,7 @@ const TournamentApplication = new Schema({
 });
 
 const Tournament = new Schema({
-  facilityId: { type: Schema.Types.ObjectId, required: true, ref: "FacilityModel" },
+  facilityId: { type: Schema.Types.ObjectId, required: true },
   createdByUsername: { type: String, required: true },
   name: { type: String, required: true },
   sport: { type: String, required: true },
@@ -25,6 +25,6 @@ const Tournament = new Schema({
     default: "open",
   },
   applications: { type: [TournamentApplication], default: [] },
-});
+}, { versionKey: false });
 
 export default mongoose.model("TournamentModel", Tournament, "tournaments");

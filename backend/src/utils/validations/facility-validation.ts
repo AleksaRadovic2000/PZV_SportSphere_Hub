@@ -1,3 +1,5 @@
+import { validatePromotion } from "./promotion-validation";
+
 const timePattern = /^([01]\d|2[0-3]):[0-5]\d$/;
 
 export const validateFacility = (facility: any) => {
@@ -124,19 +126,7 @@ export const validateFacility = (facility: any) => {
   }
 
   for (const promotion of facility.promotions) {
-    const startDate = new Date(promotion.startDate);
-    const endDate = new Date(promotion.endDate);
-
-    if (
-      !promotion.name?.trim() ||
-      !promotion.sport?.trim() ||
-      !["percentage", "fixed"].includes(promotion.discountType) ||
-      typeof promotion.discountValue !== "number" ||
-      promotion.discountValue <= 0 ||
-      isNaN(startDate.getTime()) ||
-      isNaN(endDate.getTime()) ||
-      startDate > endDate
-    ) {
+    if (validatePromotion(promotion)) {
       return "Podaci o promociji nisu ispravni";
     }
   }

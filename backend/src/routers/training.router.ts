@@ -1,22 +1,23 @@
 import express from "express";
-import { TrainingController } from "../controllers/training.controller";
+import { TrainerController } from "../controllers/training/trainer.controller";
+import { TrainingController } from "../controllers/training/training.controller";
 
 const trainingRouter = express.Router();
 
 trainingRouter.route("/trainers/all").get((req, res) => {
-  new TrainingController().getAllTrainers(req, res);
+  new TrainerController().getAllTrainers(req, res);
 });
 
 trainingRouter.route("/trainers/deactivate").post((req, res) => {
-  new TrainingController().deactivateTrainer(req, res);
+  new TrainerController().deactivateTrainer(req, res);
 });
 
 trainingRouter.route("/trainers/search").post((req, res) => {
-  new TrainingController().searchTrainers(req, res);
+  new TrainerController().searchTrainers(req, res);
 });
 
 trainingRouter.route("/trainers/schedule").post((req, res) => {
-  new TrainingController().getTrainerSchedule(req, res);
+  new TrainerController().getTrainerSchedule(req, res);
 });
 
 trainingRouter.route("/create").post((req, res) => {

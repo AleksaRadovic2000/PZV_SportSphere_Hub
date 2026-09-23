@@ -60,7 +60,7 @@ const Facility = new Schema({
   workingHours: { type: [WorkingHours], default: [] },
   resources: { type: [Resource], default: [] },
   promotions: { type: [Promotion], default: [] },
-});
+}, { versionKey: false });
 
 Facility.index({ name: 1, city: 1, address: 1 }, { unique: true });
 

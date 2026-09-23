@@ -1,6 +1,7 @@
 import express from "express";
-import { FacilityController } from "../controllers/facility.controller";
-import { PublicFacilityController } from "../controllers/public-facility.controller";
+import { FacilityController } from "../controllers/facility/facility.controller";
+import { PromotionController } from "../controllers/facility/promotion.controller";
+import { PublicFacilityController } from "../controllers/facility/public-facility.controller";
 import { facilityImageUpload, facilityJsonUpload } from "../middleware/facility-upload";
 
 const facilityRouter = express.Router();
@@ -54,15 +55,15 @@ facilityRouter.route("/details/:id").get((req, res) => {
 });
 
 facilityRouter.route("/promotions/current").get((req, res) => {
-  new PublicFacilityController().getCurrentPromotions(req, res);
+  new PromotionController().getCurrentPromotions(req, res);
 });
 
 facilityRouter.route("/promotions/add").post((req, res) => {
-  new FacilityController().addPromotion(req, res);
+  new PromotionController().addPromotion(req, res);
 });
 
 facilityRouter.route("/promotions/update").post((req, res) => {
-  new FacilityController().updatePromotion(req, res);
+  new PromotionController().updatePromotion(req, res);
 });
 
 export default facilityRouter;

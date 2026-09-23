@@ -1,9 +1,9 @@
 import express from "express";
 import mongoose from "mongoose";
-import FacilityModel from "../models/facility";
-import FacilityReviewModel from "../models/facility-review";
-import ReservationModel from "../models/reservation";
-import TrainingModel from "../models/training";
+import FacilityModel from "../../models/facility";
+import FacilityReviewModel from "../../models/facility-review";
+import ReservationModel from "../../models/reservation";
+import TrainingModel from "../../models/training";
 
 export class PublicFacilityController {
   getPublicInfo = async (_req: express.Request, res: express.Response) => {
@@ -53,8 +53,10 @@ export class PublicFacilityController {
     let cities = req.body.cities;
     let sport = req.body.sport;
     let resourceType = req.body.resourceType;
-    let onlyAvailableToday = req.body.onlyAvailableToday === true;
+    let onlyAvailableToday = req.body.onlyAvailableToday;
     let query: any = { status: "active" };
+
+    onlyAvailableToday = onlyAvailableToday === true;
 
     if (typeof name === "string" && name.trim()) {
       query.name = { $regex: name.trim(), $options: "i" };
@@ -135,50 +137,6 @@ export class PublicFacilityController {
     } catch (error) {
       console.error("Ucitavanje detalja objekta nije uspelo:", error);
       res.status(500).json({ message: "Ucitavanje detalja objekta nije uspelo" });
-    }
-  };
-
-  getCurrentPromotions = async (_req: express.Request, res: express.Response) => {
-    const now = new Date();
-
-    try {
-      const facilities = await FacilityModel.find({
-        status: "active",
-        promotions: {
-          $elemMatch: {
-            startDate: { $lte: now },
-            endDate: { $gte: now },
-          },
-        },
-      });
-      const promotions: any[] = [];
-
-      facilities.forEach((facility) => {
-        facility.promotions.forEach((promotion) => {
-          if (promotion.startDate <= now && promotion.endDate >= now) {
-            promotions.push({
-              _id: promotion._id,
-              facilityId: facility._id,
-              facilityName: facility.name,
-              name: promotion.name,
-              sport: promotion.sport,
-              startDate: promotion.startDate,
-              endDate: promotion.endDate,
-              discountType: promotion.discountType,
-              discountValue: promotion.discountValue,
-            });
-          }
-        });
-      });
-
-      promotions.sort(
-        (first, second) =>
-          new Date(first.endDate).getTime() - new Date(second.endDate).getTime(),
-      );
-      res.json(promotions.slice(0, 3));
-    } catch (error) {
-      console.error("Ucitavanje promocija nije uspelo:", error);
-      res.status(500).json({ message: "Ucitavanje promocija nije uspelo" });
     }
   };
 

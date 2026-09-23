@@ -10,6 +10,6 @@ const Product = new Schema({
   price: { type: Number, required: true, min: 1 },
   stock: { type: Number, required: true, min: 0 },
   active: { type: Boolean, required: true, default: true },
-});
+}, { versionKey: false });
 
 export default mongoose.model("ProductModel", Product, "products");

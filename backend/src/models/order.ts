@@ -21,6 +21,6 @@ const Order = new Schema({
     default: "ordered",
   },
   createdAt: { type: Date, required: true, default: Date.now },
-});
+}, { versionKey: false });
 
 export default mongoose.model("OrderModel", Order, "orders");

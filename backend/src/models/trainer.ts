@@ -11,6 +11,6 @@ const Trainer = new Schema({
   averageRating: { type: Number, required: true, min: 0, max: 5 },
   pricePerHour: { type: Number, required: true, min: 0 },
   active: { type: Boolean, required: true, default: true },
-});
+}, { versionKey: false });
 
 export default mongoose.model("TrainerModel", Trainer, "trainers");

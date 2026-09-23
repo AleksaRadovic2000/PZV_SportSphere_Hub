@@ -26,6 +26,6 @@ const TeammateAd = new Schema({
     default: "active",
   },
   requests: { type: [JoinRequest], default: [] },
-});
+}, { versionKey: false });
 
 export default mongoose.model("TeammateAdModel", TeammateAd, "teammateAds");
