@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Facility } from '../../../models/facility';
+import { Facility, Promotion } from '../../../models/facility';
 import { Order, Product } from '../../../models/shop';
 import { Sport } from '../../../models/sport';
 import { FacilityService } from '../../../services/facility';
@@ -23,6 +23,9 @@ export class EmployeeCatalog implements OnInit {
   sports: Sport[] = [];
   products: Product[] = [];
   orders: Order[] = [];
+  newPromotion = new Promotion();
+  editingPromotionId = '';
+  editPromotion = new Promotion();
   newProduct = new Product();
   facilityId = '';
   newImage: File | null = null;
@@ -69,6 +72,8 @@ export class EmployeeCatalog implements OnInit {
     this.newProduct = new Product();
     this.newProduct.facilityId = this.facilityId;
     this.newImage = null;
+    this.newPromotion = new Promotion();
+    this.editingPromotionId = '';
     this.cancelEdit();
     this.loadProducts();
     this.loadOrders();
@@ -110,6 +115,72 @@ export class EmployeeCatalog implements OnInit {
         this.success = false;
       },
     });
+  }
+
+  get selectedFacility() {
+    return this.facilities.find((facility) => facility._id === this.facilityId);
+  }
+
+  addPromotion() {
+    const user = this.userService.getLoggedUser();
+
+    if (!user || !this.promotionIsValid(this.newPromotion)) {
+      this.message = 'Podaci promocije nisu ispravni.';
+      this.success = false;
+      return;
+    }
+
+    this.facilityService
+      .addPromotion(this.facilityId, user.username, this.newPromotion)
+      .subscribe({
+        next: (response) => {
+          this.replaceSelectedFacility(response.facility);
+          this.newPromotion = new Promotion();
+          this.message = response.message;
+          this.success = true;
+        },
+        error: (error) => {
+          this.message = error.error?.message || 'Dodavanje promocije nije uspelo.';
+          this.success = false;
+        },
+      });
+  }
+
+  startPromotionEdit(promotion: Promotion) {
+    this.editingPromotionId = promotion._id;
+    this.editPromotion = new Promotion();
+    this.editPromotion._id = promotion._id;
+    this.editPromotion.name = promotion.name;
+    this.editPromotion.sport = promotion.sport;
+    this.editPromotion.startDate = promotion.startDate.slice(0, 10);
+    this.editPromotion.endDate = promotion.endDate.slice(0, 10);
+    this.editPromotion.discountType = promotion.discountType;
+    this.editPromotion.discountValue = promotion.discountValue;
+  }
+
+  updatePromotion() {
+    const user = this.userService.getLoggedUser();
+
+    if (!user || !this.promotionIsValid(this.editPromotion)) {
+      this.message = 'Podaci promocije nisu ispravni.';
+      this.success = false;
+      return;
+    }
+
+    this.facilityService
+      .updatePromotion(this.facilityId, user.username, this.editPromotion)
+      .subscribe({
+        next: (response) => {
+          this.replaceSelectedFacility(response.facility);
+          this.editingPromotionId = '';
+          this.message = response.message;
+          this.success = true;
+        },
+        error: (error) => {
+          this.message = error.error?.message || 'Izmena promocije nije uspela.';
+          this.success = false;
+        },
+      });
   }
 
   selectNewImage(event: Event) {
@@ -230,5 +301,25 @@ export class EmployeeCatalog implements OnInit {
 
   formatDateTime(value: string) {
     return new Date(value).toLocaleString('sr-Latn-RS');
+  }
+
+  private promotionIsValid(promotion: Promotion) {
+    return (
+      Boolean(promotion.name.trim()) &&
+      Boolean(promotion.sport) &&
+      Boolean(promotion.startDate) &&
+      Boolean(promotion.endDate) &&
+      promotion.endDate >= promotion.startDate &&
+      promotion.discountValue > 0 &&
+      (promotion.discountType !== 'percentage' || promotion.discountValue <= 100)
+    );
+  }
+
+  private replaceSelectedFacility(facility: Facility) {
+    const index = this.facilities.findIndex((item) => item._id === facility._id);
+
+    if (index >= 0) {
+      this.facilities[index] = facility;
+    }
   }
 }

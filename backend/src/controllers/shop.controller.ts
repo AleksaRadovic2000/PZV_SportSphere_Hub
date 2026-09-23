@@ -10,7 +10,12 @@ import UserModel from "../models/user";
 export class ShopController {
   searchProducts = async (req: express.Request, res: express.Response) => {
     let facilityId = req.body.facilityId;
-    let sport = typeof req.body.sport === "string" ? req.body.sport.trim() : "";
+    let sportValue = req.body.sport;
+    let sport = "";
+
+    if (typeof sportValue === "string") {
+      sport = sportValue.trim();
+    }
 
     if (!mongoose.isValidObjectId(facilityId)) {
       res.status(400).json({ message: "Facility ID is not valid" });
@@ -41,7 +46,12 @@ export class ShopController {
 
   getFacilityProducts = async (req: express.Request, res: express.Response) => {
     let facilityId = req.params.id;
-    let employeeUsername = String(req.query.employeeUsername || "");
+    let employeeUsernameValue = req.query.employeeUsername;
+    let employeeUsername = "";
+
+    if (typeof employeeUsernameValue === "string") {
+      employeeUsername = employeeUsernameValue.trim();
+    }
 
     if (!mongoose.isValidObjectId(facilityId) || !employeeUsername) {
       res.status(400).json({ message: "Facility ID and employee username are required" });
@@ -324,7 +334,12 @@ export class ShopController {
 
   getFacilityOrders = async (req: express.Request, res: express.Response) => {
     let facilityId = req.params.id;
-    let employeeUsername = String(req.query.employeeUsername || "");
+    let employeeUsernameValue = req.query.employeeUsername;
+    let employeeUsername = "";
+
+    if (typeof employeeUsernameValue === "string") {
+      employeeUsername = employeeUsernameValue.trim();
+    }
 
     if (!mongoose.isValidObjectId(facilityId) || !employeeUsername) {
       res.status(400).json({ message: "Facility ID and employee username are required" });

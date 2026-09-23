@@ -10,8 +10,8 @@ export const validateFacility = (facility: any) => {
     return "Name, city, address and description are required";
   }
 
-  if (!Number.isInteger(facility.allowedNoShows) || facility.allowedNoShows < 0) {
-    return "Allowed no-shows must be a non-negative whole number";
+  if (!Number.isInteger(facility.allowedNoShows) || facility.allowedNoShows < 1) {
+    return "Allowed no-shows must be a positive whole number";
   }
 
   const latitude = facility.location?.latitude;
@@ -135,7 +135,7 @@ export const validateFacility = (facility: any) => {
       promotion.discountValue <= 0 ||
       isNaN(startDate.getTime()) ||
       isNaN(endDate.getTime()) ||
-      startDate >= endDate
+      startDate > endDate
     ) {
       return "Promotion data is not valid";
     }

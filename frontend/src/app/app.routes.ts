@@ -1,18 +1,22 @@
 import { Routes } from '@angular/router';
 import { AdminRequests } from './components/admin/admin-requests/admin-requests';
 import { AdminUsers } from './components/admin/admin-users/admin-users';
+import { AdminSystemData } from './components/admin/admin-system-data/admin-system-data';
 import { AthleteProfile } from './components/athlete/athlete-profile/athlete-profile';
 import { AthleteFacilitySearch } from './components/athlete/athlete-facility-search/athlete-facility-search';
 import { TeammateAds } from './components/athlete/teammate-ads/teammate-ads';
 import { AthleteTournaments } from './components/athlete/athlete-tournaments/athlete-tournaments';
 import { AthleteTrainings } from './components/athlete/athlete-trainings/athlete-trainings';
 import { AthleteShop } from './components/athlete/athlete-shop/athlete-shop';
+import { AthleteStatistics } from './components/athlete/athlete-statistics/athlete-statistics';
 import { EmployeeProfile } from './components/employee/employee-profile/employee-profile';
 import { EmployeeFacilities } from './components/employee/employee-facilities/employee-facilities';
 import { FacilityForm } from './components/employee/facility-form/facility-form';
 import { EmployeeTournaments } from './components/employee/employee-tournaments/employee-tournaments';
 import { EmployeeOperations } from './components/employee/employee-operations/employee-operations';
 import { EmployeeCatalog } from './components/employee/employee-catalog/employee-catalog';
+import { EmployeeCalendar } from './components/employee/employee-calendar/employee-calendar';
+import { EmployeeReports } from './components/employee/employee-reports/employee-reports';
 import { AdminLogin } from './components/public/admin-login/admin-login';
 import { ForgotPassword } from './components/public/forgot-password/forgot-password';
 import { Home } from './components/public/home/home';
@@ -83,6 +87,12 @@ export const routes: Routes = [
     data: { roles: ['athlete'] },
   },
   {
+    path: 'athlete/statistics',
+    component: AthleteStatistics,
+    canActivate: [roleGuard],
+    data: { roles: ['athlete'] },
+  },
+  {
     path: 'employee/profile',
     component: EmployeeProfile,
     canActivate: [roleGuard],
@@ -119,6 +129,18 @@ export const routes: Routes = [
     data: { roles: ['employee'] },
   },
   {
+    path: 'employee/calendar',
+    component: EmployeeCalendar,
+    canActivate: [roleGuard],
+    data: { roles: ['employee'] },
+  },
+  {
+    path: 'employee/reports',
+    component: EmployeeReports,
+    canActivate: [roleGuard],
+    data: { roles: ['employee'] },
+  },
+  {
     path: 'employee/facilities/edit/:id',
     component: FacilityForm,
     canActivate: [roleGuard],
@@ -133,6 +155,12 @@ export const routes: Routes = [
   {
     path: 'admin/users',
     component: AdminUsers,
+    canActivate: [roleGuard],
+    data: { roles: ['admin'] },
+  },
+  {
+    path: 'admin/system-data',
+    component: AdminSystemData,
     canActivate: [roleGuard],
     data: { roles: ['admin'] },
   },

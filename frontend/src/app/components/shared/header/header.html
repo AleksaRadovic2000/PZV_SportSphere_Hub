@@ -16,6 +16,9 @@
           <a class="text-white no-underline hover:underline" routerLink="/admin/users">
             Korisnici
           </a>
+          <a class="text-white no-underline hover:underline" routerLink="/admin/system-data">
+            Sistemski podaci
+          </a>
         } @else if (user.role === 'employee') {
           <a class="text-white no-underline hover:underline" [routerLink]="homeRoute">
             Profil
@@ -31,6 +34,12 @@
           </a>
           <a class="text-white no-underline hover:underline" routerLink="/employee/catalog">
             Katalog
+          </a>
+          <a class="text-white no-underline hover:underline" routerLink="/employee/calendar">
+            Kalendar
+          </a>
+          <a class="text-white no-underline hover:underline" routerLink="/employee/reports">
+            Izvestaji
           </a>
         } @else {
           <a class="text-white no-underline hover:underline" [routerLink]="homeRoute">
@@ -50,6 +59,9 @@
           </a>
           <a class="text-white no-underline hover:underline" routerLink="/athlete/shop">
             Prodavnica
+          </a>
+          <a class="text-white no-underline hover:underline" routerLink="/athlete/statistics">
+            Statistika
           </a>
         }
 

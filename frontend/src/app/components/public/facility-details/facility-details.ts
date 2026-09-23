@@ -3,9 +3,11 @@ import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FacilityDetailsResponse, FacilityResource } from '../../../models/facility';
-import { Reservation } from '../../../models/reservation';
+import { AthleteReservation, Reservation } from '../../../models/reservation';
+import { FacilityReview } from '../../../models/review';
 import { FacilityService } from '../../../services/facility';
 import { ReservationService } from '../../../services/reservation';
+import { ReviewService } from '../../../services/review';
 import { UserService } from '../../../services/user';
 
 @Component({
@@ -16,6 +18,7 @@ import { UserService } from '../../../services/user';
 export class FacilityDetails implements OnInit {
   private facilityService = inject(FacilityService);
   private reservationService = inject(ReservationService);
+  private reviewService = inject(ReviewService);
   private userService = inject(UserService);
   private sanitizer = inject(DomSanitizer);
   private route = inject(ActivatedRoute);
@@ -36,6 +39,13 @@ export class FacilityDetails implements OnInit {
   message = '';
   reservationMessage = '';
   reservationSuccess = false;
+  reviews: FacilityReview[] = [];
+  reviewReservations: AthleteReservation[] = [];
+  reviewReservationId = '';
+  reviewReaction = 'like';
+  reviewComment = '';
+  reviewMessage = '';
+  reviewSuccess = false;
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -49,9 +59,14 @@ export class FacilityDetails implements OnInit {
     this.facilityService.getDetails(id).subscribe({
       next: (details) => {
         this.details = details;
-        this.updateCalendarHours();
-        this.prepareResources();
-        this.initializeMap();
+
+        if (this.loggedAthlete) {
+          this.updateCalendarHours();
+          this.prepareResources();
+          this.initializeMap();
+          this.loadReviews();
+          this.loadReviewReservations();
+        }
       },
       error: (error) => {
         this.message = error.error?.message || 'Detalje objekta nije moguce ucitati.';
@@ -70,6 +85,111 @@ export class FacilityDetails implements OnInit {
 
   get backRoute() {
     return this.loggedAthlete ? '/athlete/facilities' : '/';
+  }
+
+  loadReviews() {
+    const facilityId = this.details.facility._id;
+
+    if (!this.loggedAthlete || !facilityId) {
+      return;
+    }
+
+    this.reviewService.getRecentReviews(facilityId).subscribe({
+      next: (reviews) => {
+        this.reviews = reviews;
+      },
+      error: () => {
+        this.reviewMessage = 'Komentare nije moguce ucitati.';
+        this.reviewSuccess = false;
+      },
+    });
+  }
+
+  loadReviewReservations() {
+    const user = this.loggedAthlete;
+
+    if (!user) {
+      return;
+    }
+
+    this.reservationService.getAthleteReservations(user.username).subscribe({
+      next: (reservations) => {
+        this.reviewService
+          .getReviewedReservationIds(user.username, this.details.facility._id)
+          .subscribe({
+            next: (reviewedReservationIds) => {
+              this.reviewReservations = reservations.filter(
+                (reservation) =>
+                  reservation.facilityId === this.details.facility._id &&
+                  reservation.status === 'attended' &&
+                  !reviewedReservationIds.includes(reservation._id),
+              );
+              this.reviewReservationId = this.reviewReservations[0]?._id || '';
+            },
+            error: () => {
+              this.reviewMessage = 'Ocenjene rezervacije nije moguce ucitati.';
+              this.reviewSuccess = false;
+            },
+          });
+      },
+      error: () => {
+        this.reviewMessage = 'Rezervacije za ocenjivanje nije moguce ucitati.';
+        this.reviewSuccess = false;
+      },
+    });
+  }
+
+  createReview() {
+    const user = this.loggedAthlete;
+    this.reviewMessage = '';
+    this.reviewSuccess = false;
+
+    if (!user || !this.reviewReservationId) {
+      this.reviewMessage = 'Izaberite odigranu rezervaciju.';
+      return;
+    }
+
+    if (this.reviewComment.length > 500) {
+      this.reviewMessage = 'Komentar moze imati najvise 500 karaktera.';
+      return;
+    }
+
+    this.reviewService
+      .createReview(
+        this.reviewReservationId,
+        user.username,
+        this.reviewReaction,
+        this.reviewComment,
+      )
+      .subscribe({
+        next: (response) => {
+          if (this.reviewReaction === 'like') {
+            this.details.likes++;
+          } else {
+            this.details.dislikes++;
+          }
+
+          this.reviewReservations = this.reviewReservations.filter(
+            (reservation) => reservation._id !== this.reviewReservationId,
+          );
+          this.reviewReservationId = this.reviewReservations[0]?._id || '';
+          this.reviewComment = '';
+          this.reviewMessage = response.message;
+          this.reviewSuccess = true;
+          this.loadReviews();
+        },
+        error: (error) => {
+          this.reviewMessage = error.error?.message || 'Ocenjivanje objekta nije uspelo.';
+        },
+      });
+  }
+
+  formatReviewDate(value: string) {
+    return new Date(value).toLocaleString('sr-Latn-RS');
+  }
+
+  isOwnReview(review: FacilityReview) {
+    return review.athleteUsername === this.loggedAthlete?.username;
   }
 
   prepareResources() {

@@ -9,9 +9,96 @@
       <a class="text-primary" [routerLink]="backRoute">Nazad na pretragu</a>
       <h1 class="text-3xl mb-2">{{ details.facility.name }}</h1>
       <p class="text-lg text-muted mt-2">{{ details.facility.city }}, {{ details.facility.address }}</p>
-      <p>{{ details.facility.description }}</p>
+      @if (loggedAthlete) {
+        <p>{{ details.facility.description }}</p>
+      }
       <div class="flex gap-4"><span>Svidjanja: {{ details.likes }}</span><span>Nesvidjanja: {{ details.dislikes }}</span></div>
     </div>
+
+    @if (loggedAthlete) {
+      <div class="bg-surface border rounded-lg shadow p-6">
+        <h2 class="text-2xl mt-2 mb-4">Ocene i komentari</h2>
+
+        @if (reviewReservations.length > 0) {
+          <form class="flex flex-col gap-4 mb-6" (ngSubmit)="createReview()">
+            <div>
+              <label class="block font-medium mb-2" for="review-reservation">
+                Odigrana rezervacija
+              </label>
+              <select
+                id="review-reservation"
+                class="w-full border rounded p-2"
+                name="reviewReservationId"
+                [(ngModel)]="reviewReservationId"
+              >
+                @for (reservation of reviewReservations; track reservation._id) {
+                  <option [value]="reservation._id">
+                    {{ reservation.resourceName }} - {{ formatReviewDate(reservation.startDateTime) }}
+                  </option>
+                }
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-medium mb-2" for="review-reaction">Ocena</label>
+              <select
+                id="review-reaction"
+                class="w-full border rounded p-2"
+                name="reviewReaction"
+                [(ngModel)]="reviewReaction"
+              >
+                <option value="like">Svidja mi se</option>
+                <option value="dislike">Ne svidja mi se</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-medium mb-2" for="review-comment">Komentar</label>
+              <textarea
+                id="review-comment"
+                class="w-full border rounded p-2"
+                name="reviewComment"
+                rows="4"
+                maxlength="500"
+                [(ngModel)]="reviewComment"
+              ></textarea>
+            </div>
+
+            <button
+              class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer"
+              type="submit"
+            >
+              Posalji ocenu
+            </button>
+          </form>
+        } @else {
+          <p class="text-muted">Nemate odigranu rezervaciju koju mozete oceniti.</p>
+        }
+
+        @if (reviewMessage) {
+          <p [class]="reviewSuccess ? 'text-success' : 'text-danger'">{{ reviewMessage }}</p>
+        }
+
+        <div class="flex flex-col gap-3">
+          @for (review of reviews; track review._id) {
+            <article
+              [class]="isOwnReview(review) ? 'border rounded p-4 bg-background' : 'border rounded p-4'"
+            >
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <strong>{{ review.athleteUsername }}</strong>
+                <span>{{ review.reaction === 'like' ? 'Svidja mi se' : 'Ne svidja mi se' }}</span>
+              </div>
+              @if (review.comment) {
+                <p>{{ review.comment }}</p>
+              }
+              <p class="text-muted mb-0">{{ formatReviewDate(review.createdAt) }}</p>
+            </article>
+          } @empty {
+            <p class="text-muted">Objekat jos nema komentare.</p>
+          }
+        </div>
+      </div>
+    }
 
     @if (details.facility.images.length) {
       <div>
@@ -47,7 +134,7 @@
       </div>
     </div>
 
-    @if (activeResource) {
+    @if (loggedAthlete && activeResource) {
       <div class="bg-surface border rounded-lg shadow p-6">
         <h2 class="text-2xl mt-2 mb-4">Nedeljni raspored</h2>
         <div class="flex items-center justify-between gap-3 mb-4">
@@ -102,10 +189,12 @@
       </div>
     }
 
-    <div class="bg-surface border rounded-lg shadow p-6">
-      <h2 class="text-2xl mt-2 mb-4">Radno vreme</h2>
-      <div class="flex flex-wrap gap-4">@for (hours of details.facility.workingHours; track hours.day) {<div class="border rounded p-3"><strong>{{ getDayName(hours.day) }}</strong><div>{{ hours.from }} - {{ hours.to }}</div></div>}</div>
-    </div>
+    @if (loggedAthlete) {
+      <div class="bg-surface border rounded-lg shadow p-6">
+        <h2 class="text-2xl mt-2 mb-4">Radno vreme</h2>
+        <div class="flex flex-wrap gap-4">@for (hours of details.facility.workingHours; track hours.day) {<div class="border rounded p-3"><strong>{{ getDayName(hours.day) }}</strong><div>{{ hours.from }} - {{ hours.to }}</div></div>}</div>
+      </div>
+    }
 
     @if (mapUrl) {
       <div class="bg-surface border rounded-lg shadow p-6">

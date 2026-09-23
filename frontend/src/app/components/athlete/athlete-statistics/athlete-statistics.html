@@ -1,0 +1,22 @@
+<section class="flex flex-col gap-6">
+  <div class="bg-surface border rounded-lg shadow p-6">
+    <h1 class="text-2xl mt-2 mb-4">Statistika</h1>
+    <p class="m-0">
+      Ukupna potrosnja svih sportista na preuzetu opremu:
+      <strong>{{ statistics.totalEquipmentSpending }} RSD</strong>
+    </p>
+    @if (message) {
+      <p class="text-danger">{{ message }}</p>
+    }
+  </div>
+
+  <div class="bg-surface border rounded-lg shadow p-6 overflow-x-auto">
+    <h2 class="text-xl mt-2 mb-4">Odigrani i rezervisani termini po sportu</h2>
+    <canvas #sportChart></canvas>
+  </div>
+
+  <div class="bg-surface border rounded-lg shadow p-6 overflow-x-auto">
+    <h2 class="text-xl mt-2 mb-4">Neotkazane rezervacije po mesecu</h2>
+    <canvas #monthChart></canvas>
+  </div>
+</section>

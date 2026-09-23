@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import FacilityModel from "../models/facility";
+import OrderModel from "../models/order";
 import ReservationModel from "../models/reservation";
 import TrainingModel from "../models/training";
 import UserModel from "../models/user";
@@ -8,10 +9,74 @@ import UserModel from "../models/user";
 const hourInMilliseconds = 60 * 60 * 1000;
 
 export class ReservationController {
+  getStatistics = async (req: express.Request, res: express.Response) => {
+    let username = req.params.username;
+
+    if (!username) {
+      res.status(400).json({ message: "Athlete username is required" });
+      return;
+    }
+
+    try {
+      const playedBySportResult = await ReservationModel.aggregate([
+        { $match: { athleteUsername: username, status: "attended" } },
+        { $group: { _id: "$sport", value: { $sum: 1 } } },
+        { $sort: { _id: 1 } },
+      ]);
+      const reservedBySportResult = await ReservationModel.aggregate([
+        { $match: { athleteUsername: username, status: { $ne: "cancelled" } } },
+        { $group: { _id: "$sport", value: { $sum: 1 } } },
+        { $sort: { _id: 1 } },
+      ]);
+      const reservationsByMonthResult = await ReservationModel.aggregate([
+        { $match: { athleteUsername: username, status: { $ne: "cancelled" } } },
+        {
+          $group: {
+            _id: {
+              year: { $year: "$startDateTime" },
+              month: { $month: "$startDateTime" },
+            },
+            value: { $sum: 1 },
+          },
+        },
+        { $sort: { "_id.year": 1, "_id.month": 1 } },
+      ]);
+      const spendingResult = await OrderModel.aggregate([
+        { $match: { status: "collected" } },
+        { $group: { _id: null, total: { $sum: "$totalPrice" } } },
+      ]);
+
+      const playedBySport = playedBySportResult.map((item) => ({
+        label: item._id,
+        value: item.value,
+      }));
+      const reservedBySport = reservedBySportResult.map((item) => ({
+        label: item._id,
+        value: item.value,
+      }));
+      const reservationsByMonth = reservationsByMonthResult.map((item) => ({
+        label: `${item._id.year}-${String(item._id.month).padStart(2, "0")}`,
+        value: item.value,
+      }));
+
+      res.json({
+        playedBySport,
+        reservedBySport,
+        reservationsByMonth,
+        totalEquipmentSpending: spendingResult[0]?.total || 0,
+      });
+    } catch (error) {
+      console.error("Failed to load athlete statistics:", error);
+      res.status(500).json({ message: "Failed to load athlete statistics" });
+    }
+  };
+
   getSchedule = async (req: express.Request, res: express.Response) => {
     let resourceId = req.body.resourceId;
-    let rangeStart = new Date(req.body.rangeStart);
-    let rangeEnd = new Date(req.body.rangeEnd);
+    let rangeStartValue = req.body.rangeStart;
+    let rangeEndValue = req.body.rangeEnd;
+    let rangeStart = new Date(rangeStartValue);
+    let rangeEnd = new Date(rangeEndValue);
 
     if (
       !mongoose.isValidObjectId(resourceId) ||
@@ -68,8 +133,10 @@ export class ReservationController {
     let facilityId = req.body.facilityId;
     let resourceId = req.body.resourceId;
     let sport = req.body.sport;
-    let startDateTime = new Date(req.body.startDateTime);
-    let endDateTime = new Date(req.body.endDateTime);
+    let startDateTimeValue = req.body.startDateTime;
+    let endDateTimeValue = req.body.endDateTime;
+    let startDateTime = new Date(startDateTimeValue);
+    let endDateTime = new Date(endDateTimeValue);
 
     if (!athleteUsername || !sport) {
       res.status(400).json({ message: "Athlete username and sport are required" });
@@ -97,6 +164,8 @@ export class ReservationController {
         sport,
         startDateTime,
         endDateTime,
+        "",
+        athleteUsername,
       );
 
       if (validation.message) {
@@ -167,6 +236,164 @@ export class ReservationController {
     }
   };
 
+  getFacilityReservations = async (req: express.Request, res: express.Response) => {
+    let facilityId = req.params.id;
+    let employeeUsernameValue = req.query.employeeUsername;
+    let employeeUsername = "";
+
+    if (typeof employeeUsernameValue === "string") {
+      employeeUsername = employeeUsernameValue.trim();
+    }
+
+    if (!mongoose.isValidObjectId(facilityId) || !employeeUsername) {
+      res.status(400).json({ message: "Facility ID and employee username are required" });
+      return;
+    }
+
+    try {
+      const facility = await FacilityModel.findOne({
+        _id: facilityId,
+        employeeUsernames: employeeUsername,
+      });
+
+      if (!facility) {
+        res.status(403).json({ message: "Employee does not manage this facility" });
+        return;
+      }
+
+      const reservations = await ReservationModel.find({ facilityId }).sort({
+        startDateTime: -1,
+      });
+      const result = reservations.map((reservation) => {
+        const resource = facility.resources.find(
+          (item) => item._id.toString() === reservation.resourceId.toString(),
+        );
+
+        return {
+          ...reservation.toObject(),
+          resourceName: resource?.name || "",
+        };
+      });
+
+      res.json(result);
+    } catch (error) {
+      console.error("Failed to load facility reservations:", error);
+      res.status(500).json({ message: "Failed to load facility reservations" });
+    }
+  };
+
+  markAttendance = async (req: express.Request, res: express.Response) => {
+    let id = req.body.id;
+    let employeeUsername = req.body.employeeUsername;
+    let attended = req.body.attended;
+
+    if (!mongoose.isValidObjectId(id) || !employeeUsername || typeof attended !== "boolean") {
+      res.status(400).json({ message: "Attendance data is not valid" });
+      return;
+    }
+
+    employeeUsername = employeeUsername.trim();
+
+    try {
+      const reservation = await ReservationModel.findOne({ _id: id, status: "scheduled" });
+
+      if (!reservation) {
+        res.status(404).json({ message: "Scheduled reservation was not found" });
+        return;
+      }
+
+      const facility = await FacilityModel.findOne({
+        _id: reservation.facilityId,
+        employeeUsernames: employeeUsername,
+      });
+
+      if (!facility) {
+        res.status(403).json({ message: "Employee cannot update this reservation" });
+        return;
+      }
+
+      const now = new Date();
+      const attendanceDeadline = new Date(reservation.startDateTime.getTime() + 10 * 60 * 1000);
+
+      if (now < reservation.startDateTime || now > attendanceDeadline) {
+        res.status(400).json({ message: "Attendance can be marked during the allowed time window" });
+        return;
+      }
+
+      reservation.status = attended ? "attended" : "no_show";
+      await reservation.save();
+      res.json({ message: "Reservation attendance updated successfully", reservation });
+    } catch (error) {
+      console.error("Reservation attendance update failed:", error);
+      res.status(500).json({ message: "Reservation attendance update failed" });
+    }
+  };
+
+  move = async (req: express.Request, res: express.Response) => {
+    let id = req.body.id;
+    let employeeUsername = req.body.employeeUsername;
+    let startDateTimeValue = req.body.startDateTime;
+    let endDateTimeValue = req.body.endDateTime;
+    let startDateTime = new Date(startDateTimeValue);
+    let endDateTime = new Date(endDateTimeValue);
+
+    if (!mongoose.isValidObjectId(id) || !employeeUsername) {
+      res.status(400).json({ message: "Reservation ID and employee username are required" });
+      return;
+    }
+
+    employeeUsername = employeeUsername.trim();
+
+    try {
+      const reservation = await ReservationModel.findOne({ _id: id, status: "scheduled" });
+
+      if (!reservation) {
+        res.status(404).json({ message: "Scheduled reservation was not found" });
+        return;
+      }
+
+      const facility = await FacilityModel.findOne({
+        _id: reservation.facilityId,
+        employeeUsernames: employeeUsername,
+      });
+      const resource = facility?.resources.find(
+        (item) => item._id.toString() === reservation.resourceId.toString(),
+      );
+
+      if (!facility || !resource) {
+        res.status(403).json({ message: "Employee cannot move this reservation" });
+        return;
+      }
+
+      if (!["indoor", "hall"].includes(resource.type)) {
+        res.status(400).json({ message: "Only indoor reservations can be moved" });
+        return;
+      }
+
+      const validation = await this.validateReservation(
+        reservation.facilityId.toString(),
+        reservation.resourceId.toString(),
+        reservation.sport,
+        startDateTime,
+        endDateTime,
+        reservation._id.toString(),
+      );
+
+      if (validation.message) {
+        res.status(400).json({ message: validation.message });
+        return;
+      }
+
+      reservation.startDateTime = startDateTime;
+      reservation.endDateTime = endDateTime;
+      await reservation.save();
+      res.json({ message: "Reservation moved successfully", reservation });
+    } catch (error) {
+      console.error("Reservation move failed:", error);
+      res.status(500).json({ message: "Reservation move failed" });
+    }
+  };
+
   cancel = async (req: express.Request, res: express.Response) => {
     let id = req.body.id;
     let athleteUsername = req.body.athleteUsername;
@@ -213,6 +440,8 @@ export class ReservationController {
     sport: string,
     startDateTime: Date,
     endDateTime: Date,
+    reservationId = "",
+    athleteUsername = "",
   ) => {
     if (!mongoose.isValidObjectId(facilityId) || !mongoose.isValidObjectId(resourceId)) {
       return { message: "Facility or resource ID is not valid", pricePerHour: 0 };
@@ -255,6 +484,26 @@ export class ReservationController {
       return { message: "Active facility was not found", pricePerHour: 0 };
     }
 
+    if (athleteUsername) {
+      const reservationNoShows = await ReservationModel.countDocuments({
+        athleteUsername,
+        facilityId,
+        status: "no_show",
+      });
+      const trainingNoShows = await TrainingModel.countDocuments({
+        athleteUsername,
+        facilityId,
+        status: "no_show",
+      });
+
+      if (reservationNoShows + trainingNoShows >= facility.allowedNoShows) {
+        return {
+          message: "Athlete has reached the allowed number of no-shows for this facility",
+          pricePerHour: 0,
+        };
+      }
+    }
+
     const resource = facility.resources.find((item) => item._id.toString() === resourceId);
 
     if (!resource) {
@@ -284,12 +533,18 @@ export class ReservationController {
       return { message: "Reservation must be within facility working hours", pricePerHour: 0 };
     }
 
-    const overlappingReservation = await ReservationModel.findOne({
+    const reservationQuery: any = {
       resourceId,
       status: "scheduled",
       startDateTime: { $lt: endDateTime },
       endDateTime: { $gt: startDateTime },
-    });
+    };
+
+    if (reservationId) {
+      reservationQuery._id = { $ne: reservationId };
+    }
+
+    const overlappingReservation = await ReservationModel.findOne(reservationQuery);
 
     if (overlappingReservation) {
       return { message: "Selected time overlaps an existing reservation", pricePerHour: 0 };

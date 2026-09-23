@@ -42,7 +42,7 @@ export class Facility {
   employeeUsernames: string[] = [];
   companyRegistrationNumber = '';
   status = 'pending';
-  allowedNoShows = 0;
+  allowedNoShows = 1;
   images: string[] = [];
   location = new FacilityLocation();
   workingHours: WorkingHours[] = [];

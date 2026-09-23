@@ -328,6 +328,117 @@ export class FacilityController {
     this.changeStatus(req, res, "rejected");
   };
 
+  addPromotion = async (req: express.Request, res: express.Response) => {
+    let facilityId = req.body.facilityId;
+    let employeeUsername = req.body.employeeUsername;
+    let promotion = req.body.promotion;
+
+    if (!mongoose.isValidObjectId(facilityId) || !employeeUsername) {
+      res.status(400).json({ message: "Facility ID and employee username are required" });
+      return;
+    }
+
+    const validationMessage = this.validatePromotion(promotion);
+
+    if (validationMessage) {
+      res.status(400).json({ message: validationMessage });
+      return;
+    }
+
+    try {
+      const facility = await FacilityModel.findOne({
+        _id: facilityId,
+        employeeUsernames: employeeUsername,
+      });
+
+      if (!facility) {
+        res.status(403).json({ message: "Employee does not manage this facility" });
+        return;
+      }
+
+      const sport = await SportModel.findOne({ name: promotion.sport.trim() });
+
+      if (!sport) {
+        res.status(400).json({ message: "Selected sport does not exist" });
+        return;
+      }
+
+      facility.promotions.push({
+        name: promotion.name.trim(),
+        sport: promotion.sport.trim(),
+        startDate: this.getPromotionStartDate(promotion.startDate),
+        endDate: this.getPromotionEndDate(promotion.endDate),
+        discountType: promotion.discountType,
+        discountValue: promotion.discountValue,
+      });
+      await facility.save();
+      res.status(201).json({ message: "Promotion added successfully", facility });
+    } catch (error) {
+      console.error("Promotion creation failed:", error);
+      res.status(500).json({ message: "Promotion creation failed" });
+    }
+  };
+
+  updatePromotion = async (req: express.Request, res: express.Response) => {
+    let facilityId = req.body.facilityId;
+    let employeeUsername = req.body.employeeUsername;
+    let promotion = req.body.promotion;
+
+    if (
+      !mongoose.isValidObjectId(facilityId) ||
+      !mongoose.isValidObjectId(promotion?._id) ||
+      !employeeUsername
+    ) {
+      res.status(400).json({ message: "Promotion update data is not valid" });
+      return;
+    }
+
+    const validationMessage = this.validatePromotion(promotion);
+
+    if (validationMessage) {
+      res.status(400).json({ message: validationMessage });
+      return;
+    }
+
+    try {
+      const facility = await FacilityModel.findOne({
+        _id: facilityId,
+        employeeUsernames: employeeUsername,
+      });
+
+      if (!facility) {
+        res.status(403).json({ message: "Employee does not manage this facility" });
+        return;
+      }
+
+      const existingPromotion = facility.promotions.id(promotion._id);
+
+      if (!existingPromotion) {
+        res.status(404).json({ message: "Promotion was not found" });
+        return;
+      }
+
+      const sport = await SportModel.findOne({ name: promotion.sport.trim() });
+
+      if (!sport) {
+        res.status(400).json({ message: "Selected sport does not exist" });
+        return;
+      }
+
+      existingPromotion.name = promotion.name.trim();
+      existingPromotion.sport = promotion.sport.trim();
+      existingPromotion.startDate = this.getPromotionStartDate(promotion.startDate);
+      existingPromotion.endDate = this.getPromotionEndDate(promotion.endDate);
+      existingPromotion.discountType = promotion.discountType;
+      existingPromotion.discountValue = promotion.discountValue;
+      await facility.save();
+      res.json({ message: "Promotion updated successfully", facility });
+    } catch (error) {
+      console.error("Promotion update failed:", error);
+      res.status(500).json({ message: "Promotion update failed" });
+    }
+  };
+
   private changeStatus = async (
     req: express.Request,
     res: express.Response,
@@ -372,7 +483,40 @@ export class FacilityController {
     return numberOfSports === sports.size;
   };
 
+  private validatePromotion = (promotion: any) => {
+    if (!promotion || !promotion.name || !promotion.sport) {
+      return "Promotion name and sport are required";
+    }
+
+    const startDate = this.getPromotionStartDate(promotion.startDate);
+    const endDate = this.getPromotionEndDate(promotion.endDate);
+
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime()) || endDate < startDate) {
+      return "Promotion period is not valid";
+    }
+
+    if (!["percentage", "fixed"].includes(promotion.discountType)) {
+      return "Promotion discount type is not valid";
+    }
+
+    if (typeof promotion.discountValue !== "number" || promotion.discountValue <= 0) {
+      return "Promotion discount value must be positive";
+    }
+
+    if (promotion.discountType === "percentage" && promotion.discountValue > 100) {
+      return "Percentage discount cannot be greater than 100";
+    }
+
+    return "";
+  };
+
   private prepareFacilityData = (data: any) => {
+    const promotions = data.promotions.map((promotion: any) => ({
+      ...promotion,
+      startDate: this.getPromotionStartDate(promotion.startDate),
+      endDate: this.getPromotionEndDate(promotion.endDate),
+    }));
+
     return {
       name: data.name.trim(),
       city: data.city.trim(),
@@ -386,7 +530,19 @@ export class FacilityController {
       location: data.location,
       workingHours: data.workingHours,
       resources: data.resources,
-      promotions: data.promotions,
+      promotions,
     };
+  };
+
+  private getPromotionEndDate = (value: string | Date) => {
+    const endDate = new Date(value);
+    endDate.setHours(23, 59, 59, 999);
+    return endDate;
+  };
+
+  private getPromotionStartDate = (value: string | Date) => {
+    const startDate = new Date(value);
+    startDate.setHours(0, 0, 0, 0);
+    return startDate;
   };
 }

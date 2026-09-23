@@ -157,6 +157,7 @@ export class AuthController {
         const companyEmployees = await UserModel.find({
           role: "employee",
           registrationNumber: data.registrationNumber,
+          status: { $in: ["pending", "active"] },
         });
 
         if (companyEmployees.length >= 2) {

@@ -3,6 +3,14 @@ import { TrainingController } from "../controllers/training.controller";
 
 const trainingRouter = express.Router();
 
+trainingRouter.route("/trainers/all").get((req, res) => {
+  new TrainingController().getAllTrainers(req, res);
+});
+
+trainingRouter.route("/trainers/deactivate").post((req, res) => {
+  new TrainingController().deactivateTrainer(req, res);
+});
+
 trainingRouter.route("/trainers/search").post((req, res) => {
   new TrainingController().searchTrainers(req, res);
 });
@@ -25,6 +33,10 @@ trainingRouter.route("/facility/:id").get((req, res) => {
 
 trainingRouter.route("/attendance").post((req, res) => {
   new TrainingController().markAttendance(req, res);
+});
+
+trainingRouter.route("/move").post((req, res) => {
+  new TrainingController().moveTraining(req, res);
 });
 
 export default trainingRouter;

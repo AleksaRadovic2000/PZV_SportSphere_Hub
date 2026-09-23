@@ -1,0 +1,111 @@
+import express from "express";
+import mongoose from "mongoose";
+import FacilityReviewModel from "../models/facility-review";
+import ReservationModel from "../models/reservation";
+
+export class ReviewController {
+  create = async (req: express.Request, res: express.Response) => {
+    let reservationId = req.body.reservationId;
+    let athleteUsername = req.body.athleteUsername;
+    let reaction = req.body.reaction;
+    let comment = req.body.comment || "";
+
+    if (
+      !mongoose.isValidObjectId(reservationId) ||
+      !athleteUsername ||
+      !["like", "dislike"].includes(reaction)
+    ) {
+      res.status(400).json({ message: "Review data is not valid" });
+      return;
+    }
+
+    athleteUsername = athleteUsername.trim();
+    comment = comment.trim();
+
+    if (comment.length > 500) {
+      res.status(400).json({ message: "Comment can contain at most 500 characters" });
+      return;
+    }
+
+    try {
+      const reservation = await ReservationModel.findOne({
+        _id: reservationId,
+        athleteUsername,
+        status: "attended",
+      });
+
+      if (!reservation) {
+        res.status(403).json({ message: "Only an attended reservation can be reviewed" });
+        return;
+      }
+
+      const existingReview = await FacilityReviewModel.findOne({ reservationId });
+
+      if (existingReview) {
+        res.status(409).json({ message: "This reservation has already been reviewed" });
+        return;
+      }
+
+      const review = await FacilityReviewModel.create({
+        reservationId,
+        athleteUsername,
+        facilityId: reservation.facilityId,
+        reaction,
+        comment,
+      });
+      res.status(201).json({ message: "Review added successfully", review });
+    } catch (error: any) {
+      if (error.code === 11000) {
+        res.status(409).json({ message: "This reservation has already been reviewed" });
+        return;
+      }
+
+      console.error("Review creation failed:", error);
+      res.status(500).json({ message: "Review creation failed" });
+    }
+  };
+
+  getRecent = async (req: express.Request, res: express.Response) => {
+    let facilityId = req.params.facilityId;
+
+    if (!mongoose.isValidObjectId(facilityId)) {
+      res.status(400).json({ message: "Facility ID is not valid" });
+      return;
+    }
+
+    try {
+      const reviews = await FacilityReviewModel.find({ facilityId, comment: { $ne: "" } })
+        .sort({ createdAt: -1 })
+        .limit(5);
+      res.json(reviews);
+    } catch (error) {
+      console.error("Failed to load reviews:", error);
+      res.status(500).json({ message: "Failed to load reviews" });
+    }
+  };
+
+  getReviewedReservationIds = async (req: express.Request, res: express.Response) => {
+    let athleteUsername = req.params.athleteUsername;
+    let facilityId = req.params.facilityId;
+
+    if (
+      typeof athleteUsername !== "string" ||
+      !athleteUsername ||
+      !mongoose.isValidObjectId(facilityId)
+    ) {
+      res.status(400).json({ message: "Athlete username and facility ID are required" });
+      return;
+    }
+
+    athleteUsername = athleteUsername.trim();
+
+    try {
+      const reviews = await FacilityReviewModel.find({ athleteUsername, facilityId });
+      const reservationIds = reviews.map((review) => review.reservationId.toString());
+      res.json(reservationIds);
+    } catch (error) {
+      console.error("Failed to load reviewed reservations:", error);
+      res.status(500).json({ message: "Failed to load reviewed reservations" });
+    }
+  };
+}

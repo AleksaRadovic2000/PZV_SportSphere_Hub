@@ -60,7 +60,8 @@ export class TournamentController {
     let createdByUsername = req.body.createdByUsername;
     let name = req.body.name;
     let sport = req.body.sport;
-    let startDateTime = new Date(req.body.startDateTime);
+    let startDateTimeValue = req.body.startDateTime;
+    let startDateTime = new Date(startDateTimeValue);
 
     if (
       !mongoose.isValidObjectId(facilityId) ||

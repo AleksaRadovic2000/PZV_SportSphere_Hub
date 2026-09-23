@@ -4,6 +4,8 @@ import cors from "cors";
 import path from "path";
 import facilityRouter from "./routers/facility.router";
 import reservationRouter from "./routers/reservation.router";
+import reportRouter from "./routers/report.router";
+import reviewRouter from "./routers/review.router";
 import sportRouter from "./routers/sport.router";
 import shopRouter from "./routers/shop.router";
 import teammateAdRouter from "./routers/teammate-ad.router";
@@ -32,6 +34,8 @@ app.get("/", (_req, res) => {
 const router = express.Router();
 router.use("/facilities", facilityRouter);
 router.use("/reservations", reservationRouter);
+router.use("/reports", reportRouter);
+router.use("/reviews", reviewRouter);
 router.use("/users", userRouter);
 router.use("/sports", sportRouter);
 router.use("/shop", shopRouter);

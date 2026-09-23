@@ -1,0 +1,86 @@
+<section class="bg-surface border rounded-lg shadow p-6">
+  <h1 class="text-2xl mt-2 mb-6">Kalendar termina</h1>
+  <div class="flex flex-col gap-4 md:flex-row mb-4">
+    <div class="flex-1">
+      <label class="block font-medium mb-2" for="calendar-facility">Objekat</label
+      ><select
+        id="calendar-facility"
+        class="w-full border rounded p-2"
+        [(ngModel)]="facilityId"
+        (change)="facilityChanged()"
+      >
+        @for (facility of facilities; track facility._id) {
+        <option [value]="facility._id">{{ facility.name }}</option>
+        }
+      </select>
+    </div>
+    <div class="flex-1">
+      <label class="block font-medium mb-2" for="calendar-resource">Teren ili hala</label
+      ><select
+        id="calendar-resource"
+        class="w-full border rounded p-2"
+        [(ngModel)]="resourceId"
+        (change)="loadSchedule()"
+      >
+        @for (resource of resources; track resource._id) {
+        <option [value]="resource._id">{{ resource.name }} - {{ resource.type }}</option>
+        }
+      </select>
+    </div>
+  </div>
+  <div class="flex items-center justify-between gap-3 mb-4">
+    <button class="border rounded px-3 py-2 cursor-pointer" type="button" (click)="previousWeek()">
+      Prethodna nedelja</button
+    ><button class="border rounded px-3 py-2 cursor-pointer" type="button" (click)="nextWeek()">
+      Sledeca nedelja
+    </button>
+  </div>
+  <div class="flex flex-wrap gap-4 mb-4">
+    <span><span class="inline-block bg-primary rounded p-2"></span> Rezervacija</span
+    ><span><span class="inline-block bg-warning rounded p-2"></span> Trening</span>
+  </div>
+  @if (selectedResource && !['indoor', 'hall'].includes(selectedResource.type)) {
+  <p class="text-muted">Pomeranje je dostupno samo za zatvorene terene i hale.</p>
+  } @if (message) {
+  <p [class]="success ? 'text-success' : 'text-danger'">{{ message }}</p>
+  }
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="border-b">
+          <th class="p-2">Vreme</th>
+          @for (day of calendarDays; track day.getTime()) {
+          <th class="p-2">{{ getCalendarDayName(day) }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (hour of calendarHours; track hour) {
+        <tr class="border-b">
+          <th class="p-2">{{ hour }}:00</th>
+          @for (day of calendarDays; track day.getTime()) {
+          <td
+            class="p-2"
+            [class.bg-background]="isUnavailable(day, hour)"
+            (dragover)="allowDrop($event, day, hour)"
+            (drop)="drop($event, day, hour)"
+          >
+            <div class="flex flex-col gap-1">
+              @for (item of getSlotItems(day, hour); track item._id) {
+              <div
+                [class]="getItemClass(item)"
+                [draggable]="canDrag(item)"
+                (dragstart)="dragStart(item)"
+              >
+                {{ item.type === 'training' ? 'Trening' : 'Rezervacija' }}
+              </div>
+              }
+            </div>
+          </td>
+          }
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

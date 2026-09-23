@@ -34,8 +34,10 @@ export class TeammateAdController {
     let authorUsername = req.body.authorUsername;
     let sport = req.body.sport;
     let city = req.body.city;
-    let startDateTime = new Date(req.body.startDateTime);
-    let endDateTime = new Date(req.body.endDateTime);
+    let startDateTimeValue = req.body.startDateTime;
+    let endDateTimeValue = req.body.endDateTime;
+    let startDateTime = new Date(startDateTimeValue);
+    let endDateTime = new Date(endDateTimeValue);
     let playersNeeded = req.body.playersNeeded;
 
     if (!authorUsername || !sport || !city) {

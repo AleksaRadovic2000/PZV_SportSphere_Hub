@@ -75,10 +75,10 @@
     },
     "sport": "Fudbal",
     "startDateTime": {
-      "$date": "2026-09-10T18:00:00.000Z"
+      "$date": "2026-10-15T18:00:00.000Z"
     },
     "endDateTime": {
-      "$date": "2026-09-10T20:00:00.000Z"
+      "$date": "2026-10-15T20:00:00.000Z"
     },
     "price": 10000,
     "status": "scheduled"
@@ -126,4 +126,3 @@
     "status": "attended"
   }
 ]
-

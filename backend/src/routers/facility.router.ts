@@ -57,4 +57,12 @@ facilityRouter.route("/promotions/current").get((req, res) => {
   new PublicFacilityController().getCurrentPromotions(req, res);
 });
 
+facilityRouter.route("/promotions/add").post((req, res) => {
+  new FacilityController().addPromotion(req, res);
+});
+
+facilityRouter.route("/promotions/update").post((req, res) => {
+  new FacilityController().updatePromotion(req, res);
+});
+
 export default facilityRouter;

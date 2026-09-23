@@ -1,5 +1,6 @@
 import fs from "fs";
 import express from "express";
+import FacilityModel from "../models/facility";
 import SportModel from "../models/sport";
 import UserModel from "../models/user";
 
@@ -24,7 +25,7 @@ export class UserController {
       });
   };
 
-  approveUser = (req: express.Request, res: express.Response) => {
+  approveUser = async (req: express.Request, res: express.Response) => {
     let username = req.body.username;
 
     if (!username) {
@@ -34,23 +35,30 @@ export class UserController {
 
     username = username.trim();
 
-    UserModel.findOneAndUpdate(
-      { username, status: "pending" },
-      { status: "active" },
-      { new: true },
-    )
-      .then((user) => {
-        if (!user) {
-          res.status(404).json({ message: "Pending registration request was not found" });
-          return;
-        }
+    try {
+      const user = await UserModel.findOneAndUpdate(
+        { username, status: "pending" },
+        { status: "active" },
+        { new: true },
+      );
 
-        res.json({ message: "Registration request approved" });
-      })
-      .catch((error) => {
-        console.error("Registration approval failed:", error);
-        res.status(500).json({ message: "Registration approval failed" });
-      });
+      if (!user) {
+        res.status(404).json({ message: "Pending registration request was not found" });
+        return;
+      }
+
+      if (user.role === "employee" && user.registrationNumber) {
+        await FacilityModel.updateMany(
+          { companyRegistrationNumber: user.registrationNumber },
+          { $addToSet: { employeeUsernames: user.username } },
+        );
+      }
+
+      res.json({ message: "Registration request approved" });
+    } catch (error) {
+      console.error("Registration approval failed:", error);
+      res.status(500).json({ message: "Registration approval failed" });
+    }
   };
 
   rejectUser = (req: express.Request, res: express.Response) => {
@@ -167,6 +175,13 @@ export class UserController {
       }
 
       await UserModel.deleteOne({ username });
+
+      if (user.role === "employee") {
+        await FacilityModel.updateMany(
+          { employeeUsernames: username },
+          { $pull: { employeeUsernames: username } },
+        );
+      }
       res.json({ message: "User deleted successfully" });
     } catch (error) {
       console.error("User deletion failed:", error);

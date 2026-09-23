@@ -9,6 +9,52 @@ import UserModel from "../models/user";
 const hourInMilliseconds = 60 * 60 * 1000;
 
 export class TrainingController {
+  getAllTrainers = async (_req: express.Request, res: express.Response) => {
+    try {
+      const trainers = await TrainerModel.find({}).sort({ lastName: 1, firstName: 1 });
+      const facilityIds = [...new Set(trainers.map((trainer) => trainer.facilityId.toString()))];
+      const facilities = await FacilityModel.find({ _id: { $in: facilityIds } });
+      const result = trainers.map((trainer) => {
+        const facility = facilities.find(
+          (item) => item._id.toString() === trainer.facilityId.toString(),
+        );
+
+        return {
+          ...trainer.toObject(),
+          facilityName: facility?.name || "",
+        };
+      });
+
+      res.json(result);
+    } catch (error) {
+      console.error("Failed to load trainers:", error);
+      res.status(500).json({ message: "Failed to load trainers" });
+    }
+  };
+
+  deactivateTrainer = async (req: express.Request, res: express.Response) => {
+    let id = req.body.id;
+
+    if (!mongoose.isValidObjectId(id)) {
+      res.status(400).json({ message: "Trainer ID is not valid" });
+      return;
+    }
+
+    try {
+      const trainer = await TrainerModel.findByIdAndUpdate(id, { active: false }, { new: true });
+
+      if (!trainer) {
+        res.status(404).json({ message: "Trainer was not found" });
+        return;
+      }
+
+      res.json({ message: "Trainer deactivated successfully" });
+    } catch (error) {
+      console.error("Trainer deactivation failed:", error);
+      res.status(500).json({ message: "Trainer deactivation failed" });
+    }
+  };
+
   searchTrainers = async (req: express.Request, res: express.Response) => {
     let facilityId = req.body.facilityId;
     let sport = req.body.sport;
@@ -75,8 +121,10 @@ export class TrainingController {
     let facilityId = req.body.facilityId;
     let resourceId = req.body.resourceId;
     let sport = req.body.sport;
-    let startDateTime = new Date(req.body.startDateTime);
-    let endDateTime = new Date(req.body.endDateTime);
+    let startDateTimeValue = req.body.startDateTime;
+    let endDateTimeValue = req.body.endDateTime;
+    let startDateTime = new Date(startDateTimeValue);
+    let endDateTime = new Date(endDateTimeValue);
 
     if (!athleteUsername || !sport) {
       res.status(400).json({ message: "Athlete username and sport are required" });
@@ -105,6 +153,8 @@ export class TrainingController {
         sport,
         startDateTime,
         endDateTime,
+        "",
+        athleteUsername,
       );
 
       if (validation.message) {
@@ -152,7 +202,12 @@ export class TrainingController {
 
   getByFacility = async (req: express.Request, res: express.Response) => {
     let facilityId = req.params.id;
-    let employeeUsername = String(req.query.employeeUsername || "");
+    let employeeUsernameValue = req.query.employeeUsername;
+    let employeeUsername = "";
+
+    if (typeof employeeUsernameValue === "string") {
+      employeeUsername = employeeUsernameValue.trim();
+    }
 
     if (!mongoose.isValidObjectId(facilityId) || !employeeUsername) {
       res.status(400).json({ message: "Facility ID and employee username are required" });
@@ -231,6 +286,72 @@ export class TrainingController {
     }
   };
 
+  moveTraining = async (req: express.Request, res: express.Response) => {
+    let id = req.body.id;
+    let employeeUsername = req.body.employeeUsername;
+    let startDateTimeValue = req.body.startDateTime;
+    let endDateTimeValue = req.body.endDateTime;
+    let startDateTime = new Date(startDateTimeValue);
+    let endDateTime = new Date(endDateTimeValue);
+
+    if (!mongoose.isValidObjectId(id) || !employeeUsername) {
+      res.status(400).json({ message: "Training ID and employee username are required" });
+      return;
+    }
+
+    employeeUsername = employeeUsername.trim();
+
+    try {
+      const training = await TrainingModel.findOne({ _id: id, status: "scheduled" });
+
+      if (!training) {
+        res.status(404).json({ message: "Scheduled training was not found" });
+        return;
+      }
+
+      const facility = await FacilityModel.findOne({
+        _id: training.facilityId,
+        employeeUsernames: employeeUsername,
+      });
+      const resource = facility?.resources.find(
+        (item) => item._id.toString() === training.resourceId.toString(),
+      );
+
+      if (!facility || !resource) {
+        res.status(403).json({ message: "Employee cannot move this training" });
+        return;
+      }
+
+      if (!["indoor", "hall"].includes(resource.type)) {
+        res.status(400).json({ message: "Only indoor trainings can be moved" });
+        return;
+      }
+
+      const validation = await this.validateTraining(
+        training.trainerId.toString(),
+        training.facilityId.toString(),
+        training.resourceId.toString(),
+        training.sport,
+        startDateTime,
+        endDateTime,
+        training._id.toString(),
+      );
+
+      if (validation.message) {
+        res.status(400).json({ message: validation.message });
+        return;
+      }
+
+      training.startDateTime = startDateTime;
+      training.endDateTime = endDateTime;
+      await training.save();
+      res.json({ message: "Training moved successfully", training });
+    } catch (error) {
+      console.error("Training move failed:", error);
+      res.status(500).json({ message: "Training move failed" });
+    }
+  };
+
   private validateTraining = async (
     trainerId: string,
     facilityId: string,
@@ -238,6 +359,8 @@ export class TrainingController {
     sport: string,
     startDateTime: Date,
     endDateTime: Date,
+    trainingId = "",
+    athleteUsername = "",
   ) => {
     if (
       !mongoose.isValidObjectId(trainerId) ||
@@ -295,6 +418,26 @@ export class TrainingController {
       return { message: "Active facility was not found", pricePerHour: 0 };
     }
 
+    if (athleteUsername) {
+      const reservationNoShows = await ReservationModel.countDocuments({
+        athleteUsername,
+        facilityId,
+        status: "no_show",
+      });
+      const trainingNoShows = await TrainingModel.countDocuments({
+        athleteUsername,
+        facilityId,
+        status: "no_show",
+      });
+
+      if (reservationNoShows + trainingNoShows >= facility.allowedNoShows) {
+        return {
+          message: "Athlete has reached the allowed number of no-shows for this facility",
+          pricePerHour: 0,
+        };
+      }
+    }
+
     const resource = facility.resources.find((item) => item._id.toString() === resourceId);
 
     if (!resource || !resource.sportPrices.some((item) => item.sport === sport)) {
@@ -319,23 +462,35 @@ export class TrainingController {
       return { message: "Training must be within facility working hours", pricePerHour: 0 };
     }
 
-    const overlappingTrainerTraining = await TrainingModel.findOne({
+    const trainerTrainingQuery: any = {
       trainerId,
       status: "scheduled",
       startDateTime: { $lt: endDateTime },
       endDateTime: { $gt: startDateTime },
-    });
+    };
+
+    if (trainingId) {
+      trainerTrainingQuery._id = { $ne: trainingId };
+    }
+
+    const overlappingTrainerTraining = await TrainingModel.findOne(trainerTrainingQuery);
 
     if (overlappingTrainerTraining) {
       return { message: "Trainer is not available at the selected time", pricePerHour: 0 };
     }
 
-    const overlappingResourceTraining = await TrainingModel.findOne({
+    const resourceTrainingQuery: any = {
       resourceId,
       status: "scheduled",
       startDateTime: { $lt: endDateTime },
       endDateTime: { $gt: startDateTime },
-    });
+    };
+
+    if (trainingId) {
+      resourceTrainingQuery._id = { $ne: trainingId };
+    }
+
+    const overlappingResourceTraining = await TrainingModel.findOne(resourceTrainingQuery);
 
     if (overlappingResourceTraining) {
       return { message: "Resource is occupied by another training", pricePerHour: 0 };

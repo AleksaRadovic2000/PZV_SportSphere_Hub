@@ -8,6 +8,7 @@ export class Trainer {
   averageRating = 0;
   pricePerHour = 0;
   active = true;
+  facilityName = '';
 }
 
 export class Training {

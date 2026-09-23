@@ -181,8 +181,8 @@ export class FacilityForm implements OnInit {
       return 'Popunite osnovne podatke objekta.';
     }
 
-    if (!Number.isInteger(this.facility.allowedNoShows) || this.facility.allowedNoShows < 0) {
-      return 'Broj dozvoljenih nedolazaka mora biti ceo broj nula ili veci.';
+    if (!Number.isInteger(this.facility.allowedNoShows) || this.facility.allowedNoShows < 1) {
+      return 'Broj dozvoljenih nedolazaka mora biti pozitivan ceo broj.';
     }
 
     if (

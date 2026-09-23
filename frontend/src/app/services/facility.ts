@@ -6,6 +6,7 @@ import {
   Facility,
   FacilityDetailsResponse,
   FacilityResponse,
+  Promotion,
   PublicFacilityInfo,
 } from '../models/facility';
 import { Message } from '../models/user';
@@ -82,6 +83,22 @@ export class FacilityService {
 
   getCurrentPromotions() {
     return this.http.get<CurrentPromotion[]>(`${this.uri}/promotions/current`);
+  }
+
+  addPromotion(facilityId: string, employeeUsername: string, promotion: Promotion) {
+    return this.http.post<FacilityResponse>(`${this.uri}/promotions/add`, {
+      facilityId,
+      employeeUsername,
+      promotion,
+    });
+  }
+
+  updatePromotion(facilityId: string, employeeUsername: string, promotion: Promotion) {
+    return this.http.post<FacilityResponse>(`${this.uri}/promotions/update`, {
+      facilityId,
+      employeeUsername,
+      promotion,
+    });
   }
 
   getImageUrl(image: string) {

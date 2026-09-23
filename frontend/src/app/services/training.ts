@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environments';
 import { Trainer, Training, TrainingResponse } from '../models/training';
+import { Message } from '../models/user';
 
 @Injectable({ providedIn: 'root' })
 export class TrainingService {
@@ -10,6 +11,14 @@ export class TrainingService {
 
   searchTrainers(facilityId: string, sport: string) {
     return this.http.post<Trainer[]>(`${this.uri}/trainers/search`, { facilityId, sport });
+  }
+
+  getAllTrainers() {
+    return this.http.get<Trainer[]>(`${this.uri}/trainers/all`);
+  }
+
+  deactivateTrainer(id: string) {
+    return this.http.post<Message>(`${this.uri}/trainers/deactivate`, { id });
   }
 
   getTrainerSchedule(trainerId: string) {
@@ -50,6 +59,20 @@ export class TrainingService {
       id,
       employeeUsername,
       attended,
+    });
+  }
+
+  moveTraining(
+    id: string,
+    employeeUsername: string,
+    startDateTime: Date,
+    endDateTime: Date,
+  ) {
+    return this.http.post<TrainingResponse>(`${this.uri}/move`, {
+      id,
+      employeeUsername,
+      startDateTime,
+      endDateTime,
     });
   }
 }

@@ -54,7 +54,7 @@ const Facility = new Schema({
     enum: ["pending", "active", "rejected"],
     default: "pending",
   },
-  allowedNoShows: { type: Number, required: true, min: 0 },
+  allowedNoShows: { type: Number, required: true, min: 1 },
   images: { type: [String], default: [] },
   location: { type: Location, required: true },
   workingHours: { type: [WorkingHours], default: [] },
