@@ -66,5 +66,56 @@
     "createdAt": {
       "$date": "2026-08-28T15:00:00.000Z"
     }
+  },
+  {
+    "_id": {
+      "$oid": "673000000000000000000005"
+    },
+    "reservationId": {
+      "$oid": "66d000000000000000000007"
+    },
+    "athleteUsername": "marko",
+    "facilityId": {
+      "$oid": "66a000000000000000000001"
+    },
+    "reaction": "like",
+    "comment": "Teren je odlican za rekreativni tenis.",
+    "createdAt": {
+      "$date": "2026-07-10T17:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "673000000000000000000006"
+    },
+    "reservationId": {
+      "$oid": "66d000000000000000000008"
+    },
+    "athleteUsername": "ana",
+    "facilityId": {
+      "$oid": "66a000000000000000000002"
+    },
+    "reaction": "like",
+    "comment": "Dobar teren i jednostavno zakazivanje.",
+    "createdAt": {
+      "$date": "2026-07-18T19:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "673000000000000000000007"
+    },
+    "reservationId": {
+      "$oid": "66d000000000000000000009"
+    },
+    "athleteUsername": "marko",
+    "facilityId": {
+      "$oid": "66a000000000000000000001"
+    },
+    "reaction": "like",
+    "comment": "Hala je prostrana i dobro osvetljena.",
+    "createdAt": {
+      "$date": "2026-08-12T20:00:00.000Z"
+    }
   }
 ]

@@ -52,5 +52,124 @@
     "createdAt": {
       "$date": "2026-09-05T10:00:00.000Z"
     }
+  },
+  {
+    "_id": {
+      "$oid": "672000000000000000000003"
+    },
+    "athleteUsername": "marko",
+    "facilityId": {
+      "$oid": "66a000000000000000000001"
+    },
+    "items": [
+      {
+        "_id": {
+          "$oid": "672100000000000000000003"
+        },
+        "productId": {
+          "$oid": "671000000000000000000002"
+        },
+        "productName": "Fudbalska lopta",
+        "unitPrice": 3500,
+        "quantity": 1
+      }
+    ],
+    "totalPrice": 3500,
+    "status": "accepted",
+    "createdAt": {
+      "$date": "2026-09-10T11:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "672000000000000000000004"
+    },
+    "athleteUsername": "ana",
+    "facilityId": {
+      "$oid": "66a000000000000000000003"
+    },
+    "items": [
+      {
+        "_id": {
+          "$oid": "672100000000000000000004"
+        },
+        "productId": {
+          "$oid": "671000000000000000000004"
+        },
+        "productName": "Elasticna traka",
+        "unitPrice": 1200,
+        "quantity": 2
+      }
+    ],
+    "totalPrice": 2400,
+    "status": "cancelled",
+    "createdAt": {
+      "$date": "2026-08-25T13:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "672000000000000000000005"
+    },
+    "athleteUsername": "ana",
+    "facilityId": {
+      "$oid": "66a000000000000000000002"
+    },
+    "items": [
+      {
+        "_id": {
+          "$oid": "672100000000000000000005"
+        },
+        "productId": {
+          "$oid": "671000000000000000000003"
+        },
+        "productName": "Kosarkaska lopta",
+        "unitPrice": 4200,
+        "quantity": 1
+      }
+    ],
+    "totalPrice": 4200,
+    "status": "collected",
+    "createdAt": {
+      "$date": "2026-08-26T09:30:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "672000000000000000000006"
+    },
+    "athleteUsername": "marko",
+    "facilityId": {
+      "$oid": "66a000000000000000000001"
+    },
+    "items": [
+      {
+        "_id": {
+          "$oid": "672100000000000000000006"
+        },
+        "productId": {
+          "$oid": "671000000000000000000001"
+        },
+        "productName": "Teniske loptice - pakovanje",
+        "unitPrice": 900,
+        "quantity": 1
+      },
+      {
+        "_id": {
+          "$oid": "672100000000000000000007"
+        },
+        "productId": {
+          "$oid": "671000000000000000000002"
+        },
+        "productName": "Fudbalska lopta",
+        "unitPrice": 3500,
+        "quantity": 1
+      }
+    ],
+    "totalPrice": 4400,
+    "status": "collected",
+    "createdAt": {
+      "$date": "2026-09-02T14:00:00.000Z"
+    }
   }
 ]

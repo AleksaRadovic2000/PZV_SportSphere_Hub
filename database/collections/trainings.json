@@ -46,5 +46,53 @@
     },
     "price": 2200,
     "status": "scheduled"
+  },
+  {
+    "_id": {
+      "$oid": "670000000000000000000003"
+    },
+    "athleteUsername": "marko",
+    "trainerId": {
+      "$oid": "66f000000000000000000001"
+    },
+    "facilityId": {
+      "$oid": "66a000000000000000000001"
+    },
+    "resourceId": {
+      "$oid": "66b000000000000000000001"
+    },
+    "sport": "Tenis",
+    "startDateTime": {
+      "$date": "2026-08-10T13:00:00.000Z"
+    },
+    "endDateTime": {
+      "$date": "2026-08-10T14:00:00.000Z"
+    },
+    "price": 2500,
+    "status": "cancelled"
+  },
+  {
+    "_id": {
+      "$oid": "670000000000000000000004"
+    },
+    "athleteUsername": "marko",
+    "trainerId": {
+      "$oid": "66f000000000000000000001"
+    },
+    "facilityId": {
+      "$oid": "66a000000000000000000001"
+    },
+    "resourceId": {
+      "$oid": "66b000000000000000000001"
+    },
+    "sport": "Tenis",
+    "startDateTime": {
+      "$date": "2026-08-14T12:00:00.000Z"
+    },
+    "endDateTime": {
+      "$date": "2026-08-14T13:00:00.000Z"
+    },
+    "price": 2500,
+    "status": "no_show"
   }
 ]

@@ -54,5 +54,117 @@
     "price": 1200,
     "stock": 20,
     "active": true
+  },
+  {
+    "_id": {
+      "$oid": "671000000000000000000005"
+    },
+    "facilityId": {
+      "$oid": "66a000000000000000000005"
+    },
+    "sport": "Tenis",
+    "name": "Teniski reket",
+    "image": "uploads/products/teniski-reket.jpg",
+    "price": 8900,
+    "stock": 6,
+    "active": true
+  },
+  {
+    "_id": {
+      "$oid": "671000000000000000000006"
+    },
+    "facilityId": {
+      "$oid": "66a000000000000000000005"
+    },
+    "sport": "Fudbal",
+    "name": "Fudbalske stucne",
+    "image": "uploads/products/fudbalske-stucne.jpg",
+    "price": 1300,
+    "stock": 18,
+    "active": true
+  },
+  {
+    "_id": {
+      "$oid": "671000000000000000000007"
+    },
+    "facilityId": {
+      "$oid": "66a000000000000000000006"
+    },
+    "sport": "Odbojka",
+    "name": "Odbojkaska lopta",
+    "image": "uploads/products/odbojkaska-lopta.jpg",
+    "price": 3800,
+    "stock": 10,
+    "active": true
+  },
+  {
+    "_id": {
+      "$oid": "671000000000000000000008"
+    },
+    "facilityId": {
+      "$oid": "66a000000000000000000006"
+    },
+    "sport": "Fitnes",
+    "name": "Prostirka za vezbanje",
+    "image": "uploads/products/prostirka-za-vezbanje.jpg",
+    "price": 2200,
+    "stock": 14,
+    "active": true
+  },
+  {
+    "_id": {
+      "$oid": "671000000000000000000009"
+    },
+    "facilityId": {
+      "$oid": "66a000000000000000000007"
+    },
+    "sport": "Badminton",
+    "name": "Badminton reket",
+    "image": "uploads/products/badminton-reket.jpg",
+    "price": 5400,
+    "stock": 7,
+    "active": true
+  },
+  {
+    "_id": {
+      "$oid": "67100000000000000000000a"
+    },
+    "facilityId": {
+      "$oid": "66a000000000000000000007"
+    },
+    "sport": "Fitnes",
+    "name": "Set malih tegova",
+    "image": "uploads/products/set-malih-tegova.jpg",
+    "price": 3200,
+    "stock": 9,
+    "active": true
+  },
+  {
+    "_id": {
+      "$oid": "67100000000000000000000b"
+    },
+    "facilityId": {
+      "$oid": "66a000000000000000000001"
+    },
+    "sport": "Fudbal",
+    "name": "Sportska torba",
+    "image": "uploads/products/sportska-torba.jpg",
+    "price": 2800,
+    "stock": 5,
+    "active": false
+  },
+  {
+    "_id": {
+      "$oid": "67100000000000000000000c"
+    },
+    "facilityId": {
+      "$oid": "66a000000000000000000003"
+    },
+    "sport": "Fitnes",
+    "name": "Sportska flasica",
+    "image": "uploads/products/sportska-flasica.jpg",
+    "price": 900,
+    "stock": 30,
+    "active": true
   }
 ]

@@ -43,5 +43,95 @@
     "averageRating": 4.4,
     "pricePerHour": 2000,
     "active": false
+  },
+  {
+    "_id": {
+      "$oid": "66f000000000000000000004"
+    },
+    "firstName": "Tamara",
+    "lastName": "Popovic",
+    "facilityId": {
+      "$oid": "66a000000000000000000005"
+    },
+    "sports": ["Tenis", "Badminton"],
+    "specialization": "Tehnika reketa i rad sa rekreativcima",
+    "averageRating": 4.7,
+    "pricePerHour": 2600,
+    "active": true
+  },
+  {
+    "_id": {
+      "$oid": "66f000000000000000000005"
+    },
+    "firstName": "Luka",
+    "lastName": "Ristic",
+    "facilityId": {
+      "$oid": "66a000000000000000000005"
+    },
+    "sports": ["Fudbal"],
+    "specialization": "Individualna tehnika i kondiciona priprema",
+    "averageRating": 4.5,
+    "pricePerHour": 2400,
+    "active": true
+  },
+  {
+    "_id": {
+      "$oid": "66f000000000000000000006"
+    },
+    "firstName": "Jovan",
+    "lastName": "Simic",
+    "facilityId": {
+      "$oid": "66a000000000000000000006"
+    },
+    "sports": ["Kosarka", "Odbojka"],
+    "specialization": "Ekipna taktika i tehnika igre",
+    "averageRating": 4.9,
+    "pricePerHour": 2800,
+    "active": true
+  },
+  {
+    "_id": {
+      "$oid": "66f000000000000000000007"
+    },
+    "firstName": "Marina",
+    "lastName": "Djordjevic",
+    "facilityId": {
+      "$oid": "66a000000000000000000006"
+    },
+    "sports": ["Fitnes"],
+    "specialization": "Funkcionalni trening i mobilnost",
+    "averageRating": 4.8,
+    "pricePerHour": 2300,
+    "active": true
+  },
+  {
+    "_id": {
+      "$oid": "66f000000000000000000008"
+    },
+    "firstName": "Nemanja",
+    "lastName": "Pavlovic",
+    "facilityId": {
+      "$oid": "66a000000000000000000007"
+    },
+    "sports": ["Fudbal", "Kosarka"],
+    "specialization": "Kondiciona priprema za ekipne sportove",
+    "averageRating": 4.6,
+    "pricePerHour": 2700,
+    "active": true
+  },
+  {
+    "_id": {
+      "$oid": "66f000000000000000000009"
+    },
+    "firstName": "Ivana",
+    "lastName": "Lazic",
+    "facilityId": {
+      "$oid": "66a000000000000000000007"
+    },
+    "sports": ["Badminton", "Fitnes"],
+    "specialization": "Rekreativni badminton i grupni fitnes",
+    "averageRating": 4.3,
+    "pricePerHour": 2100,
+    "active": false
   }
 ]

@@ -263,5 +263,271 @@
       }
     ],
     "promotions": []
+  },
+  {
+    "_id": {
+      "$oid": "66a000000000000000000005"
+    },
+    "name": "Sport Centar Zemun",
+    "city": "Beograd",
+    "address": "Cara Dusana 120",
+    "description": "Sportski centar sa teniskim balonom i terenom za mali fudbal.",
+    "employeeUsernames": ["ivan", "jelena"],
+    "companyRegistrationNumber": "12345678",
+    "status": "active",
+    "allowedNoShows": 3,
+    "images": [
+      "uploads/facilities/zemun-1.jpg",
+      "uploads/facilities/zemun-2.jpg"
+    ],
+    "location": {
+      "latitude": 44.8452,
+      "longitude": 20.4103
+    },
+    "workingHours": [
+      { "day": 1, "from": "08:00", "to": "22:00" },
+      { "day": 2, "from": "08:00", "to": "22:00" },
+      { "day": 3, "from": "08:00", "to": "22:00" },
+      { "day": 4, "from": "08:00", "to": "22:00" },
+      { "day": 5, "from": "08:00", "to": "22:00" },
+      { "day": 6, "from": "09:00", "to": "21:00" },
+      { "day": 7, "from": "09:00", "to": "21:00" }
+    ],
+    "resources": [
+      {
+        "_id": {
+          "$oid": "66b000000000000000000008"
+        },
+        "name": "Teniski balon",
+        "type": "indoor",
+        "capacity": 4,
+        "equipmentDescription": "Tvrda podloga, mreza, grejanje i rasveta.",
+        "sportPrices": [
+          { "sport": "Tenis", "pricePerHour": 1800 },
+          { "sport": "Badminton", "pricePerHour": 1400 }
+        ]
+      },
+      {
+        "_id": {
+          "$oid": "66b000000000000000000009"
+        },
+        "name": "Teren za mali fudbal",
+        "type": "outdoor",
+        "capacity": 12,
+        "equipmentDescription": "Vestacka trava, golovi i reflektori.",
+        "sportPrices": [
+          { "sport": "Fudbal", "pricePerHour": 4200 }
+        ]
+      }
+    ],
+    "promotions": [
+      {
+        "_id": {
+          "$oid": "66c000000000000000000004"
+        },
+        "name": "Tenis radnim danima",
+        "sport": "Tenis",
+        "startDate": {
+          "$date": "2026-01-01T00:00:00.000Z"
+        },
+        "endDate": {
+          "$date": "2027-12-31T23:59:59.000Z"
+        },
+        "discountType": "percentage",
+        "discountValue": 20
+      },
+      {
+        "_id": {
+          "$oid": "66c000000000000000000005"
+        },
+        "name": "Fudbal za ekipe",
+        "sport": "Fudbal",
+        "startDate": {
+          "$date": "2026-01-01T00:00:00.000Z"
+        },
+        "endDate": {
+          "$date": "2027-12-31T23:59:59.000Z"
+        },
+        "discountType": "fixed",
+        "discountValue": 700
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "66a000000000000000000006"
+    },
+    "name": "Sportski centar Liman",
+    "city": "Novi Sad",
+    "address": "Narodnog fronta 45",
+    "description": "Moderan centar sa sportskom halom i salom za grupne treninge.",
+    "employeeUsernames": ["petar"],
+    "companyRegistrationNumber": "23456789",
+    "status": "active",
+    "allowedNoShows": 2,
+    "images": [
+      "uploads/facilities/liman-1.jpg"
+    ],
+    "location": {
+      "latitude": 45.2386,
+      "longitude": 19.8369
+    },
+    "workingHours": [
+      { "day": 1, "from": "07:00", "to": "23:00" },
+      { "day": 2, "from": "07:00", "to": "23:00" },
+      { "day": 3, "from": "07:00", "to": "23:00" },
+      { "day": 4, "from": "07:00", "to": "23:00" },
+      { "day": 5, "from": "07:00", "to": "23:00" },
+      { "day": 6, "from": "08:00", "to": "22:00" },
+      { "day": 7, "from": "08:00", "to": "22:00" }
+    ],
+    "resources": [
+      {
+        "_id": {
+          "$oid": "66b00000000000000000000a"
+        },
+        "name": "Liman hala",
+        "type": "hall",
+        "capacity": 24,
+        "equipmentDescription": "Parket, tribine, kosevi i mreza za odbojku.",
+        "sportPrices": [
+          { "sport": "Kosarka", "pricePerHour": 4800 },
+          { "sport": "Odbojka", "pricePerHour": 4500 }
+        ]
+      },
+      {
+        "_id": {
+          "$oid": "66b00000000000000000000b"
+        },
+        "name": "Sala za fitnes",
+        "type": "indoor",
+        "capacity": 15,
+        "equipmentDescription": "Strunjace, tegovi i oprema za funkcionalni trening.",
+        "sportPrices": [
+          { "sport": "Fitnes", "pricePerHour": 2400 }
+        ]
+      }
+    ],
+    "promotions": [
+      {
+        "_id": {
+          "$oid": "66c000000000000000000006"
+        },
+        "name": "Studentska kosarka",
+        "sport": "Kosarka",
+        "startDate": {
+          "$date": "2026-01-01T00:00:00.000Z"
+        },
+        "endDate": {
+          "$date": "2027-12-31T23:59:59.000Z"
+        },
+        "discountType": "percentage",
+        "discountValue": 15
+      },
+      {
+        "_id": {
+          "$oid": "66c000000000000000000007"
+        },
+        "name": "Jutarnji fitnes",
+        "sport": "Fitnes",
+        "startDate": {
+          "$date": "2026-01-01T00:00:00.000Z"
+        },
+        "endDate": {
+          "$date": "2027-12-31T23:59:59.000Z"
+        },
+        "discountType": "fixed",
+        "discountValue": 400
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "66a000000000000000000007"
+    },
+    "name": "Jezero Arena",
+    "city": "Kragujevac",
+    "address": "Lepnicki bulevar 20",
+    "description": "Visenamenska arena za ekipne sportove, badminton i fitnes.",
+    "employeeUsernames": ["sara"],
+    "companyRegistrationNumber": "34567890",
+    "status": "active",
+    "allowedNoShows": 3,
+    "images": [
+      "uploads/facilities/arena-1.jpg"
+    ],
+    "location": {
+      "latitude": 44.0104,
+      "longitude": 20.9237
+    },
+    "workingHours": [
+      { "day": 1, "from": "08:00", "to": "22:00" },
+      { "day": 2, "from": "08:00", "to": "22:00" },
+      { "day": 3, "from": "08:00", "to": "22:00" },
+      { "day": 4, "from": "08:00", "to": "22:00" },
+      { "day": 5, "from": "08:00", "to": "22:00" },
+      { "day": 6, "from": "09:00", "to": "21:00" },
+      { "day": 7, "from": "09:00", "to": "21:00" }
+    ],
+    "resources": [
+      {
+        "_id": {
+          "$oid": "66b00000000000000000000c"
+        },
+        "name": "Glavna arena",
+        "type": "hall",
+        "capacity": 30,
+        "equipmentDescription": "Tribine, semafor, golovi i kosevi.",
+        "sportPrices": [
+          { "sport": "Fudbal", "pricePerHour": 5200 },
+          { "sport": "Kosarka", "pricePerHour": 4700 }
+        ]
+      },
+      {
+        "_id": {
+          "$oid": "66b00000000000000000000d"
+        },
+        "name": "Mala sportska sala",
+        "type": "indoor",
+        "capacity": 10,
+        "equipmentDescription": "Mreze, strunjace i osnovna fitnes oprema.",
+        "sportPrices": [
+          { "sport": "Badminton", "pricePerHour": 1900 },
+          { "sport": "Fitnes", "pricePerHour": 2200 }
+        ]
+      }
+    ],
+    "promotions": [
+      {
+        "_id": {
+          "$oid": "66c000000000000000000008"
+        },
+        "name": "Vikend badminton",
+        "sport": "Badminton",
+        "startDate": {
+          "$date": "2026-01-01T00:00:00.000Z"
+        },
+        "endDate": {
+          "$date": "2027-12-31T23:59:59.000Z"
+        },
+        "discountType": "percentage",
+        "discountValue": 10
+      },
+      {
+        "_id": {
+          "$oid": "66c000000000000000000009"
+        },
+        "name": "Ekipni fudbal",
+        "sport": "Fudbal",
+        "startDate": {
+          "$date": "2026-01-01T00:00:00.000Z"
+        },
+        "endDate": {
+          "$date": "2027-12-31T23:59:59.000Z"
+        },
+        "discountType": "fixed",
+        "discountValue": 800
+      }
+    ]
   }
 ]

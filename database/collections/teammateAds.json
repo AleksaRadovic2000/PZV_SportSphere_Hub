@@ -48,5 +48,30 @@
         "status": "accepted"
       }
     ]
+  },
+  {
+    "_id": {
+      "$oid": "66e000000000000000000003"
+    },
+    "authorUsername": "marko",
+    "sport": "Kosarka",
+    "city": "Novi Sad",
+    "startDateTime": {
+      "$date": "2026-09-15T17:00:00.000Z"
+    },
+    "endDateTime": {
+      "$date": "2026-09-15T19:00:00.000Z"
+    },
+    "playersNeeded": 1,
+    "status": "closed",
+    "requests": [
+      {
+        "_id": {
+          "$oid": "66e100000000000000000003"
+        },
+        "athleteUsername": "ana",
+        "status": "rejected"
+      }
+    ]
   }
 ]

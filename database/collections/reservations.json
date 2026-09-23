@@ -124,5 +124,131 @@
     },
     "price": 6400,
     "status": "attended"
+  },
+  {
+    "_id": {
+      "$oid": "66d000000000000000000007"
+    },
+    "athleteUsername": "marko",
+    "facilityId": {
+      "$oid": "66a000000000000000000001"
+    },
+    "resourceId": {
+      "$oid": "66b000000000000000000001"
+    },
+    "sport": "Tenis",
+    "startDateTime": {
+      "$date": "2026-07-10T15:00:00.000Z"
+    },
+    "endDateTime": {
+      "$date": "2026-07-10T16:00:00.000Z"
+    },
+    "price": 1500,
+    "status": "attended"
+  },
+  {
+    "_id": {
+      "$oid": "66d000000000000000000008"
+    },
+    "athleteUsername": "ana",
+    "facilityId": {
+      "$oid": "66a000000000000000000002"
+    },
+    "resourceId": {
+      "$oid": "66b000000000000000000004"
+    },
+    "sport": "Kosarka",
+    "startDateTime": {
+      "$date": "2026-07-18T16:00:00.000Z"
+    },
+    "endDateTime": {
+      "$date": "2026-07-18T18:00:00.000Z"
+    },
+    "price": 5000,
+    "status": "attended"
+  },
+  {
+    "_id": {
+      "$oid": "66d000000000000000000009"
+    },
+    "athleteUsername": "marko",
+    "facilityId": {
+      "$oid": "66a000000000000000000001"
+    },
+    "resourceId": {
+      "$oid": "66b000000000000000000002"
+    },
+    "sport": "Kosarka",
+    "startDateTime": {
+      "$date": "2026-08-12T17:00:00.000Z"
+    },
+    "endDateTime": {
+      "$date": "2026-08-12T19:00:00.000Z"
+    },
+    "price": 9000,
+    "status": "attended"
+  },
+  {
+    "_id": {
+      "$oid": "66d00000000000000000000a"
+    },
+    "athleteUsername": "ana",
+    "facilityId": {
+      "$oid": "66a000000000000000000003"
+    },
+    "resourceId": {
+      "$oid": "66b000000000000000000007"
+    },
+    "sport": "Badminton",
+    "startDateTime": {
+      "$date": "2026-09-20T14:00:00.000Z"
+    },
+    "endDateTime": {
+      "$date": "2026-09-20T16:00:00.000Z"
+    },
+    "price": 3600,
+    "status": "cancelled"
+  },
+  {
+    "_id": {
+      "$oid": "66d00000000000000000000b"
+    },
+    "athleteUsername": "ana",
+    "facilityId": {
+      "$oid": "66a000000000000000000003"
+    },
+    "resourceId": {
+      "$oid": "66b000000000000000000007"
+    },
+    "sport": "Badminton",
+    "startDateTime": {
+      "$date": "2026-10-14T15:00:00.000Z"
+    },
+    "endDateTime": {
+      "$date": "2026-10-14T17:00:00.000Z"
+    },
+    "price": 3600,
+    "status": "scheduled"
+  },
+  {
+    "_id": {
+      "$oid": "66d00000000000000000000c"
+    },
+    "athleteUsername": "marko",
+    "facilityId": {
+      "$oid": "66a000000000000000000002"
+    },
+    "resourceId": {
+      "$oid": "66b000000000000000000004"
+    },
+    "sport": "Fudbal",
+    "startDateTime": {
+      "$date": "2026-10-16T16:00:00.000Z"
+    },
+    "endDateTime": {
+      "$date": "2026-10-16T18:00:00.000Z"
+    },
+    "price": 6000,
+    "status": "scheduled"
   }
 ]
