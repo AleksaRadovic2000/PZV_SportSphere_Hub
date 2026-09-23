@@ -8,75 +8,62 @@
     </a>
 
     <div class="flex flex-wrap items-center justify-center gap-4">
-      @if (loggedUser; as user) {
-        @if (user.role === 'admin') {
-          <a class="text-white no-underline hover:underline" routerLink="/admin/requests">
-            Zahtevi
-          </a>
-          <a class="text-white no-underline hover:underline" routerLink="/admin/users">
-            Korisnici
-          </a>
-          <a class="text-white no-underline hover:underline" routerLink="/admin/system-data">
-            Sistemski podaci
-          </a>
-        } @else if (user.role === 'employee') {
-          <a class="text-white no-underline hover:underline" [routerLink]="homeRoute">
-            Profil
-          </a>
-          <a class="text-white no-underline hover:underline" routerLink="/employee/facilities">
-            Objekti
-          </a>
-          <a class="text-white no-underline hover:underline" routerLink="/employee/tournaments">
-            Turniri
-          </a>
-          <a class="text-white no-underline hover:underline" routerLink="/employee/operations">
-            Evidencija
-          </a>
-          <a class="text-white no-underline hover:underline" routerLink="/employee/catalog">
-            Katalog
-          </a>
-          <a class="text-white no-underline hover:underline" routerLink="/employee/calendar">
-            Kalendar
-          </a>
-          <a class="text-white no-underline hover:underline" routerLink="/employee/reports">
-            Izvestaji
-          </a>
-        } @else {
-          <a class="text-white no-underline hover:underline" [routerLink]="homeRoute">
-            Profil
-          </a>
-          <a class="text-white no-underline hover:underline" routerLink="/athlete/facilities">
-            Objekti
-          </a>
-          <a class="text-white no-underline hover:underline" routerLink="/athlete/teammates">
-            Saigraci
-          </a>
-          <a class="text-white no-underline hover:underline" routerLink="/athlete/tournaments">
-            Turniri
-          </a>
-          <a class="text-white no-underline hover:underline" routerLink="/athlete/trainings">
-            Treninzi
-          </a>
-          <a class="text-white no-underline hover:underline" routerLink="/athlete/shop">
-            Prodavnica
-          </a>
-          <a class="text-white no-underline hover:underline" routerLink="/athlete/statistics">
-            Statistika
-          </a>
-        }
-
-        <button
-          class="bg-transparent text-white border-0 p-0 cursor-pointer hover:underline"
-          type="button"
-          (click)="logout()"
-        >
-          Odjava
-        </button>
+      @if (loggedUser; as user) { @if (user.role === 'admin') {
+      <a class="text-white no-underline hover:underline" routerLink="/admin/requests"> Zahtevi </a>
+      <a class="text-white no-underline hover:underline" routerLink="/admin/users"> Korisnici </a>
+      <a class="text-white no-underline hover:underline" routerLink="/admin/system-data">
+        Sistemski podaci
+      </a>
+      } @else if (user.role === 'employee') {
+      <a class="text-white no-underline hover:underline" [routerLink]="homeRoute"> Profil </a>
+      <a class="text-white no-underline hover:underline" routerLink="/employee/facilities">
+        Objekti
+      </a>
+      <a class="text-white no-underline hover:underline" routerLink="/employee/tournaments">
+        Turniri
+      </a>
+      <a class="text-white no-underline hover:underline" routerLink="/employee/operations">
+        Evidencija
+      </a>
+      <a class="text-white no-underline hover:underline" routerLink="/employee/catalog">
+        Katalog
+      </a>
+      <a class="text-white no-underline hover:underline" routerLink="/employee/calendar">
+        Kalendar
+      </a>
+      <a class="text-white no-underline hover:underline" routerLink="/employee/reports">
+        Izvestaji
+      </a>
       } @else {
-        <a class="text-white no-underline hover:underline" routerLink="/">Prijava</a>
-        <a class="text-white no-underline hover:underline" routerLink="/register">
-          Registracija
-        </a>
+      <a class="text-white no-underline hover:underline" [routerLink]="homeRoute"> Profil </a>
+      <a class="text-white no-underline hover:underline" routerLink="/athlete/facilities">
+        Objekti
+      </a>
+      <a class="text-white no-underline hover:underline" routerLink="/athlete/teammates">
+        Saigraci
+      </a>
+      <a class="text-white no-underline hover:underline" routerLink="/athlete/tournaments">
+        Turniri
+      </a>
+      <a class="text-white no-underline hover:underline" routerLink="/athlete/trainings">
+        Treninzi
+      </a>
+      <a class="text-white no-underline hover:underline" routerLink="/athlete/shop"> Prodavnica </a>
+      <a class="text-white no-underline hover:underline" routerLink="/athlete/statistics">
+        Statistika
+      </a>
+      }
+
+      <button
+        class="bg-transparent text-white border-0 p-0 cursor-pointer hover:underline"
+        type="button"
+        (click)="logout()"
+      >
+        Odjava
+      </button>
+      } @else {
+      <a class="text-white no-underline hover:underline" routerLink="/">Prijava</a>
+      <a class="text-white no-underline hover:underline" routerLink="/register"> Registracija </a>
       }
     </div>
   </nav>

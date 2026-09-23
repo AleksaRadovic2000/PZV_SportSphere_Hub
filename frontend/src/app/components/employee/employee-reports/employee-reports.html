@@ -1,10 +1,39 @@
 <section class="max-w-xl mx-auto bg-surface border rounded-lg shadow p-6">
   <h1 class="text-2xl mt-2 mb-6">PDF izvestaji</h1>
   <div class="flex flex-col gap-4">
-    <div><label class="block font-medium mb-2" for="report-facility">Sportski objekat</label><select id="report-facility" class="w-full border rounded p-2" [(ngModel)]="facilityId">@for (facility of facilities; track facility._id) {<option [value]="facility._id">{{ facility.name }} - {{ facility.city }}</option>}</select></div>
-    <div><label class="block font-medium mb-2" for="report-month">Mesec</label><input id="report-month" class="w-full border rounded p-2" type="month" [(ngModel)]="month" /></div>
-    @if (message) {<p class="m-0">{{ message }}</p>}
-    <button class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer" type="button" (click)="downloadOccupancy()">Preuzmi izvestaj o popunjenosti</button>
-    <button class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer" type="button" (click)="downloadSales()">Preuzmi izvestaj o prometu opreme</button>
+    <div>
+      <label class="block font-medium mb-2" for="report-facility">Sportski objekat</label
+      ><select id="report-facility" class="w-full border rounded p-2" [(ngModel)]="facilityId">
+        @for (facility of facilities; track facility._id) {
+        <option [value]="facility._id">{{ facility.name }} - {{ facility.city }}</option>
+        }
+      </select>
+    </div>
+    <div>
+      <label class="block font-medium mb-2" for="report-month">Mesec</label
+      ><input
+        id="report-month"
+        class="w-full border rounded p-2"
+        type="month"
+        [(ngModel)]="month"
+      />
+    </div>
+    @if (message) {
+    <p class="m-0">{{ message }}</p>
+    }
+    <button
+      class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer"
+      type="button"
+      (click)="downloadOccupancy()"
+    >
+      Preuzmi izvestaj o popunjenosti
+    </button>
+    <button
+      class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer"
+      type="button"
+      (click)="downloadSales()"
+    >
+      Preuzmi izvestaj o prometu opreme
+    </button>
   </div>
 </section>

@@ -1,95 +1,57 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AthleteReservation } from '../../../models/reservation';
-import { Order } from '../../../models/shop';
-import { Training } from '../../../models/training';
 import { User } from '../../../models/user';
-import { ReservationService } from '../../../services/reservation';
-import { ShopService } from '../../../services/shop';
-import { TrainingService } from '../../../services/training';
 import { UserService } from '../../../services/user';
+import { ProfileImageSelector } from '../../shared/profile-image-selector/profile-image-selector';
 import { SportSelector } from '../../shared/sport-selector/sport-selector';
-
-import { getSerbianLabel } from '../../../shared/serbian-label';
+import { AthleteOrders } from './athlete-orders/athlete-orders';
+import { AthleteProfileReservations } from './athlete-profile-reservations/athlete-profile-reservations';
+import { AthleteProfileTrainings } from './athlete-profile-trainings/athlete-profile-trainings';
 
 @Component({
   selector: 'app-athlete-profile',
-  imports: [FormsModule, SportSelector],
+  imports: [
+    FormsModule,
+    SportSelector,
+    ProfileImageSelector,
+    AthleteOrders,
+    AthleteProfileReservations,
+    AthleteProfileTrainings,
+  ],
   templateUrl: './athlete-profile.html',
 })
 export class AthleteProfile implements OnInit {
-  label = getSerbianLabel;
   private userService = inject(UserService);
-  private reservationService = inject(ReservationService);
-  private trainingService = inject(TrainingService);
-  private shopService = inject(ShopService);
-
   user = new User();
   profileImage: File | null = null;
   profileImagePreview = '';
   message = '';
   success = false;
   loading = false;
-  reservations: AthleteReservation[] = [];
-  reservationResults: AthleteReservation[] = [];
-  reservationMessage = '';
-  reservationSuccess = false;
-  reservationSortColumn = '';
-  reservationSortDirection = 'asc';
-  trainings: Training[] = [];
-  trainingMessage = '';
-  orders: Order[] = [];
-  orderMessage = '';
-  orderSuccess = false;
 
   ngOnInit() {
-    let loggedUser = this.userService.getLoggedUser();
-
-    if (!loggedUser) {
-      return;
-    }
-
+    const loggedUser = this.userService.getLoggedUser();
+    if (!loggedUser) return;
     this.userService.getProfile(loggedUser.username).subscribe({
       next: (user) => {
         this.user = user;
         this.profileImagePreview = this.userService.getProfileImageUrl(user.profileImage);
       },
-      error: (error) => {
-        this.message = error.error?.message || 'Profil nije moguce ucitati.';
-      },
+      error: (error) => (this.message = error.error?.message || 'Profil nije moguce ucitati.'),
     });
-
-    this.loadReservations();
-    this.loadTrainings();
-    this.loadOrders();
   }
 
-  onProfileImageSelected(event: Event) {
-    let input = event.target as HTMLInputElement;
-    let file = input.files?.[0];
-
-    if (!file) {
-      return;
-    }
-
-    if (!['image/png', 'image/jpeg'].includes(file.type)) {
-      this.message = 'Profilna slika mora biti PNG ili JPG fajl.';
-      input.value = '';
-      return;
-    }
-
+  onProfileImageSelected(file: File | null) {
     this.profileImage = file;
-    let reader = new FileReader();
-    reader.onload = () => {
-      this.profileImagePreview = String(reader.result || '');
-    };
-    reader.readAsDataURL(file);
+    this.message = '';
+  }
+  onProfileImagePreviewSelected(preview: string) {
+    this.profileImagePreview = preview;
   }
 
   updateProfile() {
     this.message = '';
     this.success = false;
-
     if (
       !this.user.firstName.trim() ||
       !this.user.lastName.trim() ||
@@ -99,17 +61,14 @@ export class AthleteProfile implements OnInit {
       this.message = 'Popunite sva obavezna polja.';
       return;
     }
-
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.user.email)) {
       this.message = 'Email adresa nije ispravna.';
       return;
     }
-
     if (this.user.favouriteSports.length > 5) {
       this.message = 'Mozete izabrati najvise pet sportova.';
       return;
     }
-
     this.loading = true;
     this.userService.updateProfile(this.user, this.profileImage).subscribe({
       next: (response) => {
@@ -126,145 +85,5 @@ export class AthleteProfile implements OnInit {
         this.loading = false;
       },
     });
-  }
-
-  loadReservations() {
-    const user = this.userService.getLoggedUser();
-
-    if (!user) {
-      return;
-    }
-
-    this.reservationService.getAthleteReservations(user.username).subscribe({
-      next: (reservations) => {
-        this.reservationResults = reservations;
-        this.reservations = [...reservations];
-      },
-      error: (error) => {
-        this.reservationMessage = error.error?.message || 'Rezervacije nije moguce ucitati.';
-      },
-    });
-  }
-
-  loadTrainings() {
-    const user = this.userService.getLoggedUser();
-
-    if (!user) {
-      return;
-    }
-
-    this.trainingService.getAthleteTrainings(user.username).subscribe({
-      next: (trainings) => {
-        this.trainings = trainings;
-      },
-      error: (error) => {
-        this.trainingMessage = error.error?.message || 'Treninge nije moguce ucitati.';
-      },
-    });
-  }
-
-  loadOrders() {
-    const user = this.userService.getLoggedUser();
-
-    if (!user) {
-      return;
-    }
-
-    this.shopService.getAthleteOrders(user.username).subscribe({
-      next: (orders) => {
-        this.orders = orders;
-      },
-      error: (error) => {
-        this.orderMessage = error.error?.message || 'Porudzbine nije moguce ucitati.';
-        this.orderSuccess = false;
-      },
-    });
-  }
-
-  get activeOrders() {
-    return this.orders.filter((order) => ['ordered', 'accepted'].includes(order.status));
-  }
-
-  get orderHistory() {
-    return this.orders.filter((order) => ['collected', 'cancelled'].includes(order.status));
-  }
-
-  cancelOrder(order: Order) {
-    this.shopService.cancelOrder(order._id, this.user.username).subscribe({
-      next: (response) => {
-        this.orderMessage = response.message;
-        this.orderSuccess = true;
-        this.loadOrders();
-      },
-      error: (error) => {
-        this.orderMessage = error.error?.message || 'Otkazivanje porudzbine nije uspelo.';
-        this.orderSuccess = false;
-      },
-    });
-  }
-
-  sortReservations(column: string) {
-    if (this.reservationSortColumn === column) {
-      this.reservationSortDirection = this.reservationSortDirection === 'asc' ? 'desc' : 'asc';
-    } else {
-      this.reservationSortColumn = column;
-      this.reservationSortDirection = 'asc';
-    }
-
-    const direction = this.reservationSortDirection === 'asc' ? 1 : -1;
-    this.reservations = [...this.reservationResults].sort((first, second) => {
-      const firstValue = this.getReservationSortValue(first, column);
-      const secondValue = this.getReservationSortValue(second, column);
-      return firstValue.localeCompare(secondValue) * direction;
-    });
-  }
-
-  canCancel(reservation: AthleteReservation) {
-    const hoursUntilStart =
-      (new Date(reservation.startDateTime).getTime() - Date.now()) / (60 * 60 * 1000);
-    return reservation.status === 'scheduled' && hoursUntilStart >= 12;
-  }
-
-  cancelReservation(reservation: AthleteReservation) {
-    this.reservationMessage = '';
-    this.reservationSuccess = false;
-    this.reservationService.cancelReservation(reservation._id, this.user.username).subscribe({
-      next: (response) => {
-        this.reservationMessage = response.message;
-        this.reservationSuccess = true;
-        this.loadReservations();
-      },
-      error: (error) => {
-        this.reservationMessage = error.error?.message || 'Otkazivanje rezervacije nije uspelo.';
-      },
-    });
-  }
-
-  formatDateTime(value: string) {
-    return new Date(value).toLocaleString('sr-Latn-RS');
-  }
-
-  private getReservationSortValue(reservation: AthleteReservation, column: string) {
-    if (column === 'city') {
-      return reservation.city;
-    }
-
-    if (column === 'resource') {
-      return reservation.resourceName;
-    }
-
-    if (column === 'sport') {
-      return reservation.sport;
-    }
-
-    if (column === 'interval') {
-      return reservation.startDateTime;
-    }
-
-    if (column === 'status') {
-      return reservation.status;
-    }
-
-    return reservation.facilityName;
   }
 }

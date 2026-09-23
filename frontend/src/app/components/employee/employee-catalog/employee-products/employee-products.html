@@ -1,0 +1,125 @@
+<section class="bg-surface border rounded-lg shadow p-6">
+  <h2 class="text-2xl mt-2 mb-6">Proizvodi</h2>
+  <form class="flex flex-col gap-4" (ngSubmit)="addProduct()">
+    <div class="flex flex-col gap-4 md:flex-row">
+      <input
+        class="flex-1 border rounded p-2"
+        name="name"
+        placeholder="Naziv"
+        [(ngModel)]="newProduct.name"
+      />
+      <select class="flex-1 border rounded p-2" name="sport" [(ngModel)]="newProduct.sport">
+        <option value="">Izaberite sport</option>
+        @for (sport of sports; track sport.name) {
+        <option [value]="sport.name">{{ sport.name }}</option>
+        }
+      </select>
+      <input
+        class="flex-1 border rounded p-2"
+        name="price"
+        type="number"
+        min="1"
+        placeholder="Cena"
+        [(ngModel)]="newProduct.price"
+      />
+      <input
+        class="flex-1 border rounded p-2"
+        name="stock"
+        type="number"
+        min="0"
+        placeholder="Stanje"
+        [(ngModel)]="newProduct.stock"
+      />
+    </div>
+    <input
+      class="w-full border rounded p-2"
+      type="file"
+      accept="image/png,image/jpeg"
+      (change)="selectNewImage($event)"
+    />
+    <button class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer" type="submit">
+      Dodaj proizvod
+    </button>
+  </form>
+  @if (message) {
+  <p [class]="success ? 'text-success' : 'text-danger'">{{ message }}</p>
+  }
+  <div class="overflow-x-auto mt-6">
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="border-b text-left">
+          <th class="p-2">Slika</th>
+          <th class="p-2">Naziv</th>
+          <th class="p-2">Sport</th>
+          <th class="p-2">Cena</th>
+          <th class="p-2">Stanje</th>
+          <th class="p-2">Aktivan</th>
+          <th class="p-2">Akcija</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (product of products; track product._id) {
+        <tr class="border-b">
+          <td class="p-2">
+            @if (product.image) {<img
+              class="border rounded"
+              width="80"
+              height="60"
+              [src]="getImageUrl(product.image)"
+              [alt]="product.name"
+            />}
+          </td>
+          <td class="p-2">{{ product.name }}</td>
+          <td class="p-2">{{ product.sport }}</td>
+          @if (editingProductId === product._id) {
+          <td class="p-2">
+            <input class="border rounded p-2" type="number" min="1" [(ngModel)]="editPrice" />
+          </td>
+          <td class="p-2">
+            <input class="border rounded p-2" type="number" min="0" [(ngModel)]="editStock" />
+          </td>
+          <td class="p-2"><input type="checkbox" [(ngModel)]="editActive" /></td>
+          <td class="p-2">
+            <div class="flex flex-col gap-2">
+              <input type="file" accept="image/png,image/jpeg" (change)="selectEditImage($event)" />
+              <div class="flex gap-2">
+                <button
+                  class="bg-success text-white border-0 rounded px-3 py-2 cursor-pointer"
+                  type="button"
+                  (click)="updateProduct(product)"
+                >
+                  Sacuvaj</button
+                ><button
+                  class="border rounded px-3 py-2 cursor-pointer"
+                  type="button"
+                  (click)="cancelEdit()"
+                >
+                  Odustani
+                </button>
+              </div>
+            </div>
+          </td>
+          } @else {
+          <td class="p-2">{{ product.price }} RSD</td>
+          <td class="p-2">{{ product.stock }}</td>
+          <td class="p-2">{{ product.active ? 'da' : 'ne' }}</td>
+          <td class="p-2">
+            <button
+              class="bg-primary text-white border-0 rounded px-3 py-2 cursor-pointer"
+              type="button"
+              (click)="startEdit(product)"
+            >
+              Izmeni
+            </button>
+          </td>
+          }
+        </tr>
+        } @empty {
+        <tr>
+          <td class="p-4 text-center" colspan="7">Objekat nema proizvode.</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

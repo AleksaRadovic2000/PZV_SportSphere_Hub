@@ -4,10 +4,11 @@ import { RouterLink } from '@angular/router';
 import { RegisterUser } from '../../../models/user';
 import { UserService } from '../../../services/user';
 import { SportSelector } from '../../shared/sport-selector/sport-selector';
+import { ProfileImageSelector } from '../../shared/profile-image-selector/profile-image-selector';
 
 @Component({
   selector: 'app-register',
-  imports: [FormsModule, RouterLink, SportSelector],
+  imports: [FormsModule, RouterLink, SportSelector, ProfileImageSelector],
   templateUrl: './register.html',
 })
 export class Register {
@@ -25,38 +26,29 @@ export class Register {
   loading = false;
 
   validatePassword() {
-    return /^(?=[A-Za-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,12}$/.test(
-      this.user.password,
-    );
+    return /^(?=[A-Za-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,12}$/.test(this.user.password);
   }
 
   validatePasswordConfirmation() {
     return this.user.password === this.passwordConfirmation;
   }
 
-  onProfileImageSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-
-    if (!file) {
-      return;
-    }
-
-    if (!['image/png', 'image/jpeg'].includes(file.type)) {
-      this.message = 'Profilna slika mora biti PNG ili JPG fajl.';
-      input.value = '';
-      return;
-    }
-
+  onProfileImageSelected(file: File | null) {
     this.profileImage = file;
     this.generatedAvatar = null;
     this.generatedAvatarPreview = '';
-    this.readImagePreview(file);
+    this.message = '';
+  }
+
+  onProfileImagePreviewSelected(preview: string) {
+    this.profileImagePreview = preview;
   }
 
   generateAvatar() {
     const seed =
-      `${this.user.firstName} ${this.user.lastName}`.trim() || this.user.username.trim() || 'Korisnik';
+      `${this.user.firstName} ${this.user.lastName}`.trim() ||
+      this.user.username.trim() ||
+      'Korisnik';
     this.message = '';
     this.userService.generateAvatar(seed).subscribe({
       next: (avatar) => {
@@ -161,13 +153,5 @@ export class Register {
     }
 
     return '';
-  }
-
-  private readImagePreview(file: File) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.profileImagePreview = String(reader.result ?? '');
-    };
-    reader.readAsDataURL(file);
   }
 }

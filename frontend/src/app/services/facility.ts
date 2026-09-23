@@ -66,7 +66,7 @@ export class FacilityService {
     cities: string[],
     sport: string,
     resourceType: string,
-    onlyAvailableToday = false,
+    onlyAvailableToday = false
   ) {
     return this.http.post<Facility[]>(`${this.uri}/search`, {
       name,

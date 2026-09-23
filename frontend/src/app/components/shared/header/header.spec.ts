@@ -12,8 +12,7 @@ describe('Header', () => {
     await TestBed.configureTestingModule({
       imports: [Header],
       providers: [provideRouter([]), provideHttpClient()],
-    })
-      .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(Header);
     component = fixture.componentInstance;

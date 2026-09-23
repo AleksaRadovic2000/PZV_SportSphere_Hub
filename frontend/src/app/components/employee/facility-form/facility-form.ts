@@ -6,6 +6,7 @@ import { Sport } from '../../../models/sport';
 import { FacilityService } from '../../../services/facility';
 import { SportService } from '../../../services/sport';
 import { UserService } from '../../../services/user';
+import { validateImage } from '../../../shared/image-utils';
 
 @Component({
   selector: 'app-facility-form',
@@ -101,7 +102,7 @@ export class FacilityForm implements OnInit {
 
   isDaySelected(day: number, currentIndex: number) {
     return this.facility.workingHours.some(
-      (item, index) => item.day === day && index !== currentIndex,
+      (item, index) => item.day === day && index !== currentIndex
     );
   }
 
@@ -125,15 +126,23 @@ export class FacilityForm implements OnInit {
     const input = event.target as HTMLInputElement;
     this.selectedImages = input.files ? Array.from(input.files) : [];
 
-    const invalidImage = this.selectedImages.find(
-      (image) => !['image/png', 'image/jpeg'].includes(image.type),
-    );
+    if (this.selectedImages.length > 6) {
+      this.selectedImages = [];
+      input.value = '';
+      this.message = 'Mozete izabrati najvise sest novih slika.';
+      return;
+    }
+
+    const invalidImage = this.selectedImages.find((image) => validateImage(image));
 
     if (invalidImage) {
       this.selectedImages = [];
       input.value = '';
-      this.message = 'Sve slike moraju biti PNG ili JPG fajlovi.';
+      this.message = validateImage(invalidImage, 'Slika objekta');
+      return;
     }
+
+    this.message = '';
   }
 
   save() {
@@ -185,11 +194,17 @@ export class FacilityForm implements OnInit {
       return 'Broj dozvoljenih nedolazaka mora biti pozitivan ceo broj.';
     }
 
+    const latitude = this.facility.location.latitude;
+    const longitude = this.facility.location.longitude;
+
     if (
-      this.facility.location.latitude < -90 ||
-      this.facility.location.latitude > 90 ||
-      this.facility.location.longitude < -180 ||
-      this.facility.location.longitude > 180
+      !Number.isFinite(latitude) ||
+      !Number.isFinite(longitude) ||
+      (latitude === 0 && longitude === 0) ||
+      latitude < -90 ||
+      latitude > 90 ||
+      longitude < -180 ||
+      longitude > 180
     ) {
       return 'Koordinate nisu ispravne.';
     }
@@ -217,15 +232,18 @@ export class FacilityForm implements OnInit {
     }
 
     const resourceNames = this.facility.resources.map((resource) =>
-      resource.name.trim().toLowerCase(),
+      resource.name.trim().toLowerCase()
     );
 
-    if (resourceNames.some((name) => !name) || new Set(resourceNames).size !== resourceNames.length) {
+    if (
+      resourceNames.some((name) => !name) ||
+      new Set(resourceNames).size !== resourceNames.length
+    ) {
       return 'Nazivi resursa moraju biti popunjeni i jedinstveni.';
     }
 
     const hasOutdoorResource = this.facility.resources.some(
-      (resource) => resource.type === 'outdoor' && resource.capacity >= 4,
+      (resource) => resource.type === 'outdoor' && resource.capacity >= 4
     );
 
     if (!hasOutdoorResource) {

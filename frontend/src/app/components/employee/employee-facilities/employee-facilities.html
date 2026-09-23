@@ -32,7 +32,7 @@
   </div>
 
   @if (message) {
-    <p [class]="success ? 'text-success m-0' : 'text-danger m-0'">{{ message }}</p>
+  <p [class]="success ? 'text-success m-0' : 'text-danger m-0'">{{ message }}</p>
   }
 
   <div class="overflow-x-auto bg-surface border rounded-lg shadow p-4">
@@ -42,29 +42,29 @@
           <th class="p-2">Naziv</th>
           <th class="p-2">Grad</th>
           <th class="p-2">Sportovi</th>
-          <th class="p-2">Resursi</th>
+          <th class="p-2">Elementi</th>
           <th class="p-2">Status</th>
           <th class="p-2">Akcija</th>
         </tr>
       </thead>
       <tbody>
         @for (facility of facilities; track facility._id) {
-          <tr class="border-b">
-            <td class="p-2">{{ facility.name }}</td>
-            <td class="p-2">{{ facility.city }}</td>
-            <td class="p-2">{{ getSports(facility) }}</td>
-            <td class="p-2">{{ facility.resources.length }}</td>
-            <td class="p-2">{{ label(facility.status) }}</td>
-            <td class="p-2">
-              <a class="text-primary" [routerLink]="['/employee/facilities/edit', facility._id]">
-                Izmeni
-              </a>
-            </td>
-          </tr>
+        <tr class="border-b">
+          <td class="p-2">{{ facility.name }}</td>
+          <td class="p-2">{{ facility.city }}</td>
+          <td class="p-2">{{ getSports(facility) }}</td>
+          <td class="p-2">{{ getResources(facility) }}</td>
+          <td class="p-2">{{ label(facility.status) }}</td>
+          <td class="p-2">
+            <a class="text-primary" [routerLink]="['/employee/facilities/edit', facility._id]">
+              Izmeni
+            </a>
+          </td>
+        </tr>
         } @empty {
-          <tr>
-            <td class="p-4 text-center" colspan="6">Nemate sportske objekte.</td>
-          </tr>
+        <tr>
+          <td class="p-4 text-center" colspan="6">Nemate sportske objekte.</td>
+        </tr>
         }
       </tbody>
     </table>

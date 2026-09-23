@@ -3,7 +3,7 @@
     <h1 class="text-2xl mt-2 mb-6">Sistemski podaci</h1>
 
     @if (message) {
-      <p [class]="success ? 'text-success' : 'text-danger'">{{ message }}</p>
+    <p [class]="success ? 'text-success' : 'text-danger'">{{ message }}</p>
     }
 
     <form class="flex flex-col gap-3 sm:flex-row" (ngSubmit)="addSport()">
@@ -13,17 +13,14 @@
         placeholder="Naziv novog sporta"
         [(ngModel)]="sportName"
       />
-      <button
-        class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer"
-        type="submit"
-      >
+      <button class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer" type="submit">
         Dodaj sport
       </button>
     </form>
 
     <div class="flex flex-wrap gap-2 mt-4">
       @for (sport of sports; track sport.name) {
-        <span class="border rounded px-3 py-2">{{ sport.name }}</span>
+      <span class="border rounded px-3 py-2">{{ sport.name }}</span>
       }
     </div>
   </section>
@@ -43,25 +40,27 @@
         </thead>
         <tbody>
           @for (trainer of trainers; track trainer._id) {
-            <tr class="border-b">
-              <td class="p-2">{{ trainer.firstName }} {{ trainer.lastName }}</td>
-              <td class="p-2">{{ trainer.facilityName }}</td>
-              <td class="p-2">{{ trainer.sports.join(', ') }}</td>
-              <td class="p-2">{{ trainer.active ? 'aktivan' : 'neaktivan' }}</td>
-              <td class="p-2">
-                @if (trainer.active) {
-                  <button
-                    class="bg-danger text-white border-0 rounded px-3 py-2 cursor-pointer"
-                    type="button"
-                    (click)="deactivateTrainer(trainer)"
-                  >
-                    Deaktiviraj
-                  </button>
-                }
-              </td>
-            </tr>
+          <tr class="border-b">
+            <td class="p-2">{{ trainer.firstName }} {{ trainer.lastName }}</td>
+            <td class="p-2">{{ trainer.facilityName }}</td>
+            <td class="p-2">{{ trainer.sports.join(', ') }}</td>
+            <td class="p-2">{{ trainer.active ? 'aktivan' : 'neaktivan' }}</td>
+            <td class="p-2">
+              @if (trainer.active) {
+              <button
+                class="bg-danger text-white border-0 rounded px-3 py-2 cursor-pointer"
+                type="button"
+                (click)="deactivateTrainer(trainer)"
+              >
+                Deaktiviraj
+              </button>
+              }
+            </td>
+          </tr>
           } @empty {
-            <tr><td class="p-4 text-center" colspan="5">Nema trenera za prikaz.</td></tr>
+          <tr>
+            <td class="p-4 text-center" colspan="5">Nema trenera za prikaz.</td>
+          </tr>
           }
         </tbody>
       </table>

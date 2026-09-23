@@ -1,206 +1,95 @@
 @if (message) {
-  <section class="max-w-xl mx-auto bg-surface border rounded-lg shadow p-6 text-center">
-    <p class="text-danger">{{ message }}</p>
+<section class="max-w-xl mx-auto bg-surface border rounded-lg shadow p-6 text-center">
+  <p class="text-danger">{{ message }}</p>
+  <a class="text-primary" [routerLink]="backRoute">Nazad na pretragu</a>
+</section>
+} @else if (loaded) {
+<section class="flex flex-col gap-6">
+  <div class="bg-surface border rounded-lg shadow p-6">
     <a class="text-primary" [routerLink]="backRoute">Nazad na pretragu</a>
-  </section>
-} @else {
-  <section class="flex flex-col gap-6">
-    <div class="bg-surface border rounded-lg shadow p-6">
-      <a class="text-primary" [routerLink]="backRoute">Nazad na pretragu</a>
-      <h1 class="text-3xl mb-2">{{ details.facility.name }}</h1>
-      <p class="text-lg text-muted mt-2">{{ details.facility.city }}, {{ details.facility.address }}</p>
-      @if (loggedAthlete) {
-        <p>{{ details.facility.description }}</p>
-      }
-      <div class="flex gap-4"><span>Svidjanja: {{ details.likes }}</span><span>Nesvidjanja: {{ details.dislikes }}</span></div>
-    </div>
-
+    <h1 class="text-3xl mb-2">{{ details.facility.name }}</h1>
+    <p class="text-lg text-muted mt-2">
+      {{ details.facility.city }}, {{ details.facility.address }}
+    </p>
     @if (loggedAthlete) {
-      <div class="bg-surface border rounded-lg shadow p-6">
-        <h2 class="text-2xl mt-2 mb-4">Ocene i komentari</h2>
-
-        @if (reviewReservations.length > 0) {
-          <form class="flex flex-col gap-4 mb-6" (ngSubmit)="createReview()">
-            <div>
-              <label class="block font-medium mb-2" for="review-reservation">
-                Odigrana rezervacija
-              </label>
-              <select
-                id="review-reservation"
-                class="w-full border rounded p-2"
-                name="reviewReservationId"
-                [(ngModel)]="reviewReservationId"
-              >
-                @for (reservation of reviewReservations; track reservation._id) {
-                  <option [value]="reservation._id">
-                    {{ reservation.resourceName }} - {{ formatReviewDate(reservation.startDateTime) }}
-                  </option>
-                }
-              </select>
-            </div>
-
-            <div>
-              <label class="block font-medium mb-2" for="review-reaction">Ocena</label>
-              <select
-                id="review-reaction"
-                class="w-full border rounded p-2"
-                name="reviewReaction"
-                [(ngModel)]="reviewReaction"
-              >
-                <option value="like">Svidja mi se</option>
-                <option value="dislike">Ne svidja mi se</option>
-              </select>
-            </div>
-
-            <div>
-              <label class="block font-medium mb-2" for="review-comment">Komentar</label>
-              <textarea
-                id="review-comment"
-                class="w-full border rounded p-2"
-                name="reviewComment"
-                rows="4"
-                maxlength="500"
-                [(ngModel)]="reviewComment"
-              ></textarea>
-            </div>
-
-            <button
-              class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer"
-              type="submit"
-            >
-              Posalji ocenu
-            </button>
-          </form>
-        } @else {
-          <p class="text-muted">Nemate odigranu rezervaciju koju mozete oceniti.</p>
-        }
-
-        @if (reviewMessage) {
-          <p [class]="reviewSuccess ? 'text-success' : 'text-danger'">{{ reviewMessage }}</p>
-        }
-
-        <div class="flex flex-col gap-3">
-          @for (review of reviews; track review._id) {
-            <article
-              [class]="isOwnReview(review) ? 'border rounded p-4 bg-background' : 'border rounded p-4'"
-            >
-              <div class="flex flex-wrap items-center justify-between gap-2">
-                <strong>{{ review.athleteUsername }}</strong>
-                <span>{{ review.reaction === 'like' ? 'Svidja mi se' : 'Ne svidja mi se' }}</span>
-              </div>
-              @if (review.comment) {
-                <p>{{ review.comment }}</p>
-              }
-              <p class="text-muted mb-0">{{ formatReviewDate(review.createdAt) }}</p>
-            </article>
-          } @empty {
-            <p class="text-muted">Objekat jos nema komentare.</p>
-          }
-        </div>
-      </div>
+    <p>{{ details.facility.description }}</p>
     }
-
-    @if (details.facility.images.length) {
-      <div>
-        <h2 class="text-2xl mb-4">Galerija</h2>
-        <div class="flex flex-wrap gap-4">
-          @for (image of details.facility.images; track image) {
-            <img class="border rounded-lg shadow-sm" width="320" height="220" [src]="getImageUrl(image)" [alt]="details.facility.name" />
-          }
-        </div>
-      </div>
-    }
-
-    <div class="bg-surface border rounded-lg shadow p-6">
-      <h2 class="text-2xl mt-2 mb-4">Tereni, hale i cenovnik</h2>
-      <div class="flex flex-col gap-4">
-        @for (resource of details.facility.resources; track resource._id) {
-          <article class="border rounded p-4">
-            <h3 class="text-xl mt-2 mb-2">{{ resource.name }}</h3>
-            <p>Tip: {{ label(resource.type) }} | Kapacitet: {{ resource.capacity }}</p>
-            <p>{{ resource.equipmentDescription }}</p>
-            <div class="overflow-x-auto">
-              <table class="w-full border-collapse">
-                <thead><tr class="border-b text-left"><th class="p-2">Sport</th><th class="p-2">Cena po satu</th></tr></thead>
-                <tbody>
-                  @for (price of resource.sportPrices; track price.sport) {
-                    <tr class="border-b"><td class="p-2">{{ price.sport }}</td><td class="p-2">{{ price.pricePerHour }} RSD</td></tr>
-                  }
-                </tbody>
-              </table>
-            </div>
-          </article>
-        }
-      </div>
+    <div class="flex gap-4">
+      <span>Svidjanja: {{ details.likes }}</span
+      ><span>Nesvidjanja: {{ details.dislikes }}</span>
     </div>
+  </div>
 
-    @if (loggedAthlete && activeResource) {
-      <div class="bg-surface border rounded-lg shadow p-6">
-        <h2 class="text-2xl mt-2 mb-4">Nedeljni raspored</h2>
-        <div class="flex items-center justify-between gap-3 mb-4">
-          <button class="bg-primary text-white border-0 rounded px-3 py-2 cursor-pointer" type="button" (click)="previousResource()">&lt;</button>
-          <strong>{{ activeResource.name }} ({{ activeResourceIndex + 1 }}/{{ resources.length }})</strong>
-          <button class="bg-primary text-white border-0 rounded px-3 py-2 cursor-pointer" type="button" (click)="nextResource()">&gt;</button>
-        </div>
-        <div class="flex items-center justify-between gap-3 mb-4">
-          <button class="border rounded px-3 py-2 cursor-pointer" type="button" (click)="previousWeek()">Prethodna nedelja</button>
-          <button class="border rounded px-3 py-2 cursor-pointer" type="button" (click)="nextWeek()">Sledeca nedelja</button>
-        </div>
-        <div class="flex flex-wrap gap-4 mb-4 text-sm">
-          <span><span class="inline-block bg-surface border rounded p-2"></span> Slobodno</span>
-          <span><span class="inline-block bg-danger rounded p-2"></span> Zauzeto</span>
-          <span><span class="inline-block bg-accent rounded p-2"></span> Izabrano</span>
-          <span><span class="inline-block bg-background border rounded p-2"></span> Proslo ili objekat ne radi</span>
-        </div>
+  @if (loggedAthlete) {<app-facility-reviews [details]="details" />} @if
+  (details.facility.images.length) {
+  <div>
+    <h2 class="text-2xl mb-4">Galerija</h2>
+    <div class="flex flex-wrap gap-4">
+      @for (image of details.facility.images; track image) {<img
+        class="border rounded-lg shadow-sm"
+        width="320"
+        height="220"
+        [src]="getImageUrl(image)"
+        [alt]="details.facility.name"
+      />}
+    </div>
+  </div>
+  }
+
+  <div class="bg-surface border rounded-lg shadow p-6">
+    <h2 class="text-2xl mt-2 mb-4">Tereni, hale i cenovnik</h2>
+    <div class="flex flex-col gap-4">
+      @for (resource of details.facility.resources; track resource._id) {
+      <article class="border rounded p-4">
+        <h3 class="text-xl mt-2 mb-2">{{ resource.name }}</h3>
+        <p>Tip: {{ label(resource.type) }} | Kapacitet: {{ resource.capacity }}</p>
+        <p>{{ resource.equipmentDescription }}</p>
         <div class="overflow-x-auto">
           <table class="w-full border-collapse">
-            <thead><tr class="border-b"><th class="p-2">Vreme</th>@for (day of calendarDays; track day.getTime()) {<th class="p-2">{{ getCalendarDayName(day) }}</th>}</tr></thead>
+            <thead>
+              <tr class="border-b text-left">
+                <th class="p-2">Sport</th>
+                <th class="p-2">Cena po satu</th>
+              </tr>
+            </thead>
             <tbody>
-              @for (hour of calendarHours; track hour) {
-                <tr class="border-b">
-                  <th class="p-2">{{ hour }}:00</th>
-                  @for (day of calendarDays; track day.getTime()) {
-                    <td class="p-2">
-                      <button [class]="getSlotClass(day, hour)" type="button" [disabled]="isOccupied(day, hour) || isUnavailable(day, hour)" (click)="selectSlot(day, hour)">
-                        {{ getSlotLabel(day, hour) }}
-                      </button>
-                    </td>
-                  }
-                </tr>
+              @for (price of resource.sportPrices; track price.sport) {
+              <tr class="border-b">
+                <td class="p-2">{{ price.sport }}</td>
+                <td class="p-2">{{ price.pricePerHour }} RSD</td>
+              </tr>
               }
             </tbody>
           </table>
         </div>
+      </article>
+      }
+    </div>
+  </div>
 
-        @if (loggedAthlete) {
-          <form class="flex flex-col gap-4 mt-6" (ngSubmit)="createReservation()">
-            <h3 class="text-xl m-0">Rezervisi termin</h3>
-            <div class="flex flex-col gap-4 md:flex-row">
-              <div class="flex-1"><label class="block font-medium mb-2" for="reservation-date">Datum</label><input id="reservation-date" class="w-full border rounded p-2" name="reservationDate" type="date" [(ngModel)]="reservationDate" /></div>
-              <div class="flex-1"><label class="block font-medium mb-2" for="reservation-start">Pocetak</label><input id="reservation-start" class="w-full border rounded p-2" name="reservationStart" type="time" step="3600" [(ngModel)]="reservationStart" /></div>
-              <div class="flex-1"><label class="block font-medium mb-2" for="reservation-end">Kraj</label><input id="reservation-end" class="w-full border rounded p-2" name="reservationEnd" type="time" step="3600" [(ngModel)]="reservationEnd" /></div>
-              <div class="flex-1"><label class="block font-medium mb-2" for="reservation-sport">Sport</label><select id="reservation-sport" class="w-full border rounded p-2" name="selectedSport" [(ngModel)]="selectedSport">@for (price of activeResource.sportPrices; track price.sport) {<option [value]="price.sport">{{ price.sport }}</option>}</select></div>
-            </div>
-            <p class="font-semibold m-0">Ocekivana cena: {{ getExpectedPrice() }} RSD</p>
-            @if (reservationMessage) {<p [class]="reservationSuccess ? 'text-success m-0' : 'text-danger m-0'">{{ reservationMessage }}</p>}
-            <button class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer" type="submit">Potvrdi rezervaciju</button>
-          </form>
-        }
+  @if (loggedAthlete) {
+  <app-facility-reservation [facility]="details.facility" />
+  <div class="bg-surface border rounded-lg shadow p-6">
+    <h2 class="text-2xl mt-2 mb-4">Radno vreme</h2>
+    <div class="flex flex-wrap gap-4">
+      @for (hours of details.facility.workingHours; track hours.day) {
+      <div class="border rounded p-3">
+        <strong>{{ getDayName(hours.day) }}</strong>
+        <div>{{ hours.from }} - {{ hours.to }}</div>
       </div>
-    }
-
-    @if (loggedAthlete) {
-      <div class="bg-surface border rounded-lg shadow p-6">
-        <h2 class="text-2xl mt-2 mb-4">Radno vreme</h2>
-        <div class="flex flex-wrap gap-4">@for (hours of details.facility.workingHours; track hours.day) {<div class="border rounded p-3"><strong>{{ getDayName(hours.day) }}</strong><div>{{ hours.from }} - {{ hours.to }}</div></div>}</div>
-      </div>
-    }
-
-    @if (mapUrl) {
-      <div class="bg-surface border rounded-lg shadow p-6">
-        <h2 class="text-2xl mt-2 mb-4">Lokacija</h2>
-        <iframe class="w-full border rounded" height="360" [src]="mapUrl" title="Lokacija sportskog objekta"></iframe>
-      </div>
-    }
-  </section>
+      }
+    </div>
+  </div>
+  } @if (mapUrl) {
+  <div class="bg-surface border rounded-lg shadow p-6">
+    <h2 class="text-2xl mt-2 mb-4">Lokacija</h2>
+    <iframe
+      class="w-full border rounded"
+      height="360"
+      [src]="mapUrl"
+      title="Lokacija sportskog objekta"
+    ></iframe>
+  </div>
+  }
+</section>
 }

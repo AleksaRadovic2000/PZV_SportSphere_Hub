@@ -9,6 +9,7 @@ import { TournamentService } from '../../../services/tournament';
 import { UserService } from '../../../services/user';
 
 import { getSerbianLabel } from '../../../shared/serbian-label';
+import { formatDateTime } from '../../../shared/date-utils';
 
 @Component({
   selector: 'app-employee-tournaments',
@@ -17,6 +18,7 @@ import { getSerbianLabel } from '../../../shared/serbian-label';
 })
 export class EmployeeTournaments implements OnInit {
   label = getSerbianLabel;
+  formatDateTime = formatDateTime;
   private facilityService = inject(FacilityService);
   private sportService = inject(SportService);
   private tournamentService = inject(TournamentService);
@@ -158,10 +160,6 @@ export class EmployeeTournaments implements OnInit {
         this.success = false;
       },
     });
-  }
-
-  formatDateTime(value: string) {
-    return new Date(value).toLocaleString('sr-Latn-RS');
   }
 
   private resetForm() {

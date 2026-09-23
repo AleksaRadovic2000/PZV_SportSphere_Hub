@@ -1,0 +1,136 @@
+@if (activeResource) {
+<div class="bg-surface border rounded-lg shadow p-6">
+  <h2 class="text-2xl mt-2 mb-4">Nedeljni raspored</h2>
+
+  <div class="flex items-center justify-between gap-3 mb-4">
+    <button
+      class="bg-primary text-white border-0 rounded px-3 py-2 cursor-pointer"
+      type="button"
+      (click)="previousResource()"
+    >
+      &lt;
+    </button>
+    <strong
+      >{{ activeResource.name }} ({{ activeResourceIndex + 1 }}/{{ resources.length }})</strong
+    >
+    <button
+      class="bg-primary text-white border-0 rounded px-3 py-2 cursor-pointer"
+      type="button"
+      (click)="nextResource()"
+    >
+      &gt;
+    </button>
+  </div>
+
+  <div class="flex items-center justify-between gap-3 mb-4">
+    <button class="border rounded px-3 py-2 cursor-pointer" type="button" (click)="previousWeek()">
+      Prethodna nedelja
+    </button>
+    <button class="border rounded px-3 py-2 cursor-pointer" type="button" (click)="nextWeek()">
+      Sledeca nedelja
+    </button>
+  </div>
+
+  <div class="flex flex-wrap gap-4 mb-4 text-sm">
+    <span><span class="inline-block bg-surface border rounded p-2"></span> Slobodno</span>
+    <span><span class="inline-block bg-danger rounded p-2"></span> Zauzeto</span>
+    <span><span class="inline-block bg-accent rounded p-2"></span> Izabrano</span>
+    <span
+      ><span class="inline-block bg-background border rounded p-2"></span> Proslo ili objekat ne
+      radi</span
+    >
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="border-b">
+          <th class="p-2">Vreme</th>
+          @for (day of calendarDays; track day.getTime()) {
+          <th class="p-2">{{ getCalendarDayName(day) }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (hour of calendarHours; track hour) {
+        <tr class="border-b">
+          <th class="p-2">{{ hour }}:00</th>
+          @for (day of calendarDays; track day.getTime()) {
+          <td class="p-2">
+            <button
+              [class]="getSlotClass(day, hour)"
+              type="button"
+              [disabled]="isOccupied(day, hour) || isUnavailable(day, hour)"
+              (click)="selectSlot(day, hour)"
+            >
+              {{ getSlotLabel(day, hour) }}
+            </button>
+          </td>
+          }
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <form class="flex flex-col gap-4 mt-6" (ngSubmit)="createReservation()">
+    <h3 class="text-xl m-0">Rezervisi termin</h3>
+
+    <div class="flex flex-col gap-4 md:flex-row">
+      <div class="flex-1">
+        <label class="block font-medium mb-2" for="reservation-date">Datum</label>
+        <input
+          id="reservation-date"
+          class="w-full border rounded p-2"
+          name="reservationDate"
+          type="date"
+          [(ngModel)]="reservationDate"
+        />
+      </div>
+      <div class="flex-1">
+        <label class="block font-medium mb-2" for="reservation-start">Pocetak</label>
+        <input
+          id="reservation-start"
+          class="w-full border rounded p-2"
+          name="reservationStart"
+          type="time"
+          step="3600"
+          [(ngModel)]="reservationStart"
+        />
+      </div>
+      <div class="flex-1">
+        <label class="block font-medium mb-2" for="reservation-end">Kraj</label>
+        <input
+          id="reservation-end"
+          class="w-full border rounded p-2"
+          name="reservationEnd"
+          type="time"
+          step="3600"
+          [(ngModel)]="reservationEnd"
+        />
+      </div>
+      <div class="flex-1">
+        <label class="block font-medium mb-2" for="reservation-sport">Sport</label>
+        <select
+          id="reservation-sport"
+          class="w-full border rounded p-2"
+          name="selectedSport"
+          [(ngModel)]="selectedSport"
+        >
+          @for (price of activeResource.sportPrices; track price.sport) {
+          <option [value]="price.sport">{{ price.sport }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <p class="font-semibold m-0">Ocekivana cena: {{ getExpectedPrice() }} RSD</p>
+    @if (message) {
+    <p [class]="success ? 'text-success m-0' : 'text-danger m-0'">{{ message }}</p>
+    }
+    <button class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer" type="submit">
+      Potvrdi rezervaciju
+    </button>
+  </form>
+</div>
+}

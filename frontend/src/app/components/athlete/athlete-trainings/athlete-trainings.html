@@ -5,91 +5,150 @@
     <div class="flex flex-col gap-4 md:flex-row">
       <div class="flex-1">
         <label class="block font-medium mb-2" for="training-facility">Objekat</label>
-        <select id="training-facility" class="w-full border rounded p-2" name="facilityId" [(ngModel)]="facilityId" (change)="facilityChanged()">
+        <select
+          id="training-facility"
+          class="w-full border rounded p-2"
+          name="facilityId"
+          [(ngModel)]="facilityId"
+          (change)="facilityChanged()"
+        >
           <option value="">Izaberite objekat</option>
           @for (facility of facilities; track facility._id) {
-            <option [value]="facility._id">{{ facility.name }} - {{ facility.city }}</option>
+          <option [value]="facility._id">{{ facility.name }} - {{ facility.city }}</option>
           }
         </select>
       </div>
       <div class="flex-1">
         <label class="block font-medium mb-2" for="training-sport">Sport</label>
-        <select id="training-sport" class="w-full border rounded p-2" name="sport" [(ngModel)]="sport" (change)="sportChanged()">
+        <select
+          id="training-sport"
+          class="w-full border rounded p-2"
+          name="sport"
+          [(ngModel)]="sport"
+          (change)="sportChanged()"
+        >
           <option value="">Izaberite sport</option>
           @for (item of sports; track item) {
-            <option [value]="item">{{ item }}</option>
+          <option [value]="item">{{ item }}</option>
           }
         </select>
       </div>
     </div>
 
-    <button class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer mt-4" type="button" (click)="searchTrainers()">Pretrazi trenere</button>
+    <button
+      class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer mt-4"
+      type="button"
+      (click)="searchTrainers()"
+    >
+      Pretrazi trenere
+    </button>
 
     @if (message) {
-      <p [class]="success ? 'text-success mt-4' : 'text-danger mt-4'">{{ message }}</p>
+    <p [class]="success ? 'text-success mt-4' : 'text-danger mt-4'">{{ message }}</p>
     }
   </section>
 
   @if (trainers.length > 0) {
-    <section class="bg-surface border rounded-lg shadow p-6">
-      <h2 class="text-2xl mt-2 mb-6">Treneri</h2>
-      <div class="flex flex-wrap gap-4">
-        @for (trainer of trainers; track trainer._id) {
-          <article class="border rounded p-4 flex-1">
-            <h3 class="text-xl mt-2 mb-2">{{ trainer.firstName }} {{ trainer.lastName }}</h3>
-            <p>{{ trainer.specialization }}</p>
-            <p>Ocena: {{ trainer.averageRating }} | Cena: {{ trainer.pricePerHour }} RSD po satu</p>
-            <button class="bg-primary text-white border-0 rounded px-3 py-2 cursor-pointer" type="button" (click)="selectTrainer(trainer)">Izaberi trenera</button>
-          </article>
-        }
-      </div>
-    </section>
-  }
-
-  @if (trainerId) {
-    <section class="bg-surface border rounded-lg shadow p-6">
-      <h2 class="text-2xl mt-2 mb-6">Zakazi trening</h2>
-      <form class="flex flex-col gap-4" (ngSubmit)="scheduleTraining()">
-        <div class="flex flex-col gap-4 md:flex-row">
-          <div class="flex-1">
-            <label class="block font-medium mb-2" for="training-resource">Teren ili hala</label>
-            <select id="training-resource" class="w-full border rounded p-2" name="resourceId" [(ngModel)]="resourceId">
-              <option value="">Izaberite resurs</option>
-              @for (resource of resources; track resource._id) {
-                <option [value]="resource._id">{{ resource.name }}</option>
-              }
-            </select>
-          </div>
-          <div class="flex-1">
-            <label class="block font-medium mb-2" for="training-date">Datum</label>
-            <input id="training-date" class="w-full border rounded p-2" name="date" type="date" [(ngModel)]="date" />
-          </div>
-          <div class="flex-1">
-            <label class="block font-medium mb-2" for="training-start">Pocetak</label>
-            <input id="training-start" class="w-full border rounded p-2" name="startTime" type="time" step="3600" [(ngModel)]="startTime" />
-          </div>
-          <div class="flex-1">
-            <label class="block font-medium mb-2" for="training-end">Kraj</label>
-            <input id="training-end" class="w-full border rounded p-2" name="endTime" type="time" step="3600" [(ngModel)]="endTime" />
-          </div>
-        </div>
-        <p class="font-semibold m-0">Ocekivana cena: {{ getExpectedPrice() }} RSD</p>
-        <button class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer" type="submit">Zakazi trening</button>
-      </form>
-
-      <h3 class="text-xl mt-6 mb-4">Zauzeti termini trenera</h3>
-      <div class="overflow-x-auto">
-        <table class="w-full border-collapse">
-          <thead><tr class="border-b text-left"><th class="p-2">Pocetak</th><th class="p-2">Kraj</th></tr></thead>
-          <tbody>
-            @for (training of trainerSchedule; track training._id) {
-              <tr class="border-b"><td class="p-2">{{ formatDateTime(training.startDateTime) }}</td><td class="p-2">{{ formatDateTime(training.endDateTime) }}</td></tr>
-            } @empty {
-              <tr><td class="p-3 text-center" colspan="2">Trener nema zauzete termine.</td></tr>
+  <section class="bg-surface border rounded-lg shadow p-6">
+    <h2 class="text-2xl mt-2 mb-6">Treneri</h2>
+    <div class="flex flex-wrap gap-4">
+      @for (trainer of trainers; track trainer._id) {
+      <article class="border rounded p-4 flex-1">
+        <h3 class="text-xl mt-2 mb-2">{{ trainer.firstName }} {{ trainer.lastName }}</h3>
+        <p>{{ trainer.specialization }}</p>
+        <p>Ocena: {{ trainer.averageRating }} | Cena: {{ trainer.pricePerHour }} RSD po satu</p>
+        <button
+          class="bg-primary text-white border-0 rounded px-3 py-2 cursor-pointer"
+          type="button"
+          (click)="selectTrainer(trainer)"
+        >
+          Izaberi trenera
+        </button>
+      </article>
+      }
+    </div>
+  </section>
+  } @if (trainerId) {
+  <section class="bg-surface border rounded-lg shadow p-6">
+    <h2 class="text-2xl mt-2 mb-6">Zakazi trening</h2>
+    <form class="flex flex-col gap-4" (ngSubmit)="scheduleTraining()">
+      <div class="flex flex-col gap-4 md:flex-row">
+        <div class="flex-1">
+          <label class="block font-medium mb-2" for="training-resource">Teren ili hala</label>
+          <select
+            id="training-resource"
+            class="w-full border rounded p-2"
+            name="resourceId"
+            [(ngModel)]="resourceId"
+          >
+            <option value="">Izaberite resurs</option>
+            @for (resource of resources; track resource._id) {
+            <option [value]="resource._id">{{ resource.name }}</option>
             }
-          </tbody>
-        </table>
+          </select>
+        </div>
+        <div class="flex-1">
+          <label class="block font-medium mb-2" for="training-date">Datum</label>
+          <input
+            id="training-date"
+            class="w-full border rounded p-2"
+            name="date"
+            type="date"
+            [(ngModel)]="date"
+          />
+        </div>
+        <div class="flex-1">
+          <label class="block font-medium mb-2" for="training-start">Pocetak</label>
+          <input
+            id="training-start"
+            class="w-full border rounded p-2"
+            name="startTime"
+            type="time"
+            step="3600"
+            [(ngModel)]="startTime"
+          />
+        </div>
+        <div class="flex-1">
+          <label class="block font-medium mb-2" for="training-end">Kraj</label>
+          <input
+            id="training-end"
+            class="w-full border rounded p-2"
+            name="endTime"
+            type="time"
+            step="3600"
+            [(ngModel)]="endTime"
+          />
+        </div>
       </div>
-    </section>
+      <p class="font-semibold m-0">Ocekivana cena: {{ getExpectedPrice() }} RSD</p>
+      <button class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer" type="submit">
+        Zakazi trening
+      </button>
+    </form>
+
+    <h3 class="text-xl mt-6 mb-4">Zauzeti termini trenera</h3>
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse">
+        <thead>
+          <tr class="border-b text-left">
+            <th class="p-2">Pocetak</th>
+            <th class="p-2">Kraj</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (training of trainerSchedule; track training._id) {
+          <tr class="border-b">
+            <td class="p-2">{{ formatDateTime(training.startDateTime) }}</td>
+            <td class="p-2">{{ formatDateTime(training.endDateTime) }}</td>
+          </tr>
+          } @empty {
+          <tr>
+            <td class="p-3 text-center" colspan="2">Trener nema zauzete termine.</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
   }
 </div>

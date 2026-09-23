@@ -5,18 +5,35 @@
     <div class="flex flex-col gap-4 md:flex-row">
       <div class="flex-1">
         <label class="block font-medium mb-2" for="athlete-search-name">Naziv</label>
-        <input id="athlete-search-name" class="w-full border rounded p-2" name="searchName" [(ngModel)]="searchName" />
+        <input
+          id="athlete-search-name"
+          class="w-full border rounded p-2"
+          name="searchName"
+          [(ngModel)]="searchName"
+        />
       </div>
       <div class="flex-1">
         <label class="block font-medium mb-2" for="athlete-search-sport">Sport</label>
-        <select id="athlete-search-sport" class="w-full border rounded p-2" name="selectedSport" [(ngModel)]="selectedSport">
+        <select
+          id="athlete-search-sport"
+          class="w-full border rounded p-2"
+          name="selectedSport"
+          [(ngModel)]="selectedSport"
+        >
           <option value="">Svi sportovi</option>
-          @for (sport of sports; track sport.name) {<option [value]="sport.name">{{ sport.name }}</option>}
+          @for (sport of sports; track sport.name) {
+          <option [value]="sport.name">{{ sport.name }}</option>
+          }
         </select>
       </div>
       <div class="flex-1">
         <label class="block font-medium mb-2" for="athlete-resource-type">Tip terena</label>
-        <select id="athlete-resource-type" class="w-full border rounded p-2" name="resourceType" [(ngModel)]="resourceType">
+        <select
+          id="athlete-resource-type"
+          class="w-full border rounded p-2"
+          name="resourceType"
+          [(ngModel)]="resourceType"
+        >
           <option value="">Svi tipovi</option>
           <option value="outdoor">Otvoreni teren</option>
           <option value="indoor">Zatvoreni teren ili hala</option>
@@ -26,9 +43,20 @@
 
     <div>
       <label class="block font-medium mb-2" for="athlete-search-cities">Gradovi</label>
-      <p class="text-sm text-muted mt-2 mb-2">Za izbor vise gradova drzite Cmd na Mac-u ili Ctrl na Windows-u i Linux-u.</p>
-      <select id="athlete-search-cities" class="w-full border rounded p-2" name="selectedCities" multiple size="4" [(ngModel)]="selectedCities">
-        @for (city of cities; track city) {<option [value]="city">{{ city }}</option>}
+      <p class="text-sm text-muted mt-2 mb-2">
+        Za izbor vise gradova drzite Cmd na Mac-u ili Ctrl na Windows-u i Linux-u.
+      </p>
+      <select
+        id="athlete-search-cities"
+        class="w-full border rounded p-2"
+        name="selectedCities"
+        multiple
+        size="4"
+        [(ngModel)]="selectedCities"
+      >
+        @for (city of cities; track city) {
+        <option [value]="city">{{ city }}</option>
+        }
       </select>
     </div>
 
@@ -37,21 +65,47 @@
       Samo objekti sa slobodnim terminom danas
     </label>
 
-    <button class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer" type="submit">Pretrazi</button>
+    <button class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer" type="submit">
+      Pretrazi
+    </button>
   </form>
 
-  @if (message) {<p class="text-danger mt-4">{{ message }}</p>}
+  @if (message) {
+  <p class="text-danger mt-4">{{ message }}</p>
+  }
 
   <div class="overflow-x-auto mt-6">
     <table class="w-full border-collapse">
-      <thead><tr class="border-b text-left"><th class="p-2 cursor-pointer" (click)="sortBy('name')">Naziv</th><th class="p-2 cursor-pointer" (click)="sortBy('city')">Grad</th><th class="p-2">Adresa</th><th class="p-2 cursor-pointer" (click)="sortBy('sport')">Sportovi</th><th class="p-2">Akcija</th></tr></thead>
+      <thead>
+        <tr class="border-b text-left">
+          <th class="p-2 cursor-pointer" (click)="sortBy('name')">Naziv</th>
+          <th class="p-2 cursor-pointer" (click)="sortBy('city')">Grad</th>
+          <th class="p-2">Adresa</th>
+          <th class="p-2 cursor-pointer" (click)="sortBy('sport')">Sportovi</th>
+          <th class="p-2">Akcija</th>
+        </tr>
+      </thead>
       <tbody>
         @for (facility of facilities; track facility._id) {
-          <tr class="border-b">
-            <td class="p-2">{{ facility.name }}</td><td class="p-2">{{ facility.city }}</td><td class="p-2">{{ facility.address }}</td><td class="p-2">{{ getSports(facility) }}</td>
-            <td class="p-2"><a class="text-primary" [routerLink]="['/facilities', facility._id]" [queryParams]="{ resourceType: resourceType, sport: selectedSport }">Detalji i rezervacija</a></td>
-          </tr>
-        } @empty {<tr><td class="p-4 text-center" colspan="5">Nema rezultata pretrage.</td></tr>}
+        <tr class="border-b">
+          <td class="p-2">{{ facility.name }}</td>
+          <td class="p-2">{{ facility.city }}</td>
+          <td class="p-2">{{ facility.address }}</td>
+          <td class="p-2">{{ getSports(facility) }}</td>
+          <td class="p-2">
+            <a
+              class="text-primary"
+              [routerLink]="['/facilities', facility._id]"
+              [queryParams]="{ resourceType: resourceType, sport: selectedSport }"
+              >Detalji i rezervacija</a
+            >
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td class="p-4 text-center" colspan="5">Nema rezultata pretrage.</td>
+        </tr>
+        }
       </tbody>
     </table>
   </div>

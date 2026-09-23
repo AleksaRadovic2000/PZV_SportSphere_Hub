@@ -3,122 +3,29 @@
     <h1 class="text-2xl mt-2 mb-6">Katalog i porudzbine</h1>
     <div class="max-w-md">
       <label class="block font-medium mb-2" for="catalog-facility">Sportski objekat</label>
-      <select id="catalog-facility" class="w-full border rounded p-2" name="facilityId" [(ngModel)]="facilityId" (change)="facilityChanged()">
+      <select
+        id="catalog-facility"
+        class="w-full border rounded p-2"
+        name="facilityId"
+        [(ngModel)]="facilityId"
+      >
         @for (facility of facilities; track facility._id) {
-          <option [value]="facility._id">{{ facility.name }} - {{ facility.city }}</option>
+        <option [value]="facility._id">{{ facility.name }} - {{ facility.city }}</option>
         }
       </select>
     </div>
-
     @if (message) {
-      <p [class]="success ? 'text-success mt-4' : 'text-danger mt-4'">{{ message }}</p>
+    <p class="text-danger mt-4">{{ message }}</p>
     }
   </section>
 
-  <section class="bg-surface border rounded-lg shadow p-6">
-    <h2 class="text-2xl mt-2 mb-6">Promocije</h2>
-    <form class="flex flex-col gap-4" (ngSubmit)="addPromotion()">
-      <div class="flex flex-col gap-4 md:flex-row">
-        <div class="flex-1"><label class="block font-medium mb-2" for="promotion-name">Naziv</label><input id="promotion-name" class="w-full border rounded p-2" name="promotionName" [(ngModel)]="newPromotion.name" /></div>
-        <div class="flex-1"><label class="block font-medium mb-2" for="promotion-sport">Sport</label><select id="promotion-sport" class="w-full border rounded p-2" name="promotionSport" [(ngModel)]="newPromotion.sport"><option value="">Izaberite sport</option>@for (sport of sports; track sport.name) {<option [value]="sport.name">{{ sport.name }}</option>}</select></div>
-        <div class="flex-1"><label class="block font-medium mb-2" for="promotion-start">Pocetak</label><input id="promotion-start" class="w-full border rounded p-2" name="promotionStart" type="date" [(ngModel)]="newPromotion.startDate" /></div>
-        <div class="flex-1"><label class="block font-medium mb-2" for="promotion-end">Kraj</label><input id="promotion-end" class="w-full border rounded p-2" name="promotionEnd" type="date" [(ngModel)]="newPromotion.endDate" /></div>
-      </div>
-      <div class="flex flex-col gap-4 md:flex-row">
-        <div class="flex-1"><label class="block font-medium mb-2" for="discount-type">Tip popusta</label><select id="discount-type" class="w-full border rounded p-2" name="discountType" [(ngModel)]="newPromotion.discountType"><option value="percentage">Procenat</option><option value="fixed">Fiksni iznos</option></select></div>
-        <div class="flex-1"><label class="block font-medium mb-2" for="discount-value">Vrednost</label><input id="discount-value" class="w-full border rounded p-2" name="discountValue" type="number" min="1" [(ngModel)]="newPromotion.discountValue" /></div>
-      </div>
-      <button class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer" type="submit">Dodaj promociju</button>
-    </form>
-
-    @if (selectedFacility; as facility) {
-      <div class="flex flex-col gap-4 mt-6">
-        @for (promotion of facility.promotions; track promotion._id) {
-          <article class="border rounded p-4">
-            @if (editingPromotionId === promotion._id) {
-              <div class="flex flex-col gap-3">
-                <input class="border rounded p-2" [(ngModel)]="editPromotion.name" />
-                <select class="border rounded p-2" [(ngModel)]="editPromotion.sport">@for (sport of sports; track sport.name) {<option [value]="sport.name">{{ sport.name }}</option>}</select>
-                <div class="flex flex-col gap-3 sm:flex-row"><input class="border rounded p-2 flex-1" type="date" [(ngModel)]="editPromotion.startDate" /><input class="border rounded p-2 flex-1" type="date" [(ngModel)]="editPromotion.endDate" /></div>
-                <div class="flex flex-col gap-3 sm:flex-row"><select class="border rounded p-2 flex-1" [(ngModel)]="editPromotion.discountType"><option value="percentage">Procenat</option><option value="fixed">Fiksni iznos</option></select><input class="border rounded p-2 flex-1" type="number" min="1" [(ngModel)]="editPromotion.discountValue" /></div>
-                <div class="flex gap-2"><button class="bg-success text-white border-0 rounded px-3 py-2 cursor-pointer" type="button" (click)="updatePromotion()">Sacuvaj</button><button class="border rounded px-3 py-2 cursor-pointer" type="button" (click)="editingPromotionId = ''">Odustani</button></div>
-              </div>
-            } @else {
-              <div class="flex flex-col gap-3 sm:flex-row sm:items-center justify-between"><div><strong>{{ promotion.name }}</strong><p class="text-muted mb-0">{{ promotion.sport }} | {{ promotion.startDate.slice(0, 10) }} - {{ promotion.endDate.slice(0, 10) }} | {{ promotion.discountValue }} {{ promotion.discountType === 'percentage' ? '%' : 'RSD' }}</p></div><button class="bg-primary text-white border-0 rounded px-3 py-2 cursor-pointer" type="button" (click)="startPromotionEdit(promotion)">Izmeni</button></div>
-            }
-          </article>
-        } @empty {<p class="text-muted">Objekat nema promocije.</p>}
-      </div>
-    }
-  </section>
-
-  <section class="bg-surface border rounded-lg shadow p-6">
-    <h2 class="text-2xl mt-2 mb-6">Dodaj proizvod</h2>
-    <form class="flex flex-col gap-4" (ngSubmit)="addProduct()">
-      <div class="flex flex-col gap-4 md:flex-row">
-        <div class="flex-1"><label class="block font-medium mb-2" for="product-name">Naziv</label><input id="product-name" class="w-full border rounded p-2" name="name" [(ngModel)]="newProduct.name" /></div>
-        <div class="flex-1"><label class="block font-medium mb-2" for="product-sport">Sport</label><select id="product-sport" class="w-full border rounded p-2" name="sport" [(ngModel)]="newProduct.sport"><option value="">Izaberite sport</option>@for (sport of sports; track sport.name) {<option [value]="sport.name">{{ sport.name }}</option>}</select></div>
-        <div class="flex-1"><label class="block font-medium mb-2" for="product-price">Cena</label><input id="product-price" class="w-full border rounded p-2" name="price" type="number" min="1" [(ngModel)]="newProduct.price" /></div>
-        <div class="flex-1"><label class="block font-medium mb-2" for="product-stock">Stanje</label><input id="product-stock" class="w-full border rounded p-2" name="stock" type="number" min="0" [(ngModel)]="newProduct.stock" /></div>
-      </div>
-      <div><label class="block font-medium mb-2" for="product-image">Slika</label><input id="product-image" class="w-full border rounded p-2" type="file" accept="image/png,image/jpeg" (change)="selectNewImage($event)" /></div>
-      <button class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer" type="submit">Dodaj proizvod</button>
-    </form>
-  </section>
-
-  <section class="bg-surface border rounded-lg shadow p-6">
-    <h2 class="text-2xl mt-2 mb-6">Proizvodi objekta</h2>
-    <div class="overflow-x-auto">
-      <table class="w-full border-collapse">
-        <thead><tr class="border-b text-left"><th class="p-2">Slika</th><th class="p-2">Naziv</th><th class="p-2">Sport</th><th class="p-2">Cena</th><th class="p-2">Stanje</th><th class="p-2">Aktivan</th><th class="p-2">Akcija</th></tr></thead>
-        <tbody>
-          @for (product of products; track product._id) {
-            <tr class="border-b">
-              <td class="p-2">@if (product.image) {<img class="border rounded" width="80" height="60" [src]="getImageUrl(product.image)" [alt]="product.name" />}</td>
-              <td class="p-2">{{ product.name }}</td>
-              <td class="p-2">{{ product.sport }}</td>
-              @if (editingProductId === product._id) {
-                <td class="p-2"><input class="border rounded p-2" type="number" min="1" [(ngModel)]="editPrice" /></td>
-                <td class="p-2"><input class="border rounded p-2" type="number" min="0" [(ngModel)]="editStock" /></td>
-                <td class="p-2"><input type="checkbox" [(ngModel)]="editActive" /></td>
-                <td class="p-2"><div class="flex flex-col gap-2"><input type="file" accept="image/png,image/jpeg" (change)="selectEditImage($event)" /><div class="flex gap-2"><button class="bg-success text-white border-0 rounded px-3 py-2 cursor-pointer" type="button" (click)="updateProduct(product)">Sacuvaj</button><button class="border rounded px-3 py-2 cursor-pointer" type="button" (click)="cancelEdit()">Odustani</button></div></div></td>
-              } @else {
-                <td class="p-2">{{ product.price }} RSD</td>
-                <td class="p-2">{{ product.stock }}</td>
-                <td class="p-2">{{ product.active ? 'da' : 'ne' }}</td>
-                <td class="p-2"><button class="bg-primary text-white border-0 rounded px-3 py-2 cursor-pointer" type="button" (click)="startEdit(product)">Izmeni</button></td>
-              }
-            </tr>
-          } @empty {
-            <tr><td class="p-4 text-center" colspan="7">Objekat nema proizvode.</td></tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <section class="bg-surface border rounded-lg shadow p-6">
-    <h2 class="text-2xl mt-2 mb-6">Porudzbine objekta</h2>
-    <div class="flex flex-col gap-4">
-      @for (order of orders; track order._id) {
-        <article class="border rounded p-4">
-          <div class="flex flex-col gap-3 sm:flex-row sm:items-center justify-between">
-            <div><h3 class="text-xl mt-2 mb-2">{{ order.athleteUsername }} - {{ order.totalPrice }} RSD</h3><p class="text-muted m-0">{{ formatDateTime(order.createdAt) }} | Status: {{ label(order.status) }}</p></div>
-            <div class="flex flex-wrap gap-2">
-              @if (order.status === 'ordered') {
-                <button class="bg-success text-white border-0 rounded px-3 py-2 cursor-pointer" type="button" (click)="updateOrderStatus(order, 'accepted')">Prihvati</button>
-                <button class="bg-danger text-white border-0 rounded px-3 py-2 cursor-pointer" type="button" (click)="updateOrderStatus(order, 'cancelled')">Otkazi</button>
-              } @else if (order.status === 'accepted') {
-                <button class="bg-success text-white border-0 rounded px-3 py-2 cursor-pointer" type="button" (click)="updateOrderStatus(order, 'collected')">Oznaci kao preuzeto</button>
-                <button class="bg-danger text-white border-0 rounded px-3 py-2 cursor-pointer" type="button" (click)="updateOrderStatus(order, 'cancelled')">Otkazi</button>
-              }
-            </div>
-          </div>
-          <ul class="mb-0">@for (item of order.items; track item._id) {<li>{{ item.productName }} - {{ item.quantity }} x {{ item.unitPrice }} RSD</li>}</ul>
-        </article>
-      } @empty {
-        <p class="text-muted">Objekat nema porudzbine.</p>
-      }
-    </div>
-  </section>
+  @if (selectedFacility; as facility) {
+  <app-employee-promotions [facility]="facility" [sports]="sports" />
+  <app-employee-products
+    [facilityId]="facility._id"
+    [sports]="sports"
+    [refreshToken]="productsRefresh"
+  />
+  <app-employee-orders [facilityId]="facility._id" (productsChanged)="refreshProducts()" />
+  }
 </div>

@@ -1,0 +1,26 @@
+@if (preview) {
+<div class="flex justify-center mb-4">
+  <img
+    class="border rounded-full p-2"
+    width="160"
+    height="160"
+    [src]="preview"
+    alt="Profilna slika"
+  />
+</div>
+}
+
+<div>
+  <label class="block font-medium mb-2" for="profile-image-selector">{{ label }}</label>
+  <input
+    id="profile-image-selector"
+    class="w-full border rounded p-2"
+    type="file"
+    accept="image/png,image/jpeg"
+    (change)="selectImage($event)"
+  />
+</div>
+
+@if (message) {
+<p class="text-danger m-0">{{ message }}</p>
+}

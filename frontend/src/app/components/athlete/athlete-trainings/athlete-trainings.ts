@@ -5,6 +5,7 @@ import { Trainer, Training } from '../../../models/training';
 import { FacilityService } from '../../../services/facility';
 import { TrainingService } from '../../../services/training';
 import { UserService } from '../../../services/user';
+import { formatDateTime } from '../../../shared/date-utils';
 
 @Component({
   selector: 'app-athlete-trainings',
@@ -12,6 +13,7 @@ import { UserService } from '../../../services/user';
   templateUrl: './athlete-trainings.html',
 })
 export class AthleteTrainings implements OnInit {
+  formatDateTime = formatDateTime;
   private facilityService = inject(FacilityService);
   private trainingService = inject(TrainingService);
   private userService = inject(UserService);
@@ -63,7 +65,7 @@ export class AthleteTrainings implements OnInit {
     const facility = this.getSelectedFacility();
     this.resources =
       facility?.resources.filter((resource) =>
-        resource.sportPrices.some((price) => price.sport === this.sport),
+        resource.sportPrices.some((price) => price.sport === this.sport)
       ) || [];
     this.resourceId = '';
     this.trainers = [];
@@ -159,7 +161,7 @@ export class AthleteTrainings implements OnInit {
         this.resourceId,
         this.sport,
         startDateTime,
-        endDateTime,
+        endDateTime
       )
       .subscribe({
         next: (response) => {
@@ -187,10 +189,6 @@ export class AthleteTrainings implements OnInit {
     const end = new Date(`${this.date}T${this.endTime}:00`);
     const duration = (end.getTime() - start.getTime()) / (60 * 60 * 1000);
     return duration > 0 ? duration * trainer.pricePerHour : 0;
-  }
-
-  formatDateTime(value: string) {
-    return new Date(value).toLocaleString('sr-Latn-RS');
   }
 
   private getSelectedFacility() {

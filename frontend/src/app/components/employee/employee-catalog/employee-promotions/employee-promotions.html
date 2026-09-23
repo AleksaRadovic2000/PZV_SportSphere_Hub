@@ -1,0 +1,132 @@
+<section class="bg-surface border rounded-lg shadow p-6">
+  <h2 class="text-2xl mt-2 mb-6">Promocije</h2>
+  <form class="flex flex-col gap-4" (ngSubmit)="addPromotion()">
+    <div class="flex flex-col gap-4 md:flex-row">
+      <input
+        class="flex-1 border rounded p-2"
+        name="promotionName"
+        placeholder="Naziv"
+        [(ngModel)]="newPromotion.name"
+      />
+      <select
+        class="flex-1 border rounded p-2"
+        name="promotionSport"
+        [(ngModel)]="newPromotion.sport"
+      >
+        <option value="">Izaberite sport</option>
+        @for (sport of sports; track sport.name) {
+        <option [value]="sport.name">{{ sport.name }}</option>
+        }
+      </select>
+      <input
+        class="flex-1 border rounded p-2"
+        name="promotionStart"
+        type="date"
+        [(ngModel)]="newPromotion.startDate"
+      />
+      <input
+        class="flex-1 border rounded p-2"
+        name="promotionEnd"
+        type="date"
+        [(ngModel)]="newPromotion.endDate"
+      />
+    </div>
+    <div class="flex flex-col gap-4 md:flex-row">
+      <select
+        class="flex-1 border rounded p-2"
+        name="discountType"
+        [(ngModel)]="newPromotion.discountType"
+      >
+        <option value="percentage">Procenat</option>
+        <option value="fixed">Fiksni iznos</option>
+      </select>
+      <input
+        class="flex-1 border rounded p-2"
+        name="discountValue"
+        type="number"
+        min="1"
+        placeholder="Vrednost"
+        [(ngModel)]="newPromotion.discountValue"
+      />
+    </div>
+    <button class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer" type="submit">
+      Dodaj promociju
+    </button>
+  </form>
+  @if (message) {
+  <p [class]="success ? 'text-success' : 'text-danger'">{{ message }}</p>
+  }
+  <div class="flex flex-col gap-4 mt-6">
+    @for (promotion of facility.promotions; track promotion._id) {
+    <article class="border rounded p-4">
+      @if (editingPromotionId === promotion._id) {
+      <div class="flex flex-col gap-3">
+        <input class="border rounded p-2" [(ngModel)]="editPromotion.name" />
+        <select class="border rounded p-2" [(ngModel)]="editPromotion.sport">
+          @for (sport of sports; track sport.name) {
+          <option [value]="sport.name">{{ sport.name }}</option>
+          }
+        </select>
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <input
+            class="border rounded p-2 flex-1"
+            type="date"
+            [(ngModel)]="editPromotion.startDate"
+          /><input
+            class="border rounded p-2 flex-1"
+            type="date"
+            [(ngModel)]="editPromotion.endDate"
+          />
+        </div>
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <select class="border rounded p-2 flex-1" [(ngModel)]="editPromotion.discountType">
+            <option value="percentage">Procenat</option>
+            <option value="fixed">Fiksni iznos</option></select
+          ><input
+            class="border rounded p-2 flex-1"
+            type="number"
+            min="1"
+            [(ngModel)]="editPromotion.discountValue"
+          />
+        </div>
+        <div class="flex gap-2">
+          <button
+            class="bg-success text-white border-0 rounded px-3 py-2 cursor-pointer"
+            type="button"
+            (click)="updatePromotion()"
+          >
+            Sacuvaj</button
+          ><button
+            class="border rounded px-3 py-2 cursor-pointer"
+            type="button"
+            (click)="editingPromotionId = ''"
+          >
+            Odustani
+          </button>
+        </div>
+      </div>
+      } @else {
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center justify-between">
+        <div>
+          <strong>{{ promotion.name }}</strong>
+          <p class="text-muted mb-0">
+            {{ promotion.sport }} | {{ promotion.startDate.slice(0, 10) }} -
+            {{ promotion.endDate.slice(0, 10) }} | {{ promotion.discountValue }}
+            {{ promotion.discountType === 'percentage' ? '%' : 'RSD' }}
+          </p>
+        </div>
+        <button
+          class="bg-primary text-white border-0 rounded px-3 py-2 cursor-pointer"
+          type="button"
+          (click)="startEdit(promotion)"
+        >
+          Izmeni
+        </button>
+      </div>
+      }
+    </article>
+    } @empty {
+    <p class="text-muted">Objekat nema promocije.</p>
+    }
+  </div>
+</section>

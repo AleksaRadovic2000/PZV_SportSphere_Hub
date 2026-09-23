@@ -22,7 +22,7 @@ export class TeammateAdService {
     city: string,
     startDateTime: Date,
     endDateTime: Date,
-    playersNeeded: number,
+    playersNeeded: number
   ) {
     return this.http.post<TeammateAdResponse>(`${this.uri}/create`, {
       authorUsername,

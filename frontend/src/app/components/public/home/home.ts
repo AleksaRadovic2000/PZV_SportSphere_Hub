@@ -6,6 +6,7 @@ import { Sport } from '../../../models/sport';
 import { FacilityService } from '../../../services/facility';
 import { SportService } from '../../../services/sport';
 import { UserService } from '../../../services/user';
+import { getFacilitySports } from '../../../shared/facility-utils';
 
 @Component({
   selector: 'app-home',
@@ -13,6 +14,7 @@ import { UserService } from '../../../services/user';
   templateUrl: './home.html',
 })
 export class Home implements OnInit {
+  getSports = getFacilitySports;
   private userService = inject(UserService);
   private facilityService = inject(FacilityService);
   private sportService = inject(SportService);
@@ -130,16 +132,6 @@ export class Home implements OnInit {
       const secondValue = this.getSortValue(second, column);
       return firstValue.localeCompare(secondValue) * direction;
     });
-  }
-
-  getSports(facility: Facility) {
-    const sports = new Set<string>();
-
-    facility.resources.forEach((resource) => {
-      resource.sportPrices.forEach((price) => sports.add(price.sport));
-    });
-
-    return [...sports].sort().join(', ');
   }
 
   formatPromotionDiscount(promotion: CurrentPromotion) {

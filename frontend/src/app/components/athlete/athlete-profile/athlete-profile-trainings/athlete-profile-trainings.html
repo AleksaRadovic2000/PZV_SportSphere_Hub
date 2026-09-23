@@ -1,0 +1,41 @@
+<section class="bg-surface border rounded-lg shadow p-6 mt-6">
+  <h2 class="text-2xl mt-2 mb-6">Moji individualni treninzi</h2>
+  @if (message) {
+  <p class="text-danger">{{ message }}</p>
+  }
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="border-b text-left">
+          <th class="p-2">Trener</th>
+          <th class="p-2">Objekat</th>
+          <th class="p-2">Teren ili hala</th>
+          <th class="p-2">Sport</th>
+          <th class="p-2">Termin</th>
+          <th class="p-2">Cena</th>
+          <th class="p-2">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (training of trainings; track training._id) {
+        <tr class="border-b">
+          <td class="p-2">{{ training.trainerName }}</td>
+          <td class="p-2">{{ training.facilityName }}</td>
+          <td class="p-2">{{ training.resourceName }}</td>
+          <td class="p-2">{{ training.sport }}</td>
+          <td class="p-2">
+            {{ formatDateTime(training.startDateTime) }} -
+            {{ formatDateTime(training.endDateTime) }}
+          </td>
+          <td class="p-2">{{ training.price }} RSD</td>
+          <td class="p-2">{{ label(training.status) }}</td>
+        </tr>
+        } @empty {
+        <tr>
+          <td class="p-4 text-center" colspan="7">Nemate individualne treninge.</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

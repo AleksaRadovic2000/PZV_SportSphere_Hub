@@ -29,7 +29,7 @@ export class ReservationService {
     resourceId: string,
     sport: string,
     startDateTime: Date,
-    endDateTime: Date,
+    endDateTime: Date
   ) {
     return this.http.post<ReservationResponse>(`${this.uri}/create`, {
       athleteUsername,
@@ -66,12 +66,7 @@ export class ReservationService {
     });
   }
 
-  moveReservation(
-    id: string,
-    employeeUsername: string,
-    startDateTime: Date,
-    endDateTime: Date,
-  ) {
+  moveReservation(id: string, employeeUsername: string, startDateTime: Date, endDateTime: Date) {
     return this.http.post<ReservationResponse>(`${this.uri}/move`, {
       id,
       employeeUsername,

@@ -6,16 +6,31 @@
     <form class="flex flex-col gap-4" (ngSubmit)="login()">
       <div>
         <label class="block font-medium mb-2" for="username">Korisnicko ime</label>
-        <input id="username" class="w-full border rounded p-2" name="username" [(ngModel)]="username" />
+        <input
+          id="username"
+          class="w-full border rounded p-2"
+          name="username"
+          [(ngModel)]="username"
+        />
       </div>
       <div>
         <label class="block font-medium mb-2" for="password">Lozinka</label>
-        <input id="password" class="w-full border rounded p-2" name="password" type="password" [(ngModel)]="password" />
+        <input
+          id="password"
+          class="w-full border rounded p-2"
+          name="password"
+          type="password"
+          [(ngModel)]="password"
+        />
       </div>
       @if (message) {
-        <p class="text-danger m-0">{{ message }}</p>
+      <p class="text-danger m-0">{{ message }}</p>
       }
-      <button class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer" type="submit" [disabled]="loading">
+      <button
+        class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer"
+        type="submit"
+        [disabled]="loading"
+      >
         Prijavi se
       </button>
     </form>
@@ -27,7 +42,7 @@
   </section>
 
   @if (publicMessage) {
-    <p class="text-danger text-center m-0">{{ publicMessage }}</p>
+  <p class="text-danger text-center m-0">{{ publicMessage }}</p>
   }
 
   <section>
@@ -35,13 +50,13 @@
     <p class="text-3xl font-bold text-primary text-center mb-6">{{ publicInfo.activeCount }}</p>
     <div class="flex flex-col gap-4 md:flex-row">
       @for (facility of publicInfo.topFacilities; track facility._id) {
-        <article class="flex-1 bg-surface border rounded-lg shadow p-4">
-          <h3 class="text-lg mt-2 mb-2">{{ facility.name }}</h3>
-          <p class="text-muted">{{ facility.city }}</p>
-          <p class="m-0">Svidjanja: {{ facility.likes }}</p>
-        </article>
+      <article class="flex-1 bg-surface border rounded-lg shadow p-4">
+        <h3 class="text-lg mt-2 mb-2">{{ facility.name }}</h3>
+        <p class="text-muted">{{ facility.city }}</p>
+        <p class="m-0">Svidjanja: {{ facility.likes }}</p>
+      </article>
       } @empty {
-        <p class="text-muted text-center w-full">Nema aktivnih objekata.</p>
+      <p class="text-muted text-center w-full">Nema aktivnih objekata.</p>
       }
     </div>
   </section>
@@ -50,16 +65,16 @@
     <h2 class="text-2xl text-center mt-2 mb-6">Aktuelne promocije</h2>
     <div class="flex flex-col gap-4 md:flex-row">
       @for (promotion of promotions; track promotion._id) {
-        <article class="flex-1 bg-surface border rounded-lg shadow p-4">
-          <h3 class="text-lg mt-2 mb-2">{{ promotion.name }}</h3>
-          <p class="m-0">{{ promotion.facilityName }} - {{ promotion.sport }}</p>
-          <p class="text-primary font-bold mb-2">Popust: {{ formatPromotionDiscount(promotion) }}</p>
-          <p class="text-sm text-muted m-0">
-            {{ promotion.startDate.slice(0, 10) }} - {{ promotion.endDate.slice(0, 10) }}
-          </p>
-        </article>
+      <article class="flex-1 bg-surface border rounded-lg shadow p-4">
+        <h3 class="text-lg mt-2 mb-2">{{ promotion.name }}</h3>
+        <p class="m-0">{{ promotion.facilityName }} - {{ promotion.sport }}</p>
+        <p class="text-primary font-bold mb-2">Popust: {{ formatPromotionDiscount(promotion) }}</p>
+        <p class="text-sm text-muted m-0">
+          {{ promotion.startDate.slice(0, 10) }} - {{ promotion.endDate.slice(0, 10) }}
+        </p>
+      </article>
       } @empty {
-        <p class="text-muted text-center w-full">Trenutno nema aktivnih promocija.</p>
+      <p class="text-muted text-center w-full">Trenutno nema aktivnih promocija.</p>
       }
     </div>
   </section>
@@ -70,20 +85,35 @@
       <div class="flex flex-col gap-4 md:flex-row">
         <div class="flex-1">
           <label class="block font-medium mb-2" for="search-name">Naziv</label>
-          <input id="search-name" class="w-full border rounded p-2" name="searchName" [(ngModel)]="searchName" />
+          <input
+            id="search-name"
+            class="w-full border rounded p-2"
+            name="searchName"
+            [(ngModel)]="searchName"
+          />
         </div>
         <div class="flex-1">
           <label class="block font-medium mb-2" for="search-sport">Sport</label>
-          <select id="search-sport" class="w-full border rounded p-2" name="selectedSport" [(ngModel)]="selectedSport">
+          <select
+            id="search-sport"
+            class="w-full border rounded p-2"
+            name="selectedSport"
+            [(ngModel)]="selectedSport"
+          >
             <option value="">Svi sportovi</option>
             @for (sport of sports; track sport.name) {
-              <option [value]="sport.name">{{ sport.name }}</option>
+            <option [value]="sport.name">{{ sport.name }}</option>
             }
           </select>
         </div>
         <div class="flex-1">
           <label class="block font-medium mb-2" for="resource-type">Tip terena</label>
-          <select id="resource-type" class="w-full border rounded p-2" name="resourceType" [(ngModel)]="resourceType">
+          <select
+            id="resource-type"
+            class="w-full border rounded p-2"
+            name="resourceType"
+            [(ngModel)]="resourceType"
+          >
             <option value="">Svi tipovi</option>
             <option value="outdoor">Otvoreni teren</option>
             <option value="indoor">Zatvoreni teren ili hala</option>
@@ -93,15 +123,26 @@
 
       <div>
         <label class="block font-medium mb-2" for="search-cities">Gradovi</label>
-        <p class="text-sm text-muted mt-2 mb-2">Za izbor vise gradova drzite Cmd na Mac-u ili Ctrl na Windows-u i Linux-u.</p>
-        <select id="search-cities" class="w-full border rounded p-2" name="selectedCities" multiple size="4" [(ngModel)]="selectedCities">
+        <p class="text-sm text-muted mt-2 mb-2">
+          Za izbor vise gradova drzite Cmd na Mac-u ili Ctrl na Windows-u i Linux-u.
+        </p>
+        <select
+          id="search-cities"
+          class="w-full border rounded p-2"
+          name="selectedCities"
+          multiple
+          size="4"
+          [(ngModel)]="selectedCities"
+        >
           @for (city of cities; track city) {
-            <option [value]="city">{{ city }}</option>
+          <option [value]="city">{{ city }}</option>
           }
         </select>
       </div>
 
-      <button class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer" type="submit">Pretrazi</button>
+      <button class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer" type="submit">
+        Pretrazi
+      </button>
     </form>
 
     <div class="overflow-x-auto mt-6">
@@ -117,15 +158,19 @@
         </thead>
         <tbody>
           @for (facility of facilities; track facility._id) {
-            <tr class="border-b">
-              <td class="p-2">{{ facility.name }}</td>
-              <td class="p-2">{{ facility.city }}</td>
-              <td class="p-2">{{ facility.address }}</td>
-              <td class="p-2">{{ getSports(facility) }}</td>
-              <td class="p-2"><a class="text-primary" [routerLink]="['/facilities', facility._id]">Detalji</a></td>
-            </tr>
+          <tr class="border-b">
+            <td class="p-2">{{ facility.name }}</td>
+            <td class="p-2">{{ facility.city }}</td>
+            <td class="p-2">{{ facility.address }}</td>
+            <td class="p-2">{{ getSports(facility) }}</td>
+            <td class="p-2">
+              <a class="text-primary" [routerLink]="['/facilities', facility._id]">Detalji</a>
+            </td>
+          </tr>
           } @empty {
-            <tr><td class="p-4 text-center" colspan="5">Nema rezultata pretrage.</td></tr>
+          <tr>
+            <td class="p-4 text-center" colspan="5">Nema rezultata pretrage.</td>
+          </tr>
           }
         </tbody>
       </table>

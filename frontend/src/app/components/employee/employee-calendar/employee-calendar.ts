@@ -107,7 +107,7 @@ export class EmployeeCalendar implements OnInit {
     slotStart.setHours(hour, 0, 0, 0);
     const slotEnd = new Date(slotStart.getTime() + 60 * 60 * 1000);
     return this.schedule.filter(
-      (item) => new Date(item.startDateTime) < slotEnd && new Date(item.endDateTime) > slotStart,
+      (item) => new Date(item.startDateTime) < slotEnd && new Date(item.endDateTime) > slotStart
     );
   }
 
@@ -123,7 +123,7 @@ export class EmployeeCalendar implements OnInit {
   }
 
   allowDrop(event: DragEvent, day: Date, hour: number) {
-    if (this.draggedItem && !this.isUnavailable(day, hour) && this.getSlotItems(day, hour).length === 0) {
+    if (this.draggedItem && this.canDropItem(this.draggedItem, day, hour)) {
       event.preventDefault();
     }
   }
@@ -134,7 +134,7 @@ export class EmployeeCalendar implements OnInit {
     const item = this.draggedItem;
     this.draggedItem = null;
 
-    if (!user || !item || this.isUnavailable(day, hour) || this.getSlotItems(day, hour).length > 0) {
+    if (!user || !item || !this.canDropItem(item, day, hour)) {
       return;
     }
 
@@ -161,20 +161,62 @@ export class EmployeeCalendar implements OnInit {
       return;
     }
 
-    this.reservationService
-      .moveReservation(item._id, user.username, newStart, newEnd)
-      .subscribe({
-        next: (response) => {
-          this.message = response.message;
-          this.success = true;
-          this.loadSchedule();
-        },
-        error: (error) => {
-          this.message = error.error?.message || 'Pomeranje rezervacije nije uspelo.';
-          this.success = false;
-          this.loadSchedule();
-        },
-      });
+    this.reservationService.moveReservation(item._id, user.username, newStart, newEnd).subscribe({
+      next: (response) => {
+        this.message = response.message;
+        this.success = true;
+        this.loadSchedule();
+      },
+      error: (error) => {
+        this.message = error.error?.message || 'Pomeranje rezervacije nije uspelo.';
+        this.success = false;
+        this.loadSchedule();
+      },
+    });
+  }
+
+  private canDropItem(item: Reservation, day: Date, hour: number) {
+    const facility = this.selectedFacility;
+
+    if (!facility) {
+      return false;
+    }
+
+    const oldStart = new Date(item.startDateTime);
+    const oldEnd = new Date(item.endDateTime);
+    const duration = oldEnd.getTime() - oldStart.getTime();
+    const newStart = new Date(day);
+    newStart.setHours(hour, 0, 0, 0);
+    const newEnd = new Date(newStart.getTime() + duration);
+
+    if (duration <= 0 || newStart <= new Date()) {
+      return false;
+    }
+
+    const javascriptDay = day.getDay();
+    const dayNumber = javascriptDay === 0 ? 7 : javascriptDay;
+    const workingHours = facility.workingHours.find((item) => item.day === dayNumber);
+
+    if (!workingHours) {
+      return false;
+    }
+
+    const startMinutes = hour * 60;
+    const endMinutes = startMinutes + duration / (60 * 1000);
+
+    if (
+      startMinutes < this.timeToMinutes(workingHours.from) ||
+      endMinutes > this.timeToMinutes(workingHours.to)
+    ) {
+      return false;
+    }
+
+    return !this.schedule.some(
+      (scheduledItem) =>
+        scheduledItem._id !== item._id &&
+        new Date(scheduledItem.startDateTime) < newEnd &&
+        new Date(scheduledItem.endDateTime) > newStart
+    );
   }
 
   isUnavailable(day: Date, hour: number) {
@@ -216,7 +258,9 @@ export class EmployeeCalendar implements OnInit {
 
   getCalendarDayName(day: Date) {
     const names = ['Ned', 'Pon', 'Uto', 'Sre', 'Cet', 'Pet', 'Sub'];
-    return `${names[day.getDay()]} ${String(day.getDate()).padStart(2, '0')}.${String(day.getMonth() + 1).padStart(2, '0')}.`;
+    return `${names[day.getDay()]} ${String(day.getDate()).padStart(2, '0')}.${String(
+      day.getMonth() + 1
+    ).padStart(2, '0')}.`;
   }
 
   private updateCalendarDays() {
@@ -237,8 +281,12 @@ export class EmployeeCalendar implements OnInit {
       return;
     }
 
-    const firstHour = Math.floor(Math.min(...workingHours.map((item) => this.timeToMinutes(item.from))) / 60);
-    const lastHour = Math.ceil(Math.max(...workingHours.map((item) => this.timeToMinutes(item.to))) / 60);
+    const firstHour = Math.floor(
+      Math.min(...workingHours.map((item) => this.timeToMinutes(item.from))) / 60
+    );
+    const lastHour = Math.ceil(
+      Math.max(...workingHours.map((item) => this.timeToMinutes(item.to))) / 60
+    );
     this.calendarHours = [];
 
     for (let hour = firstHour; hour < lastHour; hour++) {

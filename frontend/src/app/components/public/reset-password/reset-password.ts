@@ -19,9 +19,7 @@ export class ResetPassword {
   loading = false;
 
   validatePassword() {
-    return /^(?=[A-Za-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,12}$/.test(
-      this.newPassword,
-    );
+    return /^(?=[A-Za-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,12}$/.test(this.newPassword);
   }
 
   resetPassword() {

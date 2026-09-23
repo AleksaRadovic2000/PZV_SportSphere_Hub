@@ -4,6 +4,7 @@ import { TournamentService } from '../../../services/tournament';
 import { UserService } from '../../../services/user';
 
 import { getSerbianLabel } from '../../../shared/serbian-label';
+import { formatDateTime } from '../../../shared/date-utils';
 
 @Component({
   selector: 'app-athlete-tournaments',
@@ -12,6 +13,7 @@ import { getSerbianLabel } from '../../../shared/serbian-label';
 })
 export class AthleteTournaments implements OnInit {
   label = getSerbianLabel;
+  formatDateTime = formatDateTime;
   private tournamentService = inject(TournamentService);
   private userService = inject(UserService);
 
@@ -74,12 +76,9 @@ export class AthleteTournaments implements OnInit {
 
   getMyApplicationStatus(tournament: Tournament) {
     const username = this.userService.getLoggedUser()?.username;
-    return tournament.applications.find(
-      (application) => application.athleteUsername === username,
-    )?.status || '';
-  }
-
-  formatDateTime(value: string) {
-    return new Date(value).toLocaleString('sr-Latn-RS');
+    return (
+      tournament.applications.find((application) => application.athleteUsername === username)
+        ?.status || ''
+    );
   }
 }

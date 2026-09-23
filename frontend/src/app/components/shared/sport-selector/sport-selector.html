@@ -1,7 +1,5 @@
 <div>
-  <label class="block font-medium mb-2" for="sport-selector">
-    Omiljeni sportovi (najvise 5)
-  </label>
+  <label class="block font-medium mb-2" for="sport-selector"> Omiljeni sportovi (najvise 5) </label>
   <p class="text-sm text-muted mt-2 mb-2">
     Za izbor vise sportova drzite Cmd na Mac-u ili Ctrl na Windows-u i Linux-u.
   </p>
@@ -15,11 +13,11 @@
     (ngModelChange)="updateSelection($event)"
   >
     @for (sport of sports; track sport.name) {
-      <option [value]="sport.name">{{ sport.name }}</option>
+    <option [value]="sport.name">{{ sport.name }}</option>
     }
   </select>
 
   @if (message) {
-    <p class="text-danger mt-2 mb-0">{{ message }}</p>
+  <p class="text-danger mt-2 mb-0">{{ message }}</p>
   }
 </div>

@@ -32,7 +32,7 @@ export class TrainingService {
     resourceId: string,
     sport: string,
     startDateTime: Date,
-    endDateTime: Date,
+    endDateTime: Date
   ) {
     return this.http.post<TrainingResponse>(`${this.uri}/create`, {
       athleteUsername,
@@ -62,12 +62,7 @@ export class TrainingService {
     });
   }
 
-  moveTraining(
-    id: string,
-    employeeUsername: string,
-    startDateTime: Date,
-    endDateTime: Date,
-  ) {
+  moveTraining(id: string, employeeUsername: string, startDateTime: Date, endDateTime: Date) {
     return this.http.post<TrainingResponse>(`${this.uri}/move`, {
       id,
       employeeUsername,

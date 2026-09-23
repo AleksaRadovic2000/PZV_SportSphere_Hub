@@ -25,7 +25,7 @@ export class TournamentService {
     createdByUsername: string,
     name: string,
     sport: string,
-    startDateTime: Date,
+    startDateTime: Date
   ) {
     return this.http.post<TournamentResponse>(`${this.uri}/create`, {
       facilityId,

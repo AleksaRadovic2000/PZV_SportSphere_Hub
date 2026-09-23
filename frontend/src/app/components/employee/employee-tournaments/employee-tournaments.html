@@ -6,23 +6,38 @@
       <div class="flex flex-col gap-4 md:flex-row">
         <div class="flex-1">
           <label class="block font-medium mb-2" for="tournament-facility">Objekat</label>
-          <select id="tournament-facility" class="w-full border rounded p-2" name="facilityId" [(ngModel)]="facilityId">
+          <select
+            id="tournament-facility"
+            class="w-full border rounded p-2"
+            name="facilityId"
+            [(ngModel)]="facilityId"
+          >
             <option value="">Izaberite objekat</option>
             @for (facility of facilities; track facility._id) {
-              <option [value]="facility._id">{{ facility.name }}</option>
+            <option [value]="facility._id">{{ facility.name }}</option>
             }
           </select>
         </div>
         <div class="flex-1">
           <label class="block font-medium mb-2" for="tournament-name">Naziv</label>
-          <input id="tournament-name" class="w-full border rounded p-2" name="name" [(ngModel)]="name" />
+          <input
+            id="tournament-name"
+            class="w-full border rounded p-2"
+            name="name"
+            [(ngModel)]="name"
+          />
         </div>
         <div class="flex-1">
           <label class="block font-medium mb-2" for="tournament-sport">Sport</label>
-          <select id="tournament-sport" class="w-full border rounded p-2" name="sport" [(ngModel)]="sport">
+          <select
+            id="tournament-sport"
+            class="w-full border rounded p-2"
+            name="sport"
+            [(ngModel)]="sport"
+          >
             <option value="">Izaberite sport</option>
             @for (item of sports; track item.name) {
-              <option [value]="item.name">{{ item.name }}</option>
+            <option [value]="item.name">{{ item.name }}</option>
             }
           </select>
         </div>
@@ -31,19 +46,33 @@
       <div class="flex flex-col gap-4 md:flex-row">
         <div class="flex-1">
           <label class="block font-medium mb-2" for="tournament-date">Datum</label>
-          <input id="tournament-date" class="w-full border rounded p-2" name="date" type="date" [(ngModel)]="date" />
+          <input
+            id="tournament-date"
+            class="w-full border rounded p-2"
+            name="date"
+            type="date"
+            [(ngModel)]="date"
+          />
         </div>
         <div class="flex-1">
           <label class="block font-medium mb-2" for="tournament-time">Vreme</label>
-          <input id="tournament-time" class="w-full border rounded p-2" name="time" type="time" [(ngModel)]="time" />
+          <input
+            id="tournament-time"
+            class="w-full border rounded p-2"
+            name="time"
+            type="time"
+            [(ngModel)]="time"
+          />
         </div>
       </div>
 
-      <button class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer" type="submit">Otvori turnir</button>
+      <button class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer" type="submit">
+        Otvori turnir
+      </button>
     </form>
 
     @if (message) {
-      <p [class]="success ? 'text-success mt-4' : 'text-danger mt-4'">{{ message }}</p>
+    <p [class]="success ? 'text-success mt-4' : 'text-danger mt-4'">{{ message }}</p>
     }
   </section>
 
@@ -51,46 +80,73 @@
     <h2 class="text-2xl mt-2 mb-6">Turniri u mojim objektima</h2>
     <div class="flex flex-col gap-4">
       @for (tournament of tournaments; track tournament._id) {
-        <article class="border rounded p-4">
-          <div class="flex flex-col gap-3 sm:flex-row sm:items-center justify-between">
-            <div>
-              <h3 class="text-xl mt-2 mb-2">{{ tournament.name }}</h3>
-              <p class="m-0">{{ tournament.facilityName }} | {{ tournament.sport }}</p>
-              <p class="text-muted">{{ formatDateTime(tournament.startDateTime) }} | Status: {{ label(tournament.status) }}</p>
-            </div>
-            @if (tournament.status === 'open') {
-              <button class="bg-danger text-white border-0 rounded px-3 py-2 cursor-pointer" type="button" (click)="closeTournament(tournament)">Zatvori turnir</button>
-            }
+      <article class="border rounded p-4">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center justify-between">
+          <div>
+            <h3 class="text-xl mt-2 mb-2">{{ tournament.name }}</h3>
+            <p class="m-0">{{ tournament.facilityName }} | {{ tournament.sport }}</p>
+            <p class="text-muted">
+              {{ formatDateTime(tournament.startDateTime) }} | Status:
+              {{ label(tournament.status) }}
+            </p>
           </div>
+          @if (tournament.status === 'open') {
+          <button
+            class="bg-danger text-white border-0 rounded px-3 py-2 cursor-pointer"
+            type="button"
+            (click)="closeTournament(tournament)"
+          >
+            Zatvori turnir
+          </button>
+          }
+        </div>
 
-          <div class="overflow-x-auto">
-            <table class="w-full border-collapse">
-              <thead>
-                <tr class="border-b text-left"><th class="p-2">Sportista</th><th class="p-2">Status</th><th class="p-2">Akcija</th></tr>
-              </thead>
-              <tbody>
-                @for (application of tournament.applications; track application._id) {
-                  <tr class="border-b">
-                    <td class="p-2">{{ application.athleteUsername }}</td>
-                    <td class="p-2">{{ label(application.status) }}</td>
-                    <td class="p-2">
-                      @if (application.status === 'pending' && tournament.status === 'open') {
-                        <div class="flex flex-col gap-2 sm:flex-row">
-                          <button class="bg-success text-white border-0 rounded px-3 py-2 cursor-pointer" type="button" (click)="resolveApplication(tournament, application._id, 'accepted')">Prihvati</button>
-                          <button class="bg-danger text-white border-0 rounded px-3 py-2 cursor-pointer" type="button" (click)="resolveApplication(tournament, application._id, 'rejected')">Odbij</button>
-                        </div>
-                      }
-                    </td>
-                  </tr>
-                } @empty {
-                  <tr><td class="p-3 text-center" colspan="3">Nema prijava.</td></tr>
-                }
-              </tbody>
-            </table>
-          </div>
-        </article>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="border-b text-left">
+                <th class="p-2">Sportista</th>
+                <th class="p-2">Status</th>
+                <th class="p-2">Akcija</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (application of tournament.applications; track application._id) {
+              <tr class="border-b">
+                <td class="p-2">{{ application.athleteUsername }}</td>
+                <td class="p-2">{{ label(application.status) }}</td>
+                <td class="p-2">
+                  @if (application.status === 'pending' && tournament.status === 'open') {
+                  <div class="flex flex-col gap-2 sm:flex-row">
+                    <button
+                      class="bg-success text-white border-0 rounded px-3 py-2 cursor-pointer"
+                      type="button"
+                      (click)="resolveApplication(tournament, application._id, 'accepted')"
+                    >
+                      Prihvati
+                    </button>
+                    <button
+                      class="bg-danger text-white border-0 rounded px-3 py-2 cursor-pointer"
+                      type="button"
+                      (click)="resolveApplication(tournament, application._id, 'rejected')"
+                    >
+                      Odbij
+                    </button>
+                  </div>
+                  }
+                </td>
+              </tr>
+              } @empty {
+              <tr>
+                <td class="p-3 text-center" colspan="3">Nema prijava.</td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </article>
       } @empty {
-        <p class="text-muted text-center">Nemate turnire.</p>
+      <p class="text-muted text-center">Nemate turnire.</p>
       }
     </div>
   </section>

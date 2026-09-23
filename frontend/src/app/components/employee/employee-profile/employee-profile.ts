@@ -5,16 +5,20 @@ import { Facility } from '../../../models/facility';
 import { User } from '../../../models/user';
 import { FacilityService } from '../../../services/facility';
 import { UserService } from '../../../services/user';
+import { ProfileImageSelector } from '../../shared/profile-image-selector/profile-image-selector';
 
 import { getSerbianLabel } from '../../../shared/serbian-label';
+import { getFacilityResources, getFacilitySports } from '../../../shared/facility-utils';
 
 @Component({
   selector: 'app-employee-profile',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, ProfileImageSelector],
   templateUrl: './employee-profile.html',
 })
 export class EmployeeProfile implements OnInit {
   label = getSerbianLabel;
+  getSports = getFacilitySports;
+  getResources = getFacilityResources;
   private userService = inject(UserService);
   private facilityService = inject(FacilityService);
 
@@ -53,26 +57,13 @@ export class EmployeeProfile implements OnInit {
     });
   }
 
-  onProfileImageSelected(event: Event) {
-    let input = event.target as HTMLInputElement;
-    let file = input.files?.[0];
-
-    if (!file) {
-      return;
-    }
-
-    if (!['image/png', 'image/jpeg'].includes(file.type)) {
-      this.message = 'Profilna slika mora biti PNG ili JPG fajl.';
-      input.value = '';
-      return;
-    }
-
+  onProfileImageSelected(file: File | null) {
     this.profileImage = file;
-    let reader = new FileReader();
-    reader.onload = () => {
-      this.profileImagePreview = String(reader.result || '');
-    };
-    reader.readAsDataURL(file);
+    this.message = '';
+  }
+
+  onProfileImagePreviewSelected(preview: string) {
+    this.profileImagePreview = preview;
   }
 
   updateProfile() {
@@ -110,15 +101,5 @@ export class EmployeeProfile implements OnInit {
         this.loading = false;
       },
     });
-  }
-
-  getSports(facility: Facility) {
-    const sports = new Set<string>();
-
-    facility.resources.forEach((resource) => {
-      resource.sportPrices.forEach((price) => sports.add(price.sport));
-    });
-
-    return [...sports].join(', ');
   }
 }

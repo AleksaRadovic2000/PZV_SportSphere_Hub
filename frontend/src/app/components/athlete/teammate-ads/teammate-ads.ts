@@ -7,6 +7,7 @@ import { TeammateAdService } from '../../../services/teammate-ad';
 import { UserService } from '../../../services/user';
 
 import { getSerbianLabel } from '../../../shared/serbian-label';
+import { formatDateTime } from '../../../shared/date-utils';
 
 @Component({
   selector: 'app-teammate-ads',
@@ -15,6 +16,7 @@ import { getSerbianLabel } from '../../../shared/serbian-label';
 })
 export class TeammateAds implements OnInit {
   label = getSerbianLabel;
+  formatDateTime = formatDateTime;
   private teammateAdService = inject(TeammateAdService);
   private sportService = inject(SportService);
   private userService = inject(UserService);
@@ -76,7 +78,14 @@ export class TeammateAds implements OnInit {
     this.success = false;
     const user = this.userService.getLoggedUser();
 
-    if (!user || !this.sport || !this.city.trim() || !this.date || !this.startTime || !this.endTime) {
+    if (
+      !user ||
+      !this.sport ||
+      !this.city.trim() ||
+      !this.date ||
+      !this.startTime ||
+      !this.endTime
+    ) {
       this.message = 'Popunite sva polja oglasa.';
       return;
     }
@@ -95,14 +104,7 @@ export class TeammateAds implements OnInit {
     }
 
     this.teammateAdService
-      .create(
-        user.username,
-        this.sport,
-        this.city,
-        startDateTime,
-        endDateTime,
-        this.playersNeeded,
-      )
+      .create(user.username, this.sport, this.city, startDateTime, endDateTime, this.playersNeeded)
       .subscribe({
         next: (response) => {
           this.message = response.message;
@@ -183,10 +185,6 @@ export class TeammateAds implements OnInit {
   getMyRequestStatus(ad: TeammateAd) {
     const username = this.userService.getLoggedUser()?.username;
     return ad.requests.find((request) => request.athleteUsername === username)?.status || '';
-  }
-
-  formatDateTime(value: string) {
-    return new Date(value).toLocaleString('sr-Latn-RS');
   }
 
   private resetForm() {

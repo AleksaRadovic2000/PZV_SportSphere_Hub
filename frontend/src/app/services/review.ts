@@ -8,12 +8,7 @@ export class ReviewService {
   private http = inject(HttpClient);
   uri = `${environment.apiUrl}/reviews`;
 
-  createReview(
-    reservationId: string,
-    athleteUsername: string,
-    reaction: string,
-    comment: string,
-  ) {
+  createReview(reservationId: string, athleteUsername: string, reaction: string, comment: string) {
     return this.http.post<ReviewResponse>(`${this.uri}/create`, {
       reservationId,
       athleteUsername,
@@ -27,8 +22,6 @@ export class ReviewService {
   }
 
   getReviewedReservationIds(athleteUsername: string, facilityId: string) {
-    return this.http.get<string[]>(
-      `${this.uri}/reviewed/${athleteUsername}/${facilityId}`,
-    );
+    return this.http.get<string[]>(`${this.uri}/reviewed/${athleteUsername}/${facilityId}`);
   }
 }

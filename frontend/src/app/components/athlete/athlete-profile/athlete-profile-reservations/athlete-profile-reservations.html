@@ -1,0 +1,49 @@
+<section class="bg-surface border rounded-lg shadow p-6 mt-6">
+  <h2 class="text-2xl mt-2 mb-6">Moje rezervacije</h2>
+  @if (message) {
+  <p [class]="success ? 'text-success' : 'text-danger'">{{ message }}</p>
+  }
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="border-b text-left">
+          <th class="p-2 cursor-pointer" (click)="sortReservations('facility')">Objekat</th>
+          <th class="p-2 cursor-pointer" (click)="sortReservations('city')">Grad</th>
+          <th class="p-2 cursor-pointer" (click)="sortReservations('resource')">Teren ili hala</th>
+          <th class="p-2 cursor-pointer" (click)="sortReservations('sport')">Sport</th>
+          <th class="p-2 cursor-pointer" (click)="sortReservations('interval')">Interval</th>
+          <th class="p-2 cursor-pointer" (click)="sortReservations('status')">Status</th>
+          <th class="p-2">Akcija</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (reservation of reservations; track reservation._id) {
+        <tr class="border-b">
+          <td class="p-2">{{ reservation.facilityName }}</td>
+          <td class="p-2">{{ reservation.city }}</td>
+          <td class="p-2">{{ reservation.resourceName }}</td>
+          <td class="p-2">{{ reservation.sport }}</td>
+          <td class="p-2">
+            {{ formatDateTime(reservation.startDateTime) }} -
+            {{ formatDateTime(reservation.endDateTime) }}
+          </td>
+          <td class="p-2">{{ label(reservation.status) }}</td>
+          <td class="p-2">
+            @if (canCancel(reservation)) {<button
+              class="bg-danger text-white border-0 rounded px-3 py-2 cursor-pointer"
+              type="button"
+              (click)="cancelReservation(reservation)"
+            >
+              Otkazi</button
+            >}
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td class="p-4 text-center" colspan="7">Nemate rezervacije.</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

@@ -9,6 +9,7 @@ import { TrainingService } from '../../../services/training';
 import { UserService } from '../../../services/user';
 
 import { getSerbianLabel } from '../../../shared/serbian-label';
+import { formatDateTime } from '../../../shared/date-utils';
 
 @Component({
   selector: 'app-employee-operations',
@@ -17,6 +18,7 @@ import { getSerbianLabel } from '../../../shared/serbian-label';
 })
 export class EmployeeOperations implements OnInit {
   label = getSerbianLabel;
+  formatDateTime = formatDateTime;
   private facilityService = inject(FacilityService);
   private trainingService = inject(TrainingService);
   private reservationService = inject(ReservationService);
@@ -139,9 +141,5 @@ export class EmployeeOperations implements OnInit {
         this.success = false;
       },
     });
-  }
-
-  formatDateTime(value: string) {
-    return new Date(value).toLocaleString('sr-Latn-RS');
   }
 }

@@ -1,0 +1,56 @@
+<section class="bg-surface border rounded-lg shadow p-6">
+  <h2 class="text-2xl mt-2 mb-6">Porudzbine objekta</h2>
+  @if (message) {
+  <p [class]="success ? 'text-success' : 'text-danger'">{{ message }}</p>
+  }
+  <div class="flex flex-col gap-4">
+    @for (order of orders; track order._id) {
+    <article class="border rounded p-4">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center justify-between">
+        <div>
+          <h3 class="text-xl mt-2 mb-2">
+            {{ order.athleteUsername }} - {{ order.totalPrice }} RSD
+          </h3>
+          <p class="text-muted m-0">
+            {{ formatDateTime(order.createdAt) }} | Status: {{ label(order.status) }}
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          @if (order.status === 'ordered') {<button
+            class="bg-success text-white border-0 rounded px-3 py-2 cursor-pointer"
+            type="button"
+            (click)="updateOrderStatus(order, 'accepted')"
+          >
+            Prihvati</button
+          ><button
+            class="bg-danger text-white border-0 rounded px-3 py-2 cursor-pointer"
+            type="button"
+            (click)="updateOrderStatus(order, 'cancelled')"
+          >
+            Otkazi</button
+          >} @else if (order.status === 'accepted') {<button
+            class="bg-success text-white border-0 rounded px-3 py-2 cursor-pointer"
+            type="button"
+            (click)="updateOrderStatus(order, 'collected')"
+          >
+            Oznaci kao preuzeto</button
+          ><button
+            class="bg-danger text-white border-0 rounded px-3 py-2 cursor-pointer"
+            type="button"
+            (click)="updateOrderStatus(order, 'cancelled')"
+          >
+            Otkazi</button
+          >}
+        </div>
+      </div>
+      <ul class="mb-0">
+        @for (item of order.items; track item._id) {
+        <li>{{ item.productName }} - {{ item.quantity }} x {{ item.unitPrice }} RSD</li>
+        }
+      </ul>
+    </article>
+    } @empty {
+    <p class="text-muted">Objekat nema porudzbine.</p>
+    }
+  </div>
+</section>

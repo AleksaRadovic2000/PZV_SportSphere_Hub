@@ -118,10 +118,7 @@ export class AthleteShop implements OnInit {
   }
 
   calculateTotal() {
-    return this.cart.reduce(
-      (total, item) => total + item.product.price * item.quantity,
-      0,
-    );
+    return this.cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
   }
 
   createOrder() {

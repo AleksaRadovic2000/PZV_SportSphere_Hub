@@ -4,10 +4,15 @@
     <div class="flex flex-col gap-4 md:flex-row">
       <div class="flex-1">
         <label class="block font-medium mb-2" for="shop-facility">Sportski objekat</label>
-        <select id="shop-facility" class="w-full border rounded p-2" name="facilityId" [(ngModel)]="facilityId">
+        <select
+          id="shop-facility"
+          class="w-full border rounded p-2"
+          name="facilityId"
+          [(ngModel)]="facilityId"
+        >
           <option value="">Izaberite objekat</option>
           @for (facility of facilities; track facility._id) {
-            <option [value]="facility._id">{{ facility.name }} - {{ facility.city }}</option>
+          <option [value]="facility._id">{{ facility.name }} - {{ facility.city }}</option>
           }
         </select>
       </div>
@@ -16,15 +21,21 @@
         <select id="shop-sport" class="w-full border rounded p-2" name="sport" [(ngModel)]="sport">
           <option value="">Svi sportovi</option>
           @for (item of sports; track item.name) {
-            <option [value]="item.name">{{ item.name }}</option>
+          <option [value]="item.name">{{ item.name }}</option>
           }
         </select>
       </div>
     </div>
-    <button class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer mt-4" type="button" (click)="searchProducts()">Pretrazi</button>
+    <button
+      class="bg-primary text-white border-0 rounded px-4 py-2 cursor-pointer mt-4"
+      type="button"
+      (click)="searchProducts()"
+    >
+      Pretrazi
+    </button>
 
     @if (message) {
-      <p [class]="success ? 'text-success mt-4' : 'text-danger mt-4'">{{ message }}</p>
+    <p [class]="success ? 'text-success mt-4' : 'text-danger mt-4'">{{ message }}</p>
     }
   </section>
 
@@ -32,18 +43,30 @@
     <h2 class="text-2xl mt-2 mb-6">Proizvodi</h2>
     <div class="flex flex-wrap gap-4">
       @for (product of products; track product._id) {
-        <article class="border rounded p-4 max-w-sm flex-1">
-          @if (product.image) {
-            <img class="w-full border rounded mb-4" height="180" [src]="getImageUrl(product.image)" [alt]="product.name" />
-          }
-          <h3 class="text-xl mt-2 mb-2">{{ product.name }}</h3>
-          <p class="text-muted">{{ product.sport }}</p>
-          <p>Cena: {{ product.price }} RSD</p>
-          <p>Na stanju: {{ product.stock }}</p>
-          <button class="bg-primary text-white border-0 rounded px-3 py-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" type="button" [disabled]="product.stock === 0" (click)="addToCart(product)">Dodaj u korpu</button>
-        </article>
+      <article class="border rounded p-4 max-w-sm flex-1">
+        @if (product.image) {
+        <img
+          class="w-full border rounded mb-4"
+          height="180"
+          [src]="getImageUrl(product.image)"
+          [alt]="product.name"
+        />
+        }
+        <h3 class="text-xl mt-2 mb-2">{{ product.name }}</h3>
+        <p class="text-muted">{{ product.sport }}</p>
+        <p>Cena: {{ product.price }} RSD</p>
+        <p>Na stanju: {{ product.stock }}</p>
+        <button
+          class="bg-primary text-white border-0 rounded px-3 py-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          type="button"
+          [disabled]="product.stock === 0"
+          (click)="addToCart(product)"
+        >
+          Dodaj u korpu
+        </button>
+      </article>
       } @empty {
-        <p class="text-muted">Nema proizvoda za izabrane kriterijume.</p>
+      <p class="text-muted">Nema proizvoda za izabrane kriterijume.</p>
       }
     </div>
   </section>
@@ -53,26 +76,58 @@
     <div class="overflow-x-auto">
       <table class="w-full border-collapse">
         <thead>
-          <tr class="border-b text-left"><th class="p-2">Proizvod</th><th class="p-2">Cena</th><th class="p-2">Kolicina</th><th class="p-2">Ukupno</th><th class="p-2">Akcija</th></tr>
+          <tr class="border-b text-left">
+            <th class="p-2">Proizvod</th>
+            <th class="p-2">Cena</th>
+            <th class="p-2">Kolicina</th>
+            <th class="p-2">Ukupno</th>
+            <th class="p-2">Akcija</th>
+          </tr>
         </thead>
         <tbody>
           @for (item of cart; track item.product._id) {
-            <tr class="border-b">
-              <td class="p-2">{{ item.product.name }}</td>
-              <td class="p-2">{{ item.product.price }} RSD</td>
-              <td class="p-2"><input class="border rounded p-2" type="number" min="1" [max]="item.product.stock" [(ngModel)]="item.quantity" (change)="changeQuantity(item)" /></td>
-              <td class="p-2">{{ item.product.price * item.quantity }} RSD</td>
-              <td class="p-2"><button class="bg-danger text-white border-0 rounded px-3 py-2 cursor-pointer" type="button" (click)="removeFromCart(item.product._id)">Ukloni</button></td>
-            </tr>
+          <tr class="border-b">
+            <td class="p-2">{{ item.product.name }}</td>
+            <td class="p-2">{{ item.product.price }} RSD</td>
+            <td class="p-2">
+              <input
+                class="border rounded p-2"
+                type="number"
+                min="1"
+                [max]="item.product.stock"
+                [(ngModel)]="item.quantity"
+                (change)="changeQuantity(item)"
+              />
+            </td>
+            <td class="p-2">{{ item.product.price * item.quantity }} RSD</td>
+            <td class="p-2">
+              <button
+                class="bg-danger text-white border-0 rounded px-3 py-2 cursor-pointer"
+                type="button"
+                (click)="removeFromCart(item.product._id)"
+              >
+                Ukloni
+              </button>
+            </td>
+          </tr>
           } @empty {
-            <tr><td class="p-4 text-center" colspan="5">Korpa je prazna.</td></tr>
+          <tr>
+            <td class="p-4 text-center" colspan="5">Korpa je prazna.</td>
+          </tr>
           }
         </tbody>
       </table>
     </div>
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center justify-between mt-4">
       <strong>Ukupna cena: {{ calculateTotal() }} RSD</strong>
-      <button class="bg-success text-white border-0 rounded px-4 py-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" type="button" [disabled]="cart.length === 0" (click)="createOrder()">Poruci</button>
+      <button
+        class="bg-success text-white border-0 rounded px-4 py-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        type="button"
+        [disabled]="cart.length === 0"
+        (click)="createOrder()"
+      >
+        Poruci
+      </button>
     </div>
   </section>
 </div>

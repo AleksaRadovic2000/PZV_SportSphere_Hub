@@ -1,4 +1,12 @@
-import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   BarController,
   BarElement,
@@ -24,7 +32,7 @@ Chart.register(
   LineController,
   LineElement,
   PointElement,
-  Tooltip,
+  Tooltip
 );
 
 @Component({
@@ -98,7 +106,7 @@ export class AthleteStatistics implements OnInit, AfterViewInit, OnDestroy {
             label: 'Odigrane rezervacije',
             data: sports.map(
               (sport) =>
-                this.statistics.playedBySport.find((item) => item.label === sport)?.value || 0,
+                this.statistics.playedBySport.find((item) => item.label === sport)?.value || 0
             ),
             backgroundColor: '#176b87',
           },
@@ -106,7 +114,7 @@ export class AthleteStatistics implements OnInit, AfterViewInit, OnDestroy {
             label: 'Rezervisani termini',
             data: sports.map(
               (sport) =>
-                this.statistics.reservedBySport.find((item) => item.label === sport)?.value || 0,
+                this.statistics.reservedBySport.find((item) => item.label === sport)?.value || 0
             ),
             backgroundColor: '#64ccc5',
           },

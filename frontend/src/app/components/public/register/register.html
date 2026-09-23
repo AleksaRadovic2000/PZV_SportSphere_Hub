@@ -150,16 +150,11 @@
     </div>
     }
 
-    <div>
-      <label class="block font-medium mb-2" for="profile-image">Profilna slika</label>
-      <input
-        id="profile-image"
-        class="w-full border rounded p-2"
-        type="file"
-        accept="image/png,image/jpeg"
-        (change)="onProfileImageSelected($event)"
-      />
-    </div>
+    <app-profile-image-selector
+      [preview]="profileImagePreview"
+      (imageSelected)="onProfileImageSelected($event)"
+      (previewSelected)="onProfileImagePreviewSelected($event)"
+    />
 
     <div class="flex flex-col gap-4">
       <button
@@ -186,17 +181,6 @@
         >
           Sacuvaj kao profilnu sliku
         </button>
-      </div>
-      } @if (profileImagePreview) {
-      <div class="flex flex-col items-center gap-2">
-        <p class="m-0 font-medium">Izabrana profilna slika</p>
-        <img
-          class="border rounded-full p-2"
-          width="160"
-          height="160"
-          [src]="profileImagePreview"
-          alt="Profilna slika"
-        />
       </div>
       }
     </div>

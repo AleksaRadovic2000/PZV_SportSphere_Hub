@@ -5,6 +5,7 @@ import { Facility } from '../../../models/facility';
 import { Sport } from '../../../models/sport';
 import { FacilityService } from '../../../services/facility';
 import { SportService } from '../../../services/sport';
+import { getFacilitySports } from '../../../shared/facility-utils';
 
 @Component({
   selector: 'app-athlete-facility-search',
@@ -12,6 +13,7 @@ import { SportService } from '../../../services/sport';
   templateUrl: './athlete-facility-search.html',
 })
 export class AthleteFacilitySearch implements OnInit {
+  getSports = getFacilitySports;
   private facilityService = inject(FacilityService);
   private sportService = inject(SportService);
 
@@ -52,7 +54,7 @@ export class AthleteFacilitySearch implements OnInit {
         this.selectedCities,
         this.selectedSport,
         this.resourceType,
-        this.onlyAvailableToday,
+        this.onlyAvailableToday
       )
       .subscribe({
         next: (facilities) => {
@@ -77,16 +79,11 @@ export class AthleteFacilitySearch implements OnInit {
 
     const direction = this.sortDirection === 'asc' ? 1 : -1;
     this.facilities = [...this.searchResults].sort((first, second) => {
-      return this.getSortValue(first, column).localeCompare(this.getSortValue(second, column)) * direction;
+      return (
+        this.getSortValue(first, column).localeCompare(this.getSortValue(second, column)) *
+        direction
+      );
     });
-  }
-
-  getSports(facility: Facility) {
-    const sports = new Set<string>();
-    facility.resources.forEach((resource) => {
-      resource.sportPrices.forEach((price) => sports.add(price.sport));
-    });
-    return [...sports].sort().join(', ');
   }
 
   private getSortValue(facility: Facility, column: string) {

@@ -5,6 +5,7 @@ import { FacilityService } from '../../../services/facility';
 import { UserService } from '../../../services/user';
 
 import { getSerbianLabel } from '../../../shared/serbian-label';
+import { getFacilityResources, getFacilitySports } from '../../../shared/facility-utils';
 
 @Component({
   selector: 'app-employee-facilities',
@@ -13,6 +14,8 @@ import { getSerbianLabel } from '../../../shared/serbian-label';
 })
 export class EmployeeFacilities implements OnInit {
   label = getSerbianLabel;
+  getSports = getFacilitySports;
+  getResources = getFacilityResources;
   private facilityService = inject(FacilityService);
   private userService = inject(UserService);
 
@@ -69,15 +72,5 @@ export class EmployeeFacilities implements OnInit {
         this.success = false;
       },
     });
-  }
-
-  getSports(facility: Facility) {
-    const sports = new Set<string>();
-
-    facility.resources.forEach((resource) => {
-      resource.sportPrices.forEach((price) => sports.add(price.sport));
-    });
-
-    return [...sports].join(', ');
   }
 }
