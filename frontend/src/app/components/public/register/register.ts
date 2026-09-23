@@ -56,7 +56,7 @@ export class Register {
 
   generateAvatar() {
     const seed =
-      `${this.user.firstName} ${this.user.lastName}`.trim() || this.user.username.trim() || 'User';
+      `${this.user.firstName} ${this.user.lastName}`.trim() || this.user.username.trim() || 'Korisnik';
     this.message = '';
     this.userService.generateAvatar(seed).subscribe({
       next: (avatar) => {

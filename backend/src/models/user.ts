@@ -58,7 +58,7 @@ let User = new Schema(
       default: [],
       validate: {
         validator: (sports: string[]) => sports.length <= 5,
-        message: "A user can select at most five sports",
+        message: "Korisnik moze da izabere najvise pet sportova",
       },
     },
     companyName: {

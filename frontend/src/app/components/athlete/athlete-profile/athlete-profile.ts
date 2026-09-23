@@ -10,12 +10,15 @@ import { TrainingService } from '../../../services/training';
 import { UserService } from '../../../services/user';
 import { SportSelector } from '../../shared/sport-selector/sport-selector';
 
+import { getSerbianLabel } from '../../../shared/serbian-label';
+
 @Component({
   selector: 'app-athlete-profile',
   imports: [FormsModule, SportSelector],
   templateUrl: './athlete-profile.html',
 })
 export class AthleteProfile implements OnInit {
+  label = getSerbianLabel;
   private userService = inject(UserService);
   private reservationService = inject(ReservationService);
   private trainingService = inject(TrainingService);

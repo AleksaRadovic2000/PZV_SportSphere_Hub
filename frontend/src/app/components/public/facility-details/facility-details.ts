@@ -10,12 +10,15 @@ import { ReservationService } from '../../../services/reservation';
 import { ReviewService } from '../../../services/review';
 import { UserService } from '../../../services/user';
 
+import { getSerbianLabel } from '../../../shared/serbian-label';
+
 @Component({
   selector: 'app-facility-details',
   imports: [FormsModule, RouterLink],
   templateUrl: './facility-details.html',
 })
 export class FacilityDetails implements OnInit {
+  label = getSerbianLabel;
   private facilityService = inject(FacilityService);
   private reservationService = inject(ReservationService);
   private reviewService = inject(ReviewService);

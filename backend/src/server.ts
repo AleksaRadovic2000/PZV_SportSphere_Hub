@@ -21,14 +21,14 @@ app.use("/uploads", express.static(path.resolve(__dirname, "../uploads")));
 mongoose
   .connect("mongodb://127.0.0.1:27017/sportsphere")
   .then(() => {
-    console.log("MongoDB connection successful");
+    console.log("Uspesno povezivanje sa MongoDB bazom");
   })
   .catch((error) => {
-    console.error("MongoDB connection failed:", error.message);
+    console.error("Povezivanje sa MongoDB bazom nije uspelo:", error.message);
   });
 
 app.get("/", (_req, res) => {
-  res.json({ message: "SportSphere Hub API works" });
+  res.json({ message: "SportSphere Hub API radi" });
 });
 
 const router = express.Router();
@@ -51,9 +51,9 @@ app.use(
     res: express.Response,
     _next: express.NextFunction,
   ) => {
-    console.error("Request failed:", error.message);
+    console.error("Zahtev nije uspeo:", error.message);
     res.status(400).json({ message: error.message });
   },
 );
 
-app.listen(4000, () => console.log("Express running on port 4000"));
+app.listen(4000, () => console.log("Express radi na portu 4000"));

@@ -24,8 +24,8 @@ export class FacilityController {
         res.json(facilities);
       })
       .catch((error) => {
-        console.error("Failed to load employee facilities:", error);
-        res.status(500).json({ message: "Failed to load facilities" });
+        console.error("Ucitavanje objekata nije uspelo:", error);
+        res.status(500).json({ message: "Ucitavanje objekata nije uspelo" });
       });
   };
 
@@ -34,7 +34,7 @@ export class FacilityController {
     let username = req.params.username;
 
     if (!mongoose.isValidObjectId(id)) {
-      res.status(400).json({ message: "Facility ID is not valid" });
+      res.status(400).json({ message: "ID objekta nije ispravan" });
       return;
     }
 
@@ -42,14 +42,14 @@ export class FacilityController {
       const facility = await FacilityModel.findOne({ _id: id, employeeUsernames: username });
 
       if (!facility) {
-        res.status(404).json({ message: "Facility was not found" });
+        res.status(404).json({ message: "Objekat nije pronadjen" });
         return;
       }
 
       res.json(facility);
     } catch (error) {
-      console.error("Failed to load facility:", error);
-      res.status(500).json({ message: "Failed to load facility" });
+      console.error("Ucitavanje objekta nije uspelo:", error);
+      res.status(500).json({ message: "Ucitavanje objekta nije uspelo" });
     }
   };
 
@@ -61,7 +61,7 @@ export class FacilityController {
 
     if (!facilityData || !username) {
       removeUploadedFiles(files);
-      res.status(400).json({ message: "Facility data and employee username are required" });
+      res.status(400).json({ message: "Podaci o objektu i korisnicko ime zaposlenog su obavezni" });
       return;
     }
 
@@ -69,7 +69,7 @@ export class FacilityController {
       data = JSON.parse(facilityData);
     } catch {
       removeUploadedFiles(files);
-      res.status(400).json({ message: "Facility data is not valid JSON" });
+      res.status(400).json({ message: "Podaci o objektu nisu ispravan JSON" });
       return;
     }
 
@@ -84,7 +84,7 @@ export class FacilityController {
 
       if (!employee) {
         removeUploadedFiles(files);
-        res.status(404).json({ message: "Active employee was not found" });
+        res.status(404).json({ message: "Aktivan zaposleni nije pronadjen" });
         return;
       }
 
@@ -111,7 +111,7 @@ export class FacilityController {
 
       if (!sportsAreValid) {
         removeUploadedFiles(files);
-        res.status(400).json({ message: "One or more selected sports do not exist" });
+        res.status(400).json({ message: "Jedan ili vise izabranih sportova ne postoje" });
         return;
       }
 
@@ -123,20 +123,20 @@ export class FacilityController {
 
       if (existingFacility) {
         removeUploadedFiles(files);
-        res.status(409).json({ message: "A facility with this name and address already exists" });
+        res.status(409).json({ message: "Objekat sa ovim nazivom i adresom vec postoji" });
         return;
       }
 
       const facility = await FacilityModel.create(this.prepareFacilityData(data));
 
       res.status(201).json({
-        message: "Facility created and is waiting for administrator approval",
+        message: "Objekat je kreiran i ceka odobrenje administratora",
         facility,
       });
     } catch (error) {
       removeUploadedFiles(files);
-      console.error("Facility creation failed:", error);
-      res.status(500).json({ message: "Facility creation failed" });
+      console.error("Kreiranje objekta nije uspelo:", error);
+      res.status(500).json({ message: "Kreiranje objekta nije uspelo" });
     }
   };
 
@@ -148,7 +148,7 @@ export class FacilityController {
 
     if (!facilityData || !username) {
       removeUploadedFiles(files);
-      res.status(400).json({ message: "Facility data and employee username are required" });
+      res.status(400).json({ message: "Podaci o objektu i korisnicko ime zaposlenog su obavezni" });
       return;
     }
 
@@ -156,13 +156,13 @@ export class FacilityController {
       data = JSON.parse(facilityData);
     } catch {
       removeUploadedFiles(files);
-      res.status(400).json({ message: "Facility data is not valid JSON" });
+      res.status(400).json({ message: "Podaci o objektu nisu ispravan JSON" });
       return;
     }
 
     if (!mongoose.isValidObjectId(data._id)) {
       removeUploadedFiles(files);
-      res.status(400).json({ message: "Facility ID is not valid" });
+      res.status(400).json({ message: "ID objekta nije ispravan" });
       return;
     }
 
@@ -176,7 +176,7 @@ export class FacilityController {
 
       if (!existingFacility) {
         removeUploadedFiles(files);
-        res.status(404).json({ message: "Facility was not found" });
+        res.status(404).json({ message: "Objekat nije pronadjen" });
         return;
       }
 
@@ -200,7 +200,7 @@ export class FacilityController {
 
       if (!sportsAreValid) {
         removeUploadedFiles(files);
-        res.status(400).json({ message: "One or more selected sports do not exist" });
+        res.status(400).json({ message: "Jedan ili vise izabranih sportova ne postoje" });
         return;
       }
 
@@ -213,7 +213,7 @@ export class FacilityController {
 
       if (duplicateFacility) {
         removeUploadedFiles(files);
-        res.status(409).json({ message: "A facility with this name and address already exists" });
+        res.status(409).json({ message: "Objekat sa ovim nazivom i adresom vec postoji" });
         return;
       }
 
@@ -223,11 +223,11 @@ export class FacilityController {
         { new: true, runValidators: true },
       );
 
-      res.json({ message: "Facility updated successfully", facility });
+      res.json({ message: "Objekat je uspesno izmenjen", facility });
     } catch (error) {
       removeUploadedFiles(files);
-      console.error("Facility update failed:", error);
-      res.status(500).json({ message: "Facility update failed" });
+      console.error("Izmena objekta nije uspela:", error);
+      res.status(500).json({ message: "Izmena objekta nije uspela" });
     }
   };
 
@@ -235,7 +235,7 @@ export class FacilityController {
     let username = req.body.username;
 
     if (!req.file || !username) {
-      res.status(400).json({ message: "JSON file and employee username are required" });
+      res.status(400).json({ message: "JSON fajl i korisnicko ime zaposlenog su obavezni" });
       return;
     }
 
@@ -244,7 +244,7 @@ export class FacilityController {
     try {
       data = JSON.parse(req.file.buffer.toString("utf-8"));
     } catch {
-      res.status(400).json({ message: "Selected file does not contain valid JSON" });
+      res.status(400).json({ message: "Izabrani fajl ne sadrzi ispravan JSON" });
       return;
     }
 
@@ -258,7 +258,7 @@ export class FacilityController {
       });
 
       if (!employee) {
-        res.status(404).json({ message: "Active employee was not found" });
+        res.status(404).json({ message: "Aktivan zaposleni nije pronadjen" });
         return;
       }
 
@@ -284,7 +284,7 @@ export class FacilityController {
       const sportsAreValid = await this.sportsAreValid(data);
 
       if (!sportsAreValid) {
-        res.status(400).json({ message: "One or more selected sports do not exist" });
+        res.status(400).json({ message: "Jedan ili vise izabranih sportova ne postoje" });
         return;
       }
 
@@ -295,18 +295,18 @@ export class FacilityController {
       });
 
       if (existingFacility) {
-        res.status(409).json({ message: "A facility with this name and address already exists" });
+        res.status(409).json({ message: "Objekat sa ovim nazivom i adresom vec postoji" });
         return;
       }
 
       const facility = await FacilityModel.create(this.prepareFacilityData(data));
       res.status(201).json({
-        message: "Facility imported and is waiting for administrator approval",
+        message: "Objekat je uvezen i ceka odobrenje administratora",
         facility,
       });
     } catch (error) {
-      console.error("Facility import failed:", error);
-      res.status(500).json({ message: "Facility import failed" });
+      console.error("Uvoz objekta nije uspeo:", error);
+      res.status(500).json({ message: "Uvoz objekta nije uspeo" });
     }
   };
 
@@ -315,8 +315,8 @@ export class FacilityController {
       .sort({ name: 1 })
       .then((facilities) => res.json(facilities))
       .catch((error) => {
-        console.error("Failed to load pending facilities:", error);
-        res.status(500).json({ message: "Failed to load pending facilities" });
+        console.error("Ucitavanje objekata na cekanju nije uspelo:", error);
+        res.status(500).json({ message: "Ucitavanje objekata na cekanju nije uspelo" });
       });
   };
 
@@ -334,7 +334,7 @@ export class FacilityController {
     let promotion = req.body.promotion;
 
     if (!mongoose.isValidObjectId(facilityId) || !employeeUsername) {
-      res.status(400).json({ message: "Facility ID and employee username are required" });
+      res.status(400).json({ message: "ID objekta i korisnicko ime zaposlenog su obavezni" });
       return;
     }
 
@@ -352,14 +352,14 @@ export class FacilityController {
       });
 
       if (!facility) {
-        res.status(403).json({ message: "Employee does not manage this facility" });
+        res.status(403).json({ message: "Zaposleni ne upravlja ovim objektom" });
         return;
       }
 
       const sport = await SportModel.findOne({ name: promotion.sport.trim() });
 
       if (!sport) {
-        res.status(400).json({ message: "Selected sport does not exist" });
+        res.status(400).json({ message: "Izabrani sport ne postoji" });
         return;
       }
 
@@ -372,10 +372,10 @@ export class FacilityController {
         discountValue: promotion.discountValue,
       });
       await facility.save();
-      res.status(201).json({ message: "Promotion added successfully", facility });
+      res.status(201).json({ message: "Promocija je uspesno dodata", facility });
     } catch (error) {
-      console.error("Promotion creation failed:", error);
-      res.status(500).json({ message: "Promotion creation failed" });
+      console.error("Kreiranje promocije nije uspelo:", error);
+      res.status(500).json({ message: "Kreiranje promocije nije uspelo" });
     }
   };
 
@@ -389,7 +389,7 @@ export class FacilityController {
       !mongoose.isValidObjectId(promotion?._id) ||
       !employeeUsername
     ) {
-      res.status(400).json({ message: "Promotion update data is not valid" });
+      res.status(400).json({ message: "Podaci za izmenu promocije nisu ispravni" });
       return;
     }
 
@@ -407,21 +407,21 @@ export class FacilityController {
       });
 
       if (!facility) {
-        res.status(403).json({ message: "Employee does not manage this facility" });
+        res.status(403).json({ message: "Zaposleni ne upravlja ovim objektom" });
         return;
       }
 
       const existingPromotion = facility.promotions.id(promotion._id);
 
       if (!existingPromotion) {
-        res.status(404).json({ message: "Promotion was not found" });
+        res.status(404).json({ message: "Promocija nije pronadjena" });
         return;
       }
 
       const sport = await SportModel.findOne({ name: promotion.sport.trim() });
 
       if (!sport) {
-        res.status(400).json({ message: "Selected sport does not exist" });
+        res.status(400).json({ message: "Izabrani sport ne postoji" });
         return;
       }
 
@@ -432,10 +432,10 @@ export class FacilityController {
       existingPromotion.discountType = promotion.discountType;
       existingPromotion.discountValue = promotion.discountValue;
       await facility.save();
-      res.json({ message: "Promotion updated successfully", facility });
+      res.json({ message: "Promocija je uspesno izmenjena", facility });
     } catch (error) {
-      console.error("Promotion update failed:", error);
-      res.status(500).json({ message: "Promotion update failed" });
+      console.error("Izmena promocije nije uspela:", error);
+      res.status(500).json({ message: "Izmena promocije nije uspela" });
     }
   };
 
@@ -447,7 +447,7 @@ export class FacilityController {
     let id = req.body.id;
 
     if (!mongoose.isValidObjectId(id)) {
-      res.status(400).json({ message: "Facility ID is not valid" });
+      res.status(400).json({ message: "ID objekta nije ispravan" });
       return;
     }
 
@@ -459,14 +459,14 @@ export class FacilityController {
       );
 
       if (!facility) {
-        res.status(404).json({ message: "Pending facility request was not found" });
+        res.status(404).json({ message: "Zahtev za objekat na cekanju nije pronadjen" });
         return;
       }
 
-      res.json({ message: status === "active" ? "Facility approved" : "Facility rejected" });
+      res.json({ message: status === "active" ? "Objekat je odobren" : "Objekat je odbijen" });
     } catch (error) {
-      console.error("Facility status update failed:", error);
-      res.status(500).json({ message: "Facility status update failed" });
+      console.error("Izmena statusa objekta nije uspela:", error);
+      res.status(500).json({ message: "Izmena statusa objekta nije uspela" });
     }
   };
 
@@ -485,26 +485,26 @@ export class FacilityController {
 
   private validatePromotion = (promotion: any) => {
     if (!promotion || !promotion.name || !promotion.sport) {
-      return "Promotion name and sport are required";
+      return "Naziv promocije i sport su obavezni";
     }
 
     const startDate = this.getPromotionStartDate(promotion.startDate);
     const endDate = this.getPromotionEndDate(promotion.endDate);
 
     if (isNaN(startDate.getTime()) || isNaN(endDate.getTime()) || endDate < startDate) {
-      return "Promotion period is not valid";
+      return "Period promocije nije ispravan";
     }
 
     if (!["percentage", "fixed"].includes(promotion.discountType)) {
-      return "Promotion discount type is not valid";
+      return "Tip popusta promocije nije ispravan";
     }
 
     if (typeof promotion.discountValue !== "number" || promotion.discountValue <= 0) {
-      return "Promotion discount value must be positive";
+      return "Vrednost popusta promocije mora biti pozitivna";
     }
 
     if (promotion.discountType === "percentage" && promotion.discountValue > 100) {
-      return "Percentage discount cannot be greater than 100";
+      return "Procentualni popust ne moze biti veci od 100";
     }
 
     return "";

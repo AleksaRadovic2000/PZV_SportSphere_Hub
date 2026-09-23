@@ -3,12 +3,15 @@ import { FormsModule } from '@angular/forms';
 import { User } from '../../../models/user';
 import { UserService } from '../../../services/user';
 
+import { getSerbianLabel } from '../../../shared/serbian-label';
+
 @Component({
   selector: 'app-admin-users',
   imports: [FormsModule],
   templateUrl: './admin-users.html',
 })
 export class AdminUsers implements OnInit {
+  label = getSerbianLabel;
   private userService = inject(UserService);
 
   users: User[] = [];

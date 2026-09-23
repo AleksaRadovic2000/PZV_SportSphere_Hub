@@ -15,7 +15,7 @@ export class ReviewController {
       !athleteUsername ||
       !["like", "dislike"].includes(reaction)
     ) {
-      res.status(400).json({ message: "Review data is not valid" });
+      res.status(400).json({ message: "Podaci o oceni nisu ispravni" });
       return;
     }
 
@@ -23,7 +23,7 @@ export class ReviewController {
     comment = comment.trim();
 
     if (comment.length > 500) {
-      res.status(400).json({ message: "Comment can contain at most 500 characters" });
+      res.status(400).json({ message: "Komentar moze imati najvise 500 karaktera" });
       return;
     }
 
@@ -35,14 +35,14 @@ export class ReviewController {
       });
 
       if (!reservation) {
-        res.status(403).json({ message: "Only an attended reservation can be reviewed" });
+        res.status(403).json({ message: "Moze se oceniti samo rezervacija kojoj je sportista prisustvovao" });
         return;
       }
 
       const existingReview = await FacilityReviewModel.findOne({ reservationId });
 
       if (existingReview) {
-        res.status(409).json({ message: "This reservation has already been reviewed" });
+        res.status(409).json({ message: "Ova rezervacija je vec ocenjena" });
         return;
       }
 
@@ -53,15 +53,15 @@ export class ReviewController {
         reaction,
         comment,
       });
-      res.status(201).json({ message: "Review added successfully", review });
+      res.status(201).json({ message: "Ocena je uspesno dodata", review });
     } catch (error: any) {
       if (error.code === 11000) {
-        res.status(409).json({ message: "This reservation has already been reviewed" });
+        res.status(409).json({ message: "Ova rezervacija je vec ocenjena" });
         return;
       }
 
-      console.error("Review creation failed:", error);
-      res.status(500).json({ message: "Review creation failed" });
+      console.error("Dodavanje ocene nije uspelo:", error);
+      res.status(500).json({ message: "Dodavanje ocene nije uspelo" });
     }
   };
 
@@ -69,7 +69,7 @@ export class ReviewController {
     let facilityId = req.params.facilityId;
 
     if (!mongoose.isValidObjectId(facilityId)) {
-      res.status(400).json({ message: "Facility ID is not valid" });
+      res.status(400).json({ message: "ID objekta nije ispravan" });
       return;
     }
 
@@ -79,8 +79,8 @@ export class ReviewController {
         .limit(5);
       res.json(reviews);
     } catch (error) {
-      console.error("Failed to load reviews:", error);
-      res.status(500).json({ message: "Failed to load reviews" });
+      console.error("Ucitavanje ocena nije uspelo:", error);
+      res.status(500).json({ message: "Ucitavanje ocena nije uspelo" });
     }
   };
 
@@ -93,7 +93,7 @@ export class ReviewController {
       !athleteUsername ||
       !mongoose.isValidObjectId(facilityId)
     ) {
-      res.status(400).json({ message: "Athlete username and facility ID are required" });
+      res.status(400).json({ message: "Korisnicko ime sportiste i ID objekta su obavezni" });
       return;
     }
 
@@ -104,8 +104,8 @@ export class ReviewController {
       const reservationIds = reviews.map((review) => review.reservationId.toString());
       res.json(reservationIds);
     } catch (error) {
-      console.error("Failed to load reviewed reservations:", error);
-      res.status(500).json({ message: "Failed to load reviewed reservations" });
+      console.error("Ucitavanje ocenjenih rezervacija nije uspelo:", error);
+      res.status(500).json({ message: "Ucitavanje ocenjenih rezervacija nije uspelo" });
     }
   };
 }

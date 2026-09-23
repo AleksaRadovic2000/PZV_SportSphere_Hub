@@ -23,7 +23,7 @@
             <td class="p-2">{{ user.username }}</td>
             <td class="p-2">{{ user.firstName }} {{ user.lastName }}</td>
             <td class="p-2">{{ user.email }}</td>
-            <td class="p-2">{{ user.role }}</td>
+            <td class="p-2">{{ label(user.role) }}</td>
             <td class="p-2">{{ user.companyName || '-' }}</td>
             <td class="p-2">
               <div class="flex flex-col gap-2 sm:flex-row">
@@ -76,7 +76,7 @@
             <td class="p-2">{{ facility.employeeUsernames.join(', ') }}</td>
             <td class="p-2">
               @for (resource of facility.resources; track resource._id || $index) {
-                <div>{{ resource.name }} ({{ resource.type }}, {{ resource.capacity }})</div>
+                <div>{{ resource.name }} ({{ label(resource.type) }}, {{ resource.capacity }})</div>
               }
             </td>
             <td class="p-2">

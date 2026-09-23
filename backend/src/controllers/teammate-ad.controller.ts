@@ -13,8 +13,8 @@ export class TeammateAdController {
       .sort({ startDateTime: 1 })
       .then((ads) => res.json(ads))
       .catch((error) => {
-        console.error("Failed to load teammate ads:", error);
-        res.status(500).json({ message: "Failed to load teammate ads" });
+        console.error("Ucitavanje oglasa za saigrace nije uspelo:", error);
+        res.status(500).json({ message: "Ucitavanje oglasa za saigrace nije uspelo" });
       });
   };
 
@@ -25,8 +25,8 @@ export class TeammateAdController {
       .sort({ startDateTime: -1 })
       .then((ads) => res.json(ads))
       .catch((error) => {
-        console.error("Failed to load athlete ads:", error);
-        res.status(500).json({ message: "Failed to load athlete ads" });
+        console.error("Ucitavanje oglasa sportiste nije uspelo:", error);
+        res.status(500).json({ message: "Ucitavanje oglasa sportiste nije uspelo" });
       });
   };
 
@@ -41,7 +41,7 @@ export class TeammateAdController {
     let playersNeeded = req.body.playersNeeded;
 
     if (!authorUsername || !sport || !city) {
-      res.status(400).json({ message: "Athlete, sport and city are required" });
+      res.status(400).json({ message: "Sportista, sport i grad su obavezni" });
       return;
     }
 
@@ -55,12 +55,12 @@ export class TeammateAdController {
       startDateTime <= new Date() ||
       endDateTime <= startDateTime
     ) {
-      res.status(400).json({ message: "Ad time interval is not valid" });
+      res.status(400).json({ message: "Vremenski interval oglasa nije ispravan" });
       return;
     }
 
     if (!Number.isInteger(playersNeeded) || playersNeeded < 1) {
-      res.status(400).json({ message: "Number of players must be a positive whole number" });
+      res.status(400).json({ message: "Broj igraca mora biti pozitivan ceo broj" });
       return;
     }
 
@@ -72,14 +72,14 @@ export class TeammateAdController {
       });
 
       if (!athlete) {
-        res.status(404).json({ message: "Active athlete was not found" });
+        res.status(404).json({ message: "Aktivan sportista nije pronadjen" });
         return;
       }
 
       const selectedSport = await SportModel.findOne({ name: sport });
 
       if (!selectedSport) {
-        res.status(400).json({ message: "Selected sport does not exist" });
+        res.status(400).json({ message: "Izabrani sport ne postoji" });
         return;
       }
 
@@ -94,10 +94,10 @@ export class TeammateAdController {
         requests: [],
       });
 
-      res.status(201).json({ message: "Teammate ad created successfully", ad });
+      res.status(201).json({ message: "Oglas za saigrace je uspesno kreiran", ad });
     } catch (error) {
-      console.error("Teammate ad creation failed:", error);
-      res.status(500).json({ message: "Teammate ad creation failed" });
+      console.error("Kreiranje oglasa za saigrace nije uspelo:", error);
+      res.status(500).json({ message: "Kreiranje oglasa za saigrace nije uspelo" });
     }
   };
 
@@ -106,7 +106,7 @@ export class TeammateAdController {
     let athleteUsername = req.body.athleteUsername;
 
     if (!mongoose.isValidObjectId(id) || !athleteUsername) {
-      res.status(400).json({ message: "Ad ID and athlete username are required" });
+      res.status(400).json({ message: "ID oglasa i korisnicko ime sportiste su obavezni" });
       return;
     }
 
@@ -120,7 +120,7 @@ export class TeammateAdController {
       });
 
       if (!athlete) {
-        res.status(404).json({ message: "Active athlete was not found" });
+        res.status(404).json({ message: "Aktivan sportista nije pronadjen" });
         return;
       }
 
@@ -131,26 +131,26 @@ export class TeammateAdController {
       });
 
       if (!ad) {
-        res.status(404).json({ message: "Active teammate ad was not found" });
+        res.status(404).json({ message: "Aktivan oglas za saigrace nije pronadjen" });
         return;
       }
 
       if (ad.authorUsername === athleteUsername) {
-        res.status(400).json({ message: "Author cannot join their own ad" });
+        res.status(400).json({ message: "Autor ne moze da se prijavi na sopstveni oglas" });
         return;
       }
 
       if (ad.requests.some((request) => request.athleteUsername === athleteUsername)) {
-        res.status(409).json({ message: "Join request has already been sent" });
+        res.status(409).json({ message: "Zahtev za pridruzivanje je vec poslat" });
         return;
       }
 
       ad.requests.push({ athleteUsername, status: "pending" });
       await ad.save();
-      res.json({ message: "Join request sent successfully", ad });
+      res.json({ message: "Zahtev za pridruzivanje je uspesno poslat", ad });
     } catch (error) {
-      console.error("Join request failed:", error);
-      res.status(500).json({ message: "Join request failed" });
+      console.error("Slanje zahteva za pridruzivanje nije uspelo:", error);
+      res.status(500).json({ message: "Slanje zahteva za pridruzivanje nije uspelo" });
     }
   };
 
@@ -166,7 +166,7 @@ export class TeammateAdController {
       !authorUsername ||
       !["accepted", "rejected"].includes(status)
     ) {
-      res.status(400).json({ message: "Request decision data is not valid" });
+      res.status(400).json({ message: "Podaci o odluci za zahtev nisu ispravni" });
       return;
     }
 
@@ -180,14 +180,14 @@ export class TeammateAdController {
       });
 
       if (!ad) {
-        res.status(404).json({ message: "Active ad owned by this athlete was not found" });
+        res.status(404).json({ message: "Aktivan oglas ovog sportiste nije pronadjen" });
         return;
       }
 
       const request = ad.requests.id(requestId);
 
       if (!request || request.status !== "pending") {
-        res.status(404).json({ message: "Pending join request was not found" });
+        res.status(404).json({ message: "Zahtev za pridruzivanje na cekanju nije pronadjen" });
         return;
       }
 
@@ -199,10 +199,10 @@ export class TeammateAdController {
       }
 
       await ad.save();
-      res.json({ message: "Join request resolved successfully", ad });
+      res.json({ message: "Zahtev za pridruzivanje je uspesno obradjen", ad });
     } catch (error) {
-      console.error("Join request resolution failed:", error);
-      res.status(500).json({ message: "Join request resolution failed" });
+      console.error("Obrada zahteva za pridruzivanje nije uspela:", error);
+      res.status(500).json({ message: "Obrada zahteva za pridruzivanje nije uspela" });
     }
   };
 
@@ -211,7 +211,7 @@ export class TeammateAdController {
     let authorUsername = req.body.authorUsername;
 
     if (!mongoose.isValidObjectId(id) || !authorUsername) {
-      res.status(400).json({ message: "Ad ID and author username are required" });
+      res.status(400).json({ message: "ID oglasa i korisnicko ime autora su obavezni" });
       return;
     }
 
@@ -225,14 +225,14 @@ export class TeammateAdController {
       );
 
       if (!ad) {
-        res.status(404).json({ message: "Active ad owned by this athlete was not found" });
+        res.status(404).json({ message: "Aktivan oglas ovog sportiste nije pronadjen" });
         return;
       }
 
-      res.json({ message: "Teammate ad closed successfully", ad });
+      res.json({ message: "Oglas za saigrace je uspesno zatvoren", ad });
     } catch (error) {
-      console.error("Teammate ad closing failed:", error);
-      res.status(500).json({ message: "Teammate ad closing failed" });
+      console.error("Zatvaranje oglasa za saigrace nije uspelo:", error);
+      res.status(500).json({ message: "Zatvaranje oglasa za saigrace nije uspelo" });
     }
   };
 }

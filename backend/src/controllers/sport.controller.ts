@@ -9,8 +9,8 @@ export class SportController {
         res.json(sports);
       })
       .catch((error) => {
-        console.error("Failed to load sports:", error);
-        res.status(500).json({ message: "Failed to load sports" });
+        console.error("Ucitavanje sportova nije uspelo:", error);
+        res.status(500).json({ message: "Ucitavanje sportova nije uspelo" });
       });
   };
 
@@ -18,7 +18,7 @@ export class SportController {
     let name = req.body.name;
 
     if (!name || !name.trim()) {
-      res.status(400).json({ message: "Sport name is required" });
+      res.status(400).json({ message: "Naziv sporta je obavezan" });
       return;
     }
 
@@ -29,15 +29,15 @@ export class SportController {
       const exists = sports.some((sport) => sport.name.toLowerCase() === name.toLowerCase());
 
       if (exists) {
-        res.status(409).json({ message: "Sport already exists" });
+        res.status(409).json({ message: "Sport vec postoji" });
         return;
       }
 
       const sport = await SportModel.create({ name });
-      res.status(201).json({ message: "Sport added successfully", sport });
+      res.status(201).json({ message: "Sport je uspesno dodat", sport });
     } catch (error) {
-      console.error("Sport creation failed:", error);
-      res.status(500).json({ message: "Sport creation failed" });
+      console.error("Dodavanje sporta nije uspelo:", error);
+      res.status(500).json({ message: "Dodavanje sporta nije uspelo" });
     }
   };
 }

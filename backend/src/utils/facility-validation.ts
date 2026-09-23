@@ -7,11 +7,11 @@ export const validateFacility = (facility: any) => {
     !facility.address?.trim() ||
     !facility.description?.trim()
   ) {
-    return "Name, city, address and description are required";
+    return "Naziv, grad, adresa i opis su obavezni";
   }
 
   if (!Number.isInteger(facility.allowedNoShows) || facility.allowedNoShows < 1) {
-    return "Allowed no-shows must be a positive whole number";
+    return "Broj dozvoljenih nedolazaka mora biti pozitivan ceo broj";
   }
 
   const latitude = facility.location?.latitude;
@@ -25,21 +25,21 @@ export const validateFacility = (facility: any) => {
     longitude < -180 ||
     longitude > 180
   ) {
-    return "Location coordinates are not valid";
+    return "Koordinate lokacije nisu ispravne";
   }
 
   if (!Array.isArray(facility.workingHours) || facility.workingHours.length === 0) {
-    return "Working hours are required";
+    return "Radno vreme je obavezno";
   }
 
   if (facility.workingHours.length > 7) {
-    return "Working hours can contain at most seven days";
+    return "Radno vreme moze sadrzati najvise sedam dana";
   }
 
   const workingDays = facility.workingHours.map((item: any) => item.day);
 
   if (new Set(workingDays).size !== workingDays.length) {
-    return "A working day can be entered only once";
+    return "Isti radni dan moze biti unet samo jednom";
   }
 
   for (const item of facility.workingHours) {
@@ -51,12 +51,12 @@ export const validateFacility = (facility: any) => {
       !timePattern.test(item.to) ||
       item.from >= item.to
     ) {
-      return "Working hours are not valid";
+      return "Radno vreme nije ispravno";
     }
   }
 
   if (!Array.isArray(facility.resources) || facility.resources.length === 0) {
-    return "At least one resource is required";
+    return "Potreban je najmanje jedan teren ili hala";
   }
 
   const resourceNames = facility.resources.map((resource: any) =>
@@ -64,11 +64,11 @@ export const validateFacility = (facility: any) => {
   );
 
   if (resourceNames.some((name: string) => !name)) {
-    return "Every resource must have a name";
+    return "Svaki teren ili hala mora imati naziv";
   }
 
   if (new Set(resourceNames).size !== resourceNames.length) {
-    return "Resource names must be unique within a facility";
+    return "Nazivi terena i hala moraju biti jedinstveni u okviru objekta";
   }
 
   const hasOutdoorResource = facility.resources.some(
@@ -76,30 +76,30 @@ export const validateFacility = (facility: any) => {
   );
 
   if (!hasOutdoorResource) {
-    return "At least one outdoor resource with capacity of four is required";
+    return "Potreban je najmanje jedan otvoreni teren kapaciteta najmanje cetiri osobe";
   }
 
   for (const resource of facility.resources) {
     if (!["outdoor", "indoor", "hall"].includes(resource.type)) {
-      return "Resource type is not valid";
+      return "Tip terena ili hale nije ispravan";
     }
 
     if (!Number.isInteger(resource.capacity) || resource.capacity < 1) {
-      return "Resource capacity must be a positive whole number";
+      return "Kapacitet terena ili hale mora biti pozitivan ceo broj";
     }
 
     if ((resource.equipmentDescription || "").length > 300) {
-      return "Equipment description can contain at most 300 characters";
+      return "Opis opreme moze imati najvise 300 karaktera";
     }
 
     if (!Array.isArray(resource.sportPrices) || resource.sportPrices.length === 0) {
-      return "Every resource must have at least one sport and price";
+      return "Svaki teren ili hala mora imati najmanje jedan sport i cenu";
     }
 
     const sports = resource.sportPrices.map((price: any) => price.sport?.trim());
 
     if (sports.some((sport: string) => !sport) || new Set(sports).size !== sports.length) {
-      return "Sports within one resource must be selected and unique";
+      return "Sportovi jednog terena ili hale moraju biti izabrani i jedinstveni";
     }
 
     if (
@@ -107,16 +107,16 @@ export const validateFacility = (facility: any) => {
         (price: any) => typeof price.pricePerHour !== "number" || price.pricePerHour <= 0,
       )
     ) {
-      return "Price per hour must be positive";
+      return "Cena po satu mora biti pozitivna";
     }
   }
 
   if (!Array.isArray(facility.employeeUsernames) || facility.employeeUsernames.length === 0) {
-    return "At least one employee is required";
+    return "Potreban je najmanje jedan zaposleni";
   }
 
   if (facility.employeeUsernames.length > 2) {
-    return "A facility can have at most two employees";
+    return "Objekat moze imati najvise dva zaposlena";
   }
 
   if (!Array.isArray(facility.promotions)) {
@@ -137,7 +137,7 @@ export const validateFacility = (facility: any) => {
       isNaN(endDate.getTime()) ||
       startDate > endDate
     ) {
-      return "Promotion data is not valid";
+      return "Podaci o promociji nisu ispravni";
     }
   }
 

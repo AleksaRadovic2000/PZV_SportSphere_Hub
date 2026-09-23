@@ -6,12 +6,15 @@ import { SportService } from '../../../services/sport';
 import { TeammateAdService } from '../../../services/teammate-ad';
 import { UserService } from '../../../services/user';
 
+import { getSerbianLabel } from '../../../shared/serbian-label';
+
 @Component({
   selector: 'app-teammate-ads',
   imports: [FormsModule],
   templateUrl: './teammate-ads.html',
 })
 export class TeammateAds implements OnInit {
+  label = getSerbianLabel;
   private teammateAdService = inject(TeammateAdService);
   private sportService = inject(SportService);
   private userService = inject(UserService);

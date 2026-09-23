@@ -6,12 +6,15 @@ import { User } from '../../../models/user';
 import { FacilityService } from '../../../services/facility';
 import { UserService } from '../../../services/user';
 
+import { getSerbianLabel } from '../../../shared/serbian-label';
+
 @Component({
   selector: 'app-employee-profile',
   imports: [FormsModule, RouterLink],
   templateUrl: './employee-profile.html',
 })
 export class EmployeeProfile implements OnInit {
+  label = getSerbianLabel;
   private userService = inject(UserService);
   private facilityService = inject(FacilityService);
 

@@ -25,7 +25,7 @@ export class ReportController {
     const period = this.getMonthPeriod(month);
 
     if (!mongoose.isValidObjectId(facilityId) || !employeeUsername || !period) {
-      res.status(400).json({ message: "Report parameters are not valid" });
+      res.status(400).json({ message: "Parametri izvestaja nisu ispravni" });
       return;
     }
 
@@ -36,7 +36,7 @@ export class ReportController {
       });
 
       if (!facility) {
-        res.status(403).json({ message: "Employee does not manage this facility" });
+        res.status(403).json({ message: "Zaposleni ne upravlja ovim objektom" });
         return;
       }
 
@@ -92,8 +92,8 @@ export class ReportController {
       document.pipe(res);
       document.end();
     } catch (error) {
-      console.error("Occupancy report failed:", error);
-      res.status(500).json({ message: "Occupancy report failed" });
+      console.error("Kreiranje izvestaja o zauzetosti nije uspelo:", error);
+      res.status(500).json({ message: "Kreiranje izvestaja o zauzetosti nije uspelo" });
     }
   };
 
@@ -108,7 +108,7 @@ export class ReportController {
     const period = this.getMonthPeriod(month);
 
     if (!mongoose.isValidObjectId(facilityId) || !employeeUsername || !period) {
-      res.status(400).json({ message: "Report parameters are not valid" });
+      res.status(400).json({ message: "Parametri izvestaja nisu ispravni" });
       return;
     }
 
@@ -119,7 +119,7 @@ export class ReportController {
       });
 
       if (!facility) {
-        res.status(403).json({ message: "Employee does not manage this facility" });
+        res.status(403).json({ message: "Zaposleni ne upravlja ovim objektom" });
         return;
       }
 
@@ -161,8 +161,8 @@ export class ReportController {
       document.pipe(res);
       document.end();
     } catch (error) {
-      console.error("Sales report failed:", error);
-      res.status(500).json({ message: "Sales report failed" });
+      console.error("Kreiranje izvestaja o prodaji nije uspelo:", error);
+      res.status(500).json({ message: "Kreiranje izvestaja o prodaji nije uspelo" });
     }
   };
 

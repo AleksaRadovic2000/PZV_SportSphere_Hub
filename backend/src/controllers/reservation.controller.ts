@@ -13,7 +13,7 @@ export class ReservationController {
     let username = req.params.username;
 
     if (!username) {
-      res.status(400).json({ message: "Athlete username is required" });
+      res.status(400).json({ message: "Korisnicko ime sportiste je obavezno" });
       return;
     }
 
@@ -66,8 +66,8 @@ export class ReservationController {
         totalEquipmentSpending: spendingResult[0]?.total || 0,
       });
     } catch (error) {
-      console.error("Failed to load athlete statistics:", error);
-      res.status(500).json({ message: "Failed to load athlete statistics" });
+      console.error("Ucitavanje statistike sportiste nije uspelo:", error);
+      res.status(500).json({ message: "Ucitavanje statistike sportiste nije uspelo" });
     }
   };
 
@@ -84,7 +84,7 @@ export class ReservationController {
       isNaN(rangeEnd.getTime()) ||
       rangeStart >= rangeEnd
     ) {
-      res.status(400).json({ message: "Schedule parameters are not valid" });
+      res.status(400).json({ message: "Parametri rasporeda nisu ispravni" });
       return;
     }
 
@@ -123,8 +123,8 @@ export class ReservationController {
 
       res.json(schedule);
     } catch (error) {
-      console.error("Failed to load reservation schedule:", error);
-      res.status(500).json({ message: "Failed to load reservation schedule" });
+      console.error("Ucitavanje rasporeda rezervacija nije uspelo:", error);
+      res.status(500).json({ message: "Ucitavanje rasporeda rezervacija nije uspelo" });
     }
   };
 
@@ -139,7 +139,7 @@ export class ReservationController {
     let endDateTime = new Date(endDateTimeValue);
 
     if (!athleteUsername || !sport) {
-      res.status(400).json({ message: "Athlete username and sport are required" });
+      res.status(400).json({ message: "Korisnicko ime sportiste i sport su obavezni" });
       return;
     }
 
@@ -154,7 +154,7 @@ export class ReservationController {
       });
 
       if (!athlete) {
-        res.status(404).json({ message: "Active athlete was not found" });
+        res.status(404).json({ message: "Aktivan sportista nije pronadjen" });
         return;
       }
 
@@ -188,10 +188,10 @@ export class ReservationController {
         status: "scheduled",
       });
 
-      res.status(201).json({ message: "Reservation created successfully", reservation });
+      res.status(201).json({ message: "Rezervacija je uspesno kreirana", reservation });
     } catch (error) {
-      console.error("Reservation creation failed:", error);
-      res.status(500).json({ message: "Reservation creation failed" });
+      console.error("Kreiranje rezervacije nije uspelo:", error);
+      res.status(500).json({ message: "Kreiranje rezervacije nije uspelo" });
     }
   };
 
@@ -231,8 +231,8 @@ export class ReservationController {
 
       res.json(result);
     } catch (error) {
-      console.error("Failed to load athlete reservations:", error);
-      res.status(500).json({ message: "Failed to load athlete reservations" });
+      console.error("Ucitavanje rezervacija sportiste nije uspelo:", error);
+      res.status(500).json({ message: "Ucitavanje rezervacija sportiste nije uspelo" });
     }
   };
 
@@ -246,7 +246,7 @@ export class ReservationController {
     }
 
     if (!mongoose.isValidObjectId(facilityId) || !employeeUsername) {
-      res.status(400).json({ message: "Facility ID and employee username are required" });
+      res.status(400).json({ message: "ID objekta i korisnicko ime zaposlenog su obavezni" });
       return;
     }
 
@@ -257,7 +257,7 @@ export class ReservationController {
       });
 
       if (!facility) {
-        res.status(403).json({ message: "Employee does not manage this facility" });
+        res.status(403).json({ message: "Zaposleni ne upravlja ovim objektom" });
         return;
       }
 
@@ -277,8 +277,8 @@ export class ReservationController {
 
       res.json(result);
     } catch (error) {
-      console.error("Failed to load facility reservations:", error);
-      res.status(500).json({ message: "Failed to load facility reservations" });
+      console.error("Ucitavanje rezervacija objekta nije uspelo:", error);
+      res.status(500).json({ message: "Ucitavanje rezervacija objekta nije uspelo" });
     }
   };
 
@@ -288,7 +288,7 @@ export class ReservationController {
     let attended = req.body.attended;
 
     if (!mongoose.isValidObjectId(id) || !employeeUsername || typeof attended !== "boolean") {
-      res.status(400).json({ message: "Attendance data is not valid" });
+      res.status(400).json({ message: "Podaci o dolasku nisu ispravni" });
       return;
     }
 
@@ -298,7 +298,7 @@ export class ReservationController {
       const reservation = await ReservationModel.findOne({ _id: id, status: "scheduled" });
 
       if (!reservation) {
-        res.status(404).json({ message: "Scheduled reservation was not found" });
+        res.status(404).json({ message: "Zakazana rezervacija nije pronadjena" });
         return;
       }
 
@@ -308,7 +308,7 @@ export class ReservationController {
       });
 
       if (!facility) {
-        res.status(403).json({ message: "Employee cannot update this reservation" });
+        res.status(403).json({ message: "Zaposleni ne moze da izmeni ovu rezervaciju" });
         return;
       }
 
@@ -316,16 +316,16 @@ export class ReservationController {
       const attendanceDeadline = new Date(reservation.startDateTime.getTime() + 10 * 60 * 1000);
 
       if (now < reservation.startDateTime || now > attendanceDeadline) {
-        res.status(400).json({ message: "Attendance can be marked during the allowed time window" });
+        res.status(400).json({ message: "Dolazak se moze oznaciti samo u dozvoljenom vremenskom periodu" });
         return;
       }
 
       reservation.status = attended ? "attended" : "no_show";
       await reservation.save();
-      res.json({ message: "Reservation attendance updated successfully", reservation });
+      res.json({ message: "Dolazak na rezervaciju je uspesno izmenjen", reservation });
     } catch (error) {
-      console.error("Reservation attendance update failed:", error);
-      res.status(500).json({ message: "Reservation attendance update failed" });
+      console.error("Izmena dolaska na rezervaciju nije uspela:", error);
+      res.status(500).json({ message: "Izmena dolaska na rezervaciju nije uspela" });
     }
   };
 
@@ -338,7 +338,7 @@ export class ReservationController {
     let endDateTime = new Date(endDateTimeValue);
 
     if (!mongoose.isValidObjectId(id) || !employeeUsername) {
-      res.status(400).json({ message: "Reservation ID and employee username are required" });
+      res.status(400).json({ message: "ID rezervacije i korisnicko ime zaposlenog su obavezni" });
       return;
     }
 
@@ -348,7 +348,7 @@ export class ReservationController {
       const reservation = await ReservationModel.findOne({ _id: id, status: "scheduled" });
 
       if (!reservation) {
-        res.status(404).json({ message: "Scheduled reservation was not found" });
+        res.status(404).json({ message: "Zakazana rezervacija nije pronadjena" });
         return;
       }
 
@@ -361,12 +361,12 @@ export class ReservationController {
       );
 
       if (!facility || !resource) {
-        res.status(403).json({ message: "Employee cannot move this reservation" });
+        res.status(403).json({ message: "Zaposleni ne moze da premesti ovu rezervaciju" });
         return;
       }
 
       if (!["indoor", "hall"].includes(resource.type)) {
-        res.status(400).json({ message: "Only indoor reservations can be moved" });
+        res.status(400).json({ message: "Mogu se premestati samo rezervacije zatvorenih terena" });
         return;
       }
 
@@ -387,10 +387,10 @@ export class ReservationController {
       reservation.startDateTime = startDateTime;
       reservation.endDateTime = endDateTime;
       await reservation.save();
-      res.json({ message: "Reservation moved successfully", reservation });
+      res.json({ message: "Rezervacija je uspesno premestena", reservation });
     } catch (error) {
-      console.error("Reservation move failed:", error);
-      res.status(500).json({ message: "Reservation move failed" });
+      console.error("Premestanje rezervacije nije uspelo:", error);
+      res.status(500).json({ message: "Premestanje rezervacije nije uspelo" });
     }
   };
 
@@ -399,7 +399,7 @@ export class ReservationController {
     let athleteUsername = req.body.athleteUsername;
 
     if (!mongoose.isValidObjectId(id) || !athleteUsername) {
-      res.status(400).json({ message: "Reservation ID and athlete username are required" });
+      res.status(400).json({ message: "ID rezervacije i korisnicko ime sportiste su obavezni" });
       return;
     }
 
@@ -413,7 +413,7 @@ export class ReservationController {
       });
 
       if (!reservation) {
-        res.status(404).json({ message: "Scheduled reservation was not found" });
+        res.status(404).json({ message: "Zakazana rezervacija nije pronadjena" });
         return;
       }
 
@@ -421,16 +421,16 @@ export class ReservationController {
         (reservation.startDateTime.getTime() - Date.now()) / hourInMilliseconds;
 
       if (hoursUntilStart < 12) {
-        res.status(400).json({ message: "Reservation can be cancelled at least 12 hours before start" });
+        res.status(400).json({ message: "Rezervacija se moze otkazati najkasnije 12 sati pre pocetka" });
         return;
       }
 
       reservation.status = "cancelled";
       await reservation.save();
-      res.json({ message: "Reservation cancelled successfully" });
+      res.json({ message: "Rezervacija je uspesno otkazana" });
     } catch (error) {
-      console.error("Reservation cancellation failed:", error);
-      res.status(500).json({ message: "Reservation cancellation failed" });
+      console.error("Otkazivanje rezervacije nije uspelo:", error);
+      res.status(500).json({ message: "Otkazivanje rezervacije nije uspelo" });
     }
   };
 
@@ -444,15 +444,15 @@ export class ReservationController {
     athleteUsername = "",
   ) => {
     if (!mongoose.isValidObjectId(facilityId) || !mongoose.isValidObjectId(resourceId)) {
-      return { message: "Facility or resource ID is not valid", pricePerHour: 0 };
+      return { message: "ID objekta ili terena nije ispravan", pricePerHour: 0 };
     }
 
     if (isNaN(startDateTime.getTime()) || isNaN(endDateTime.getTime())) {
-      return { message: "Reservation date and time are not valid", pricePerHour: 0 };
+      return { message: "Datum i vreme rezervacije nisu ispravni", pricePerHour: 0 };
     }
 
     if (startDateTime <= new Date()) {
-      return { message: "Reservation must start in the future", pricePerHour: 0 };
+      return { message: "Rezervacija mora poceti u buducnosti", pricePerHour: 0 };
     }
 
     if (
@@ -461,13 +461,13 @@ export class ReservationController {
       endDateTime.getMinutes() !== 0 ||
       endDateTime.getSeconds() !== 0
     ) {
-      return { message: "Reservation must start and end on a full hour", pricePerHour: 0 };
+      return { message: "Rezervacija mora poceti i zavrsiti se na pun sat", pricePerHour: 0 };
     }
 
     const duration = endDateTime.getTime() - startDateTime.getTime();
 
     if (duration < hourInMilliseconds || duration % hourInMilliseconds !== 0) {
-      return { message: "Reservation must last one or more whole hours", pricePerHour: 0 };
+      return { message: "Rezervacija mora trajati jedan ili vise punih sati", pricePerHour: 0 };
     }
 
     if (
@@ -475,13 +475,13 @@ export class ReservationController {
       startDateTime.getMonth() !== endDateTime.getMonth() ||
       startDateTime.getDate() !== endDateTime.getDate()
     ) {
-      return { message: "Reservation must start and end on the same day", pricePerHour: 0 };
+      return { message: "Rezervacija mora poceti i zavrsiti se istog dana", pricePerHour: 0 };
     }
 
     const facility = await FacilityModel.findOne({ _id: facilityId, status: "active" });
 
     if (!facility) {
-      return { message: "Active facility was not found", pricePerHour: 0 };
+      return { message: "Aktivan objekat nije pronadjen", pricePerHour: 0 };
     }
 
     if (athleteUsername) {
@@ -498,7 +498,7 @@ export class ReservationController {
 
       if (reservationNoShows + trainingNoShows >= facility.allowedNoShows) {
         return {
-          message: "Athlete has reached the allowed number of no-shows for this facility",
+          message: "Sportista je dostigao dozvoljeni broj nedolazaka za ovaj objekat",
           pricePerHour: 0,
         };
       }
@@ -507,13 +507,13 @@ export class ReservationController {
     const resource = facility.resources.find((item) => item._id.toString() === resourceId);
 
     if (!resource) {
-      return { message: "Resource was not found in this facility", pricePerHour: 0 };
+      return { message: "Teren nije pronadjen u ovom objektu", pricePerHour: 0 };
     }
 
     const sportPrice = resource.sportPrices.find((item) => item.sport === sport);
 
     if (!sportPrice) {
-      return { message: "Selected sport is not available on this resource", pricePerHour: 0 };
+      return { message: "Izabrani sport nije dostupan na ovom terenu", pricePerHour: 0 };
     }
 
     const javascriptDay = startDateTime.getDay();
@@ -521,7 +521,7 @@ export class ReservationController {
     const workingHours = facility.workingHours.find((item) => item.day === day);
 
     if (!workingHours) {
-      return { message: "Facility does not work on the selected day", pricePerHour: 0 };
+      return { message: "Objekat ne radi izabranog dana", pricePerHour: 0 };
     }
 
     const startMinutes = startDateTime.getHours() * 60 + startDateTime.getMinutes();
@@ -530,7 +530,7 @@ export class ReservationController {
     const workingEnd = this.timeToMinutes(workingHours.to);
 
     if (startMinutes < workingStart || endMinutes > workingEnd) {
-      return { message: "Reservation must be within facility working hours", pricePerHour: 0 };
+      return { message: "Rezervacija mora biti u okviru radnog vremena objekta", pricePerHour: 0 };
     }
 
     const reservationQuery: any = {
@@ -547,7 +547,7 @@ export class ReservationController {
     const overlappingReservation = await ReservationModel.findOne(reservationQuery);
 
     if (overlappingReservation) {
-      return { message: "Selected time overlaps an existing reservation", pricePerHour: 0 };
+      return { message: "Izabrani termin se preklapa sa postojecom rezervacijom", pricePerHour: 0 };
     }
 
     const overlappingTraining = await TrainingModel.findOne({
@@ -558,7 +558,7 @@ export class ReservationController {
     });
 
     if (overlappingTraining) {
-      return { message: "Selected time overlaps an individual training", pricePerHour: 0 };
+      return { message: "Izabrani termin se preklapa sa individualnim treningom", pricePerHour: 0 };
     }
 
     return { message: "", pricePerHour: sportPrice.pricePerHour };

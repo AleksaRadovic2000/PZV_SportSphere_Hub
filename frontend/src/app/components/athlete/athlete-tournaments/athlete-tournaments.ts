@@ -3,12 +3,15 @@ import { Tournament } from '../../../models/tournament';
 import { TournamentService } from '../../../services/tournament';
 import { UserService } from '../../../services/user';
 
+import { getSerbianLabel } from '../../../shared/serbian-label';
+
 @Component({
   selector: 'app-athlete-tournaments',
   imports: [],
   templateUrl: './athlete-tournaments.html',
 })
 export class AthleteTournaments implements OnInit {
+  label = getSerbianLabel;
   private tournamentService = inject(TournamentService);
   private userService = inject(UserService);
 

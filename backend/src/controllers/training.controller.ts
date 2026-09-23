@@ -27,8 +27,8 @@ export class TrainingController {
 
       res.json(result);
     } catch (error) {
-      console.error("Failed to load trainers:", error);
-      res.status(500).json({ message: "Failed to load trainers" });
+      console.error("Ucitavanje trenera nije uspelo:", error);
+      res.status(500).json({ message: "Ucitavanje trenera nije uspelo" });
     }
   };
 
@@ -36,7 +36,7 @@ export class TrainingController {
     let id = req.body.id;
 
     if (!mongoose.isValidObjectId(id)) {
-      res.status(400).json({ message: "Trainer ID is not valid" });
+      res.status(400).json({ message: "ID trenera nije ispravan" });
       return;
     }
 
@@ -44,14 +44,14 @@ export class TrainingController {
       const trainer = await TrainerModel.findByIdAndUpdate(id, { active: false }, { new: true });
 
       if (!trainer) {
-        res.status(404).json({ message: "Trainer was not found" });
+        res.status(404).json({ message: "Trener nije pronadjen" });
         return;
       }
 
-      res.json({ message: "Trainer deactivated successfully" });
+      res.json({ message: "Trener je uspesno deaktiviran" });
     } catch (error) {
-      console.error("Trainer deactivation failed:", error);
-      res.status(500).json({ message: "Trainer deactivation failed" });
+      console.error("Deaktiviranje trenera nije uspelo:", error);
+      res.status(500).json({ message: "Deaktiviranje trenera nije uspelo" });
     }
   };
 
@@ -60,7 +60,7 @@ export class TrainingController {
     let sport = req.body.sport;
 
     if (!mongoose.isValidObjectId(facilityId) || !sport) {
-      res.status(400).json({ message: "Facility and sport are required" });
+      res.status(400).json({ message: "Objekat i sport su obavezni" });
       return;
     }
 
@@ -70,7 +70,7 @@ export class TrainingController {
       const facility = await FacilityModel.findOne({ _id: facilityId, status: "active" });
 
       if (!facility) {
-        res.status(404).json({ message: "Active facility was not found" });
+        res.status(404).json({ message: "Aktivan objekat nije pronadjen" });
         return;
       }
 
@@ -82,8 +82,8 @@ export class TrainingController {
 
       res.json(trainers);
     } catch (error) {
-      console.error("Trainer search failed:", error);
-      res.status(500).json({ message: "Trainer search failed" });
+      console.error("Pretraga trenera nije uspela:", error);
+      res.status(500).json({ message: "Pretraga trenera nije uspela" });
     }
   };
 
@@ -91,7 +91,7 @@ export class TrainingController {
     let trainerId = req.body.trainerId;
 
     if (!mongoose.isValidObjectId(trainerId)) {
-      res.status(400).json({ message: "Trainer ID is not valid" });
+      res.status(400).json({ message: "ID trenera nije ispravan" });
       return;
     }
 
@@ -110,8 +110,8 @@ export class TrainingController {
 
       res.json(schedule);
     } catch (error) {
-      console.error("Failed to load trainer schedule:", error);
-      res.status(500).json({ message: "Failed to load trainer schedule" });
+      console.error("Ucitavanje rasporeda trenera nije uspelo:", error);
+      res.status(500).json({ message: "Ucitavanje rasporeda trenera nije uspelo" });
     }
   };
 
@@ -127,7 +127,7 @@ export class TrainingController {
     let endDateTime = new Date(endDateTimeValue);
 
     if (!athleteUsername || !sport) {
-      res.status(400).json({ message: "Athlete username and sport are required" });
+      res.status(400).json({ message: "Korisnicko ime sportiste i sport su obavezni" });
       return;
     }
 
@@ -142,7 +142,7 @@ export class TrainingController {
       });
 
       if (!athlete) {
-        res.status(404).json({ message: "Active athlete was not found" });
+        res.status(404).json({ message: "Aktivan sportista nije pronadjen" });
         return;
       }
 
@@ -178,10 +178,10 @@ export class TrainingController {
         status: "scheduled",
       });
 
-      res.status(201).json({ message: "Training scheduled successfully", training });
+      res.status(201).json({ message: "Trening je uspesno zakazan", training });
     } catch (error) {
-      console.error("Training scheduling failed:", error);
-      res.status(500).json({ message: "Training scheduling failed" });
+      console.error("Zakazivanje treninga nije uspelo:", error);
+      res.status(500).json({ message: "Zakazivanje treninga nije uspelo" });
     }
   };
 
@@ -195,8 +195,8 @@ export class TrainingController {
       const result = await this.addTrainingDetails(trainings);
       res.json(result);
     } catch (error) {
-      console.error("Failed to load athlete trainings:", error);
-      res.status(500).json({ message: "Failed to load athlete trainings" });
+      console.error("Ucitavanje treninga sportiste nije uspelo:", error);
+      res.status(500).json({ message: "Ucitavanje treninga sportiste nije uspelo" });
     }
   };
 
@@ -210,7 +210,7 @@ export class TrainingController {
     }
 
     if (!mongoose.isValidObjectId(facilityId) || !employeeUsername) {
-      res.status(400).json({ message: "Facility ID and employee username are required" });
+      res.status(400).json({ message: "ID objekta i korisnicko ime zaposlenog su obavezni" });
       return;
     }
 
@@ -221,7 +221,7 @@ export class TrainingController {
       });
 
       if (!facility) {
-        res.status(403).json({ message: "Employee does not manage this facility" });
+        res.status(403).json({ message: "Zaposleni ne upravlja ovim objektom" });
         return;
       }
 
@@ -229,8 +229,8 @@ export class TrainingController {
       const result = await this.addTrainingDetails(trainings);
       res.json(result);
     } catch (error) {
-      console.error("Failed to load facility trainings:", error);
-      res.status(500).json({ message: "Failed to load facility trainings" });
+      console.error("Ucitavanje treninga objekta nije uspelo:", error);
+      res.status(500).json({ message: "Ucitavanje treninga objekta nije uspelo" });
     }
   };
 
@@ -240,7 +240,7 @@ export class TrainingController {
     let attended = req.body.attended;
 
     if (!mongoose.isValidObjectId(id) || !employeeUsername || typeof attended !== "boolean") {
-      res.status(400).json({ message: "Attendance data is not valid" });
+      res.status(400).json({ message: "Podaci o dolasku nisu ispravni" });
       return;
     }
 
@@ -250,7 +250,7 @@ export class TrainingController {
       const training = await TrainingModel.findOne({ _id: id, status: "scheduled" });
 
       if (!training) {
-        res.status(404).json({ message: "Scheduled training was not found" });
+        res.status(404).json({ message: "Zakazan trening nije pronadjen" });
         return;
       }
 
@@ -265,7 +265,7 @@ export class TrainingController {
       });
 
       if (!employee || !facility) {
-        res.status(403).json({ message: "Employee cannot update this training" });
+        res.status(403).json({ message: "Zaposleni ne moze da izmeni ovaj trening" });
         return;
       }
 
@@ -273,16 +273,16 @@ export class TrainingController {
       const attendanceDeadline = new Date(training.startDateTime.getTime() + 10 * 60 * 1000);
 
       if (now < training.startDateTime || now > attendanceDeadline) {
-        res.status(400).json({ message: "Attendance can be marked during the allowed time window" });
+        res.status(400).json({ message: "Dolazak se moze oznaciti samo u dozvoljenom vremenskom periodu" });
         return;
       }
 
       training.status = attended ? "attended" : "no_show";
       await training.save();
-      res.json({ message: "Training attendance updated successfully", training });
+      res.json({ message: "Dolazak na trening je uspesno izmenjen", training });
     } catch (error) {
-      console.error("Training attendance update failed:", error);
-      res.status(500).json({ message: "Training attendance update failed" });
+      console.error("Izmena dolaska na trening nije uspela:", error);
+      res.status(500).json({ message: "Izmena dolaska na trening nije uspela" });
     }
   };
 
@@ -295,7 +295,7 @@ export class TrainingController {
     let endDateTime = new Date(endDateTimeValue);
 
     if (!mongoose.isValidObjectId(id) || !employeeUsername) {
-      res.status(400).json({ message: "Training ID and employee username are required" });
+      res.status(400).json({ message: "ID treninga i korisnicko ime zaposlenog su obavezni" });
       return;
     }
 
@@ -305,7 +305,7 @@ export class TrainingController {
       const training = await TrainingModel.findOne({ _id: id, status: "scheduled" });
 
       if (!training) {
-        res.status(404).json({ message: "Scheduled training was not found" });
+        res.status(404).json({ message: "Zakazan trening nije pronadjen" });
         return;
       }
 
@@ -318,12 +318,12 @@ export class TrainingController {
       );
 
       if (!facility || !resource) {
-        res.status(403).json({ message: "Employee cannot move this training" });
+        res.status(403).json({ message: "Zaposleni ne moze da premesti ovaj trening" });
         return;
       }
 
       if (!["indoor", "hall"].includes(resource.type)) {
-        res.status(400).json({ message: "Only indoor trainings can be moved" });
+        res.status(400).json({ message: "Mogu se premestati samo treninzi u zatvorenom prostoru" });
         return;
       }
 
@@ -345,10 +345,10 @@ export class TrainingController {
       training.startDateTime = startDateTime;
       training.endDateTime = endDateTime;
       await training.save();
-      res.json({ message: "Training moved successfully", training });
+      res.json({ message: "Trening je uspesno premesten", training });
     } catch (error) {
-      console.error("Training move failed:", error);
-      res.status(500).json({ message: "Training move failed" });
+      console.error("Premestanje treninga nije uspelo:", error);
+      res.status(500).json({ message: "Premestanje treninga nije uspelo" });
     }
   };
 
@@ -367,15 +367,15 @@ export class TrainingController {
       !mongoose.isValidObjectId(facilityId) ||
       !mongoose.isValidObjectId(resourceId)
     ) {
-      return { message: "Trainer, facility or resource ID is not valid", pricePerHour: 0 };
+      return { message: "ID trenera, objekta ili terena nije ispravan", pricePerHour: 0 };
     }
 
     if (isNaN(startDateTime.getTime()) || isNaN(endDateTime.getTime())) {
-      return { message: "Training date and time are not valid", pricePerHour: 0 };
+      return { message: "Datum i vreme treninga nisu ispravni", pricePerHour: 0 };
     }
 
     if (startDateTime <= new Date()) {
-      return { message: "Training must start in the future", pricePerHour: 0 };
+      return { message: "Trening mora poceti u buducnosti", pricePerHour: 0 };
     }
 
     if (
@@ -384,13 +384,13 @@ export class TrainingController {
       endDateTime.getMinutes() !== 0 ||
       endDateTime.getSeconds() !== 0
     ) {
-      return { message: "Training must start and end on a full hour", pricePerHour: 0 };
+      return { message: "Trening mora poceti i zavrsiti se na pun sat", pricePerHour: 0 };
     }
 
     const duration = endDateTime.getTime() - startDateTime.getTime();
 
     if (duration < hourInMilliseconds || duration % hourInMilliseconds !== 0) {
-      return { message: "Training must last one or more whole hours", pricePerHour: 0 };
+      return { message: "Trening mora trajati jedan ili vise punih sati", pricePerHour: 0 };
     }
 
     if (
@@ -398,7 +398,7 @@ export class TrainingController {
       startDateTime.getMonth() !== endDateTime.getMonth() ||
       startDateTime.getDate() !== endDateTime.getDate()
     ) {
-      return { message: "Training must start and end on the same day", pricePerHour: 0 };
+      return { message: "Trening mora poceti i zavrsiti se istog dana", pricePerHour: 0 };
     }
 
     const trainer = await TrainerModel.findOne({
@@ -409,13 +409,13 @@ export class TrainingController {
     });
 
     if (!trainer) {
-      return { message: "Active trainer for selected sport was not found", pricePerHour: 0 };
+      return { message: "Aktivan trener za izabrani sport nije pronadjen", pricePerHour: 0 };
     }
 
     const facility = await FacilityModel.findOne({ _id: facilityId, status: "active" });
 
     if (!facility) {
-      return { message: "Active facility was not found", pricePerHour: 0 };
+      return { message: "Aktivan objekat nije pronadjen", pricePerHour: 0 };
     }
 
     if (athleteUsername) {
@@ -432,7 +432,7 @@ export class TrainingController {
 
       if (reservationNoShows + trainingNoShows >= facility.allowedNoShows) {
         return {
-          message: "Athlete has reached the allowed number of no-shows for this facility",
+          message: "Sportista je dostigao dozvoljeni broj nedolazaka za ovaj objekat",
           pricePerHour: 0,
         };
       }
@@ -441,7 +441,7 @@ export class TrainingController {
     const resource = facility.resources.find((item) => item._id.toString() === resourceId);
 
     if (!resource || !resource.sportPrices.some((item) => item.sport === sport)) {
-      return { message: "Selected resource does not support this sport", pricePerHour: 0 };
+      return { message: "Izabrani teren ne podrzava ovaj sport", pricePerHour: 0 };
     }
 
     const javascriptDay = startDateTime.getDay();
@@ -449,7 +449,7 @@ export class TrainingController {
     const workingHours = facility.workingHours.find((item) => item.day === day);
 
     if (!workingHours) {
-      return { message: "Facility does not work on the selected day", pricePerHour: 0 };
+      return { message: "Objekat ne radi izabranog dana", pricePerHour: 0 };
     }
 
     const startMinutes = startDateTime.getHours() * 60 + startDateTime.getMinutes();
@@ -459,7 +459,7 @@ export class TrainingController {
       startMinutes < this.timeToMinutes(workingHours.from) ||
       endMinutes > this.timeToMinutes(workingHours.to)
     ) {
-      return { message: "Training must be within facility working hours", pricePerHour: 0 };
+      return { message: "Trening mora biti u okviru radnog vremena objekta", pricePerHour: 0 };
     }
 
     const trainerTrainingQuery: any = {
@@ -476,7 +476,7 @@ export class TrainingController {
     const overlappingTrainerTraining = await TrainingModel.findOne(trainerTrainingQuery);
 
     if (overlappingTrainerTraining) {
-      return { message: "Trainer is not available at the selected time", pricePerHour: 0 };
+      return { message: "Trener nije dostupan u izabranom terminu", pricePerHour: 0 };
     }
 
     const resourceTrainingQuery: any = {
@@ -493,7 +493,7 @@ export class TrainingController {
     const overlappingResourceTraining = await TrainingModel.findOne(resourceTrainingQuery);
 
     if (overlappingResourceTraining) {
-      return { message: "Resource is occupied by another training", pricePerHour: 0 };
+      return { message: "Teren je zauzet drugim treningom", pricePerHour: 0 };
     }
 
     const overlappingReservation = await ReservationModel.findOne({
@@ -504,7 +504,7 @@ export class TrainingController {
     });
 
     if (overlappingReservation) {
-      return { message: "Resource is occupied by a reservation", pricePerHour: 0 };
+      return { message: "Teren je zauzet rezervacijom", pricePerHour: 0 };
     }
 
     return { message: "", pricePerHour: trainer.pricePerHour };

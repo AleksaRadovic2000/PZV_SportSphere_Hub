@@ -23,7 +23,7 @@
         (change)="loadSchedule()"
       >
         @for (resource of resources; track resource._id) {
-        <option [value]="resource._id">{{ resource.name }} - {{ resource.type }}</option>
+        <option [value]="resource._id">{{ resource.name }} - {{ label(resource.type) }}</option>
         }
       </select>
     </div>

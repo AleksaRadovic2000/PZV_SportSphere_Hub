@@ -4,12 +4,15 @@ import { Facility } from '../../../models/facility';
 import { FacilityService } from '../../../services/facility';
 import { UserService } from '../../../services/user';
 
+import { getSerbianLabel } from '../../../shared/serbian-label';
+
 @Component({
   selector: 'app-employee-facilities',
   imports: [RouterLink],
   templateUrl: './employee-facilities.html',
 })
 export class EmployeeFacilities implements OnInit {
+  label = getSerbianLabel;
   private facilityService = inject(FacilityService);
   private userService = inject(UserService);
 

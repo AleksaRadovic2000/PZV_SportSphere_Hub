@@ -23,7 +23,7 @@ export const productImageUpload = multer({
     const allowedTypes = ["image/jpeg", "image/png"];
 
     if (!allowedTypes.includes(file.mimetype)) {
-      callback(new Error("Product image must be a PNG or JPG file"));
+      callback(new Error("Slika proizvoda mora biti PNG ili JPG fajl"));
       return;
     }
 

@@ -18,7 +18,7 @@ export class ShopController {
     }
 
     if (!mongoose.isValidObjectId(facilityId)) {
-      res.status(400).json({ message: "Facility ID is not valid" });
+      res.status(400).json({ message: "ID objekta nije ispravan" });
       return;
     }
 
@@ -26,7 +26,7 @@ export class ShopController {
       const facility = await FacilityModel.findOne({ _id: facilityId, status: "active" });
 
       if (!facility) {
-        res.status(404).json({ message: "Active facility was not found" });
+        res.status(404).json({ message: "Aktivan objekat nije pronadjen" });
         return;
       }
 
@@ -39,8 +39,8 @@ export class ShopController {
       const products = await ProductModel.find(query).sort({ name: 1 });
       res.json(products);
     } catch (error) {
-      console.error("Product search failed:", error);
-      res.status(500).json({ message: "Product search failed" });
+      console.error("Pretraga proizvoda nije uspela:", error);
+      res.status(500).json({ message: "Pretraga proizvoda nije uspela" });
     }
   };
 
@@ -54,7 +54,7 @@ export class ShopController {
     }
 
     if (!mongoose.isValidObjectId(facilityId) || !employeeUsername) {
-      res.status(400).json({ message: "Facility ID and employee username are required" });
+      res.status(400).json({ message: "ID objekta i korisnicko ime zaposlenog su obavezni" });
       return;
     }
 
@@ -65,15 +65,15 @@ export class ShopController {
       });
 
       if (!facility) {
-        res.status(403).json({ message: "Employee does not manage this facility" });
+        res.status(403).json({ message: "Zaposleni ne upravlja ovim objektom" });
         return;
       }
 
       const products = await ProductModel.find({ facilityId }).sort({ name: 1 });
       res.json(products);
     } catch (error) {
-      console.error("Failed to load facility products:", error);
-      res.status(500).json({ message: "Failed to load facility products" });
+      console.error("Ucitavanje proizvoda objekta nije uspelo:", error);
+      res.status(500).json({ message: "Ucitavanje proizvoda objekta nije uspelo" });
     }
   };
 
@@ -83,7 +83,7 @@ export class ShopController {
 
     if (!productData || !employeeUsername || !req.file) {
       this.removeUploadedFile(req.file);
-      res.status(400).json({ message: "Product data, employee and image are required" });
+      res.status(400).json({ message: "Podaci o proizvodu, zaposleni i slika su obavezni" });
       return;
     }
 
@@ -93,7 +93,7 @@ export class ShopController {
       data = JSON.parse(productData);
     } catch {
       this.removeUploadedFile(req.file);
-      res.status(400).json({ message: "Product data is not valid JSON" });
+      res.status(400).json({ message: "Podaci o proizvodu nisu ispravan JSON" });
       return;
     }
 
@@ -109,7 +109,7 @@ export class ShopController {
       data.stock < 0
     ) {
       this.removeUploadedFile(req.file);
-      res.status(400).json({ message: "Product data is not valid" });
+      res.status(400).json({ message: "Podaci o proizvodu nisu ispravni" });
       return;
     }
 
@@ -122,7 +122,7 @@ export class ShopController {
 
       if (!facility) {
         this.removeUploadedFile(req.file);
-        res.status(403).json({ message: "Employee does not manage this active facility" });
+        res.status(403).json({ message: "Zaposleni ne upravlja ovim aktivnim objektom" });
         return;
       }
 
@@ -130,7 +130,7 @@ export class ShopController {
 
       if (!sport) {
         this.removeUploadedFile(req.file);
-        res.status(400).json({ message: "Selected sport does not exist" });
+        res.status(400).json({ message: "Izabrani sport ne postoji" });
         return;
       }
 
@@ -144,11 +144,11 @@ export class ShopController {
         active: true,
       });
 
-      res.status(201).json({ message: "Product added successfully", product });
+      res.status(201).json({ message: "Proizvod je uspesno dodat", product });
     } catch (error) {
       this.removeUploadedFile(req.file);
-      console.error("Product creation failed:", error);
-      res.status(500).json({ message: "Product creation failed" });
+      console.error("Dodavanje proizvoda nije uspelo:", error);
+      res.status(500).json({ message: "Dodavanje proizvoda nije uspelo" });
     }
   };
 
@@ -158,7 +158,7 @@ export class ShopController {
 
     if (!productData || !employeeUsername) {
       this.removeUploadedFile(req.file);
-      res.status(400).json({ message: "Product data and employee are required" });
+      res.status(400).json({ message: "Podaci o proizvodu i zaposleni su obavezni" });
       return;
     }
 
@@ -168,7 +168,7 @@ export class ShopController {
       data = JSON.parse(productData);
     } catch {
       this.removeUploadedFile(req.file);
-      res.status(400).json({ message: "Product data is not valid JSON" });
+      res.status(400).json({ message: "Podaci o proizvodu nisu ispravan JSON" });
       return;
     }
 
@@ -183,7 +183,7 @@ export class ShopController {
       typeof data.active !== "boolean"
     ) {
       this.removeUploadedFile(req.file);
-      res.status(400).json({ message: "Product update data is not valid" });
+      res.status(400).json({ message: "Podaci za izmenu proizvoda nisu ispravni" });
       return;
     }
 
@@ -192,7 +192,7 @@ export class ShopController {
 
       if (!product) {
         this.removeUploadedFile(req.file);
-        res.status(404).json({ message: "Product was not found" });
+        res.status(404).json({ message: "Proizvod nije pronadjen" });
         return;
       }
 
@@ -203,7 +203,7 @@ export class ShopController {
 
       if (!facility) {
         this.removeUploadedFile(req.file);
-        res.status(403).json({ message: "Employee does not manage this product facility" });
+        res.status(403).json({ message: "Zaposleni ne upravlja objektom ovog proizvoda" });
         return;
       }
 
@@ -216,11 +216,11 @@ export class ShopController {
       }
 
       await product.save();
-      res.json({ message: "Product updated successfully", product });
+      res.json({ message: "Proizvod je uspesno izmenjen", product });
     } catch (error) {
       this.removeUploadedFile(req.file);
-      console.error("Product update failed:", error);
-      res.status(500).json({ message: "Product update failed" });
+      console.error("Izmena proizvoda nije uspela:", error);
+      res.status(500).json({ message: "Izmena proizvoda nije uspela" });
     }
   };
 
@@ -235,7 +235,7 @@ export class ShopController {
       !Array.isArray(items) ||
       items.length === 0
     ) {
-      res.status(400).json({ message: "Order data is not valid" });
+      res.status(400).json({ message: "Podaci o porudzbini nisu ispravni" });
       return;
     }
 
@@ -249,14 +249,14 @@ export class ShopController {
       });
 
       if (!athlete) {
-        res.status(404).json({ message: "Active athlete was not found" });
+        res.status(404).json({ message: "Aktivan sportista nije pronadjen" });
         return;
       }
 
       const facility = await FacilityModel.findOne({ _id: facilityId, status: "active" });
 
       if (!facility) {
-        res.status(404).json({ message: "Active facility was not found" });
+        res.status(404).json({ message: "Aktivan objekat nije pronadjen" });
         return;
       }
 
@@ -266,12 +266,12 @@ export class ShopController {
 
       for (const item of items) {
         if (!mongoose.isValidObjectId(item.productId) || !Number.isInteger(item.quantity) || item.quantity < 1) {
-          res.status(400).json({ message: "Order item is not valid" });
+          res.status(400).json({ message: "Stavka porudzbine nije ispravna" });
           return;
         }
 
         if (productIds.has(item.productId)) {
-          res.status(400).json({ message: "The same product cannot appear twice in one order" });
+          res.status(400).json({ message: "Isti proizvod se ne moze pojaviti dva puta u jednoj porudzbini" });
           return;
         }
 
@@ -284,7 +284,7 @@ export class ShopController {
         });
 
         if (!product || product.stock < item.quantity) {
-          res.status(400).json({ message: "Product is unavailable in requested quantity" });
+          res.status(400).json({ message: "Proizvod nije dostupan u trazenoj kolicini" });
           return;
         }
 
@@ -312,10 +312,10 @@ export class ShopController {
         createdAt: new Date(),
       });
 
-      res.status(201).json({ message: "Order created successfully", order });
+      res.status(201).json({ message: "Porudzbina je uspesno kreirana", order });
     } catch (error) {
-      console.error("Order creation failed:", error);
-      res.status(500).json({ message: "Order creation failed" });
+      console.error("Kreiranje porudzbine nije uspelo:", error);
+      res.status(500).json({ message: "Kreiranje porudzbine nije uspelo" });
     }
   };
 
@@ -327,8 +327,8 @@ export class ShopController {
       const result = await this.addFacilityNames(orders);
       res.json(result);
     } catch (error) {
-      console.error("Failed to load athlete orders:", error);
-      res.status(500).json({ message: "Failed to load athlete orders" });
+      console.error("Ucitavanje porudzbina sportiste nije uspelo:", error);
+      res.status(500).json({ message: "Ucitavanje porudzbina sportiste nije uspelo" });
     }
   };
 
@@ -342,7 +342,7 @@ export class ShopController {
     }
 
     if (!mongoose.isValidObjectId(facilityId) || !employeeUsername) {
-      res.status(400).json({ message: "Facility ID and employee username are required" });
+      res.status(400).json({ message: "ID objekta i korisnicko ime zaposlenog su obavezni" });
       return;
     }
 
@@ -353,15 +353,15 @@ export class ShopController {
       });
 
       if (!facility) {
-        res.status(403).json({ message: "Employee does not manage this facility" });
+        res.status(403).json({ message: "Zaposleni ne upravlja ovim objektom" });
         return;
       }
 
       const orders = await OrderModel.find({ facilityId }).sort({ createdAt: -1 });
       res.json(orders);
     } catch (error) {
-      console.error("Failed to load facility orders:", error);
-      res.status(500).json({ message: "Failed to load facility orders" });
+      console.error("Ucitavanje porudzbina objekta nije uspelo:", error);
+      res.status(500).json({ message: "Ucitavanje porudzbina objekta nije uspelo" });
     }
   };
 
@@ -370,7 +370,7 @@ export class ShopController {
     let athleteUsername = req.body.athleteUsername;
 
     if (!mongoose.isValidObjectId(id) || !athleteUsername) {
-      res.status(400).json({ message: "Order ID and athlete username are required" });
+      res.status(400).json({ message: "ID porudzbine i korisnicko ime sportiste su obavezni" });
       return;
     }
 
@@ -384,17 +384,17 @@ export class ShopController {
       });
 
       if (!order) {
-        res.status(404).json({ message: "Active order was not found" });
+        res.status(404).json({ message: "Aktivna porudzbina nije pronadjena" });
         return;
       }
 
       await this.restoreStock(order.items);
       order.status = "cancelled";
       await order.save();
-      res.json({ message: "Order cancelled successfully", order });
+      res.json({ message: "Porudzbina je uspesno otkazana", order });
     } catch (error) {
-      console.error("Order cancellation failed:", error);
-      res.status(500).json({ message: "Order cancellation failed" });
+      console.error("Otkazivanje porudzbine nije uspelo:", error);
+      res.status(500).json({ message: "Otkazivanje porudzbine nije uspelo" });
     }
   };
 
@@ -404,7 +404,7 @@ export class ShopController {
     let status = req.body.status;
 
     if (!mongoose.isValidObjectId(id) || !employeeUsername || !status) {
-      res.status(400).json({ message: "Order status data is not valid" });
+      res.status(400).json({ message: "Podaci o statusu porudzbine nisu ispravni" });
       return;
     }
 
@@ -414,7 +414,7 @@ export class ShopController {
       const order = await OrderModel.findById(id);
 
       if (!order) {
-        res.status(404).json({ message: "Order was not found" });
+        res.status(404).json({ message: "Porudzbina nije pronadjena" });
         return;
       }
 
@@ -424,7 +424,7 @@ export class ShopController {
       });
 
       if (!facility) {
-        res.status(403).json({ message: "Employee does not manage this order facility" });
+        res.status(403).json({ message: "Zaposleni ne upravlja objektom ove porudzbine" });
         return;
       }
 
@@ -433,7 +433,7 @@ export class ShopController {
         (order.status === "accepted" && ["collected", "cancelled"].includes(status));
 
       if (!validTransition) {
-        res.status(400).json({ message: "Order status transition is not allowed" });
+        res.status(400).json({ message: "Promena statusa porudzbine nije dozvoljena" });
         return;
       }
 
@@ -443,10 +443,10 @@ export class ShopController {
 
       order.status = status;
       await order.save();
-      res.json({ message: "Order status updated successfully", order });
+      res.json({ message: "Status porudzbine je uspesno izmenjen", order });
     } catch (error) {
-      console.error("Order status update failed:", error);
-      res.status(500).json({ message: "Order status update failed" });
+      console.error("Izmena statusa porudzbine nije uspela:", error);
+      res.status(500).json({ message: "Izmena statusa porudzbine nije uspela" });
     }
   };
 

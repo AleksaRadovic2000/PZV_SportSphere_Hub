@@ -8,12 +8,15 @@ import { ReservationService } from '../../../services/reservation';
 import { TrainingService } from '../../../services/training';
 import { UserService } from '../../../services/user';
 
+import { getSerbianLabel } from '../../../shared/serbian-label';
+
 @Component({
   selector: 'app-employee-operations',
   imports: [FormsModule],
   templateUrl: './employee-operations.html',
 })
 export class EmployeeOperations implements OnInit {
+  label = getSerbianLabel;
   private facilityService = inject(FacilityService);
   private trainingService = inject(TrainingService);
   private reservationService = inject(ReservationService);

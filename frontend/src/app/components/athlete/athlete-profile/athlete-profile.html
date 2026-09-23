@@ -111,7 +111,7 @@
     @for (order of activeOrders; track order._id) {
       <article class="border rounded p-4">
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center justify-between">
-          <div><strong>{{ order.facilityName }}</strong><p class="text-muted mb-0">{{ formatDateTime(order.createdAt) }} | {{ order.totalPrice }} RSD | {{ order.status }}</p></div>
+          <div><strong>{{ order.facilityName }}</strong><p class="text-muted mb-0">{{ formatDateTime(order.createdAt) }} | {{ order.totalPrice }} RSD | {{ label(order.status) }}</p></div>
           <button class="bg-danger text-white border-0 rounded px-3 py-2 cursor-pointer" type="button" (click)="cancelOrder(order)">Otkazi</button>
         </div>
         <ul class="mb-0">@for (item of order.items; track item._id) {<li>{{ item.productName }} - {{ item.quantity }} x {{ item.unitPrice }} RSD</li>}</ul>
@@ -126,7 +126,7 @@
     @for (order of orderHistory; track order._id) {
       <article class="border rounded p-4">
         <strong>{{ order.facilityName }}</strong>
-        <p class="text-muted">{{ formatDateTime(order.createdAt) }} | {{ order.totalPrice }} RSD | {{ order.status }}</p>
+        <p class="text-muted">{{ formatDateTime(order.createdAt) }} | {{ order.totalPrice }} RSD | {{ label(order.status) }}</p>
         <ul class="mb-0">@for (item of order.items; track item._id) {<li>{{ item.productName }} - {{ item.quantity }} x {{ item.unitPrice }} RSD</li>}</ul>
       </article>
     } @empty {
@@ -158,7 +158,7 @@
             <td class="p-2">{{ training.sport }}</td>
             <td class="p-2">{{ formatDateTime(training.startDateTime) }} - {{ formatDateTime(training.endDateTime) }}</td>
             <td class="p-2">{{ training.price }} RSD</td>
-            <td class="p-2">{{ training.status }}</td>
+            <td class="p-2">{{ label(training.status) }}</td>
           </tr>
         } @empty {
           <tr><td class="p-4 text-center" colspan="7">Nemate individualne treninge.</td></tr>
@@ -199,7 +199,7 @@
               {{ formatDateTime(reservation.startDateTime) }} -
               {{ formatDateTime(reservation.endDateTime) }}
             </td>
-            <td class="p-2">{{ reservation.status }}</td>
+            <td class="p-2">{{ label(reservation.status) }}</td>
             <td class="p-2">
               @if (canCancel(reservation)) {
                 <button

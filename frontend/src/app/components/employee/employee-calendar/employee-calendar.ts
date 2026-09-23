@@ -7,12 +7,15 @@ import { ReservationService } from '../../../services/reservation';
 import { TrainingService } from '../../../services/training';
 import { UserService } from '../../../services/user';
 
+import { getSerbianLabel } from '../../../shared/serbian-label';
+
 @Component({
   selector: 'app-employee-calendar',
   imports: [FormsModule],
   templateUrl: './employee-calendar.html',
 })
 export class EmployeeCalendar implements OnInit {
+  label = getSerbianLabel;
   private facilityService = inject(FacilityService);
   private reservationService = inject(ReservationService);
   private trainingService = inject(TrainingService);

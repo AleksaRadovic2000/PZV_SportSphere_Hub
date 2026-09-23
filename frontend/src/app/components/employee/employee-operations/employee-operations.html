@@ -43,7 +43,7 @@
             {{ formatDateTime(reservation.startDateTime) }} -
             {{ formatDateTime(reservation.endDateTime) }}
           </td>
-          <td class="p-2">{{ reservation.status }}</td>
+          <td class="p-2">{{ label(reservation.status) }}</td>
           <td class="p-2">
             @if (canMarkAttendance(reservation)) {
             <div class="flex flex-col gap-2 sm:flex-row">
@@ -99,7 +99,7 @@
             {{ formatDateTime(training.startDateTime) }} -
             {{ formatDateTime(training.endDateTime) }}
           </td>
-          <td class="p-2">{{ training.status }}</td>
+          <td class="p-2">{{ label(training.status) }}</td>
           <td class="p-2">
             @if (canMarkAttendance(training)) {
             <div class="flex flex-col gap-2 sm:flex-row">

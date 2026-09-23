@@ -8,12 +8,15 @@ import { ShopService } from '../../../services/shop';
 import { SportService } from '../../../services/sport';
 import { UserService } from '../../../services/user';
 
+import { getSerbianLabel } from '../../../shared/serbian-label';
+
 @Component({
   selector: 'app-employee-catalog',
   imports: [FormsModule],
   templateUrl: './employee-catalog.html',
 })
 export class EmployeeCatalog implements OnInit {
+  label = getSerbianLabel;
   private facilityService = inject(FacilityService);
   private shopService = inject(ShopService);
   private sportService = inject(SportService);

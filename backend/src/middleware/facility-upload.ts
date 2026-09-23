@@ -20,7 +20,7 @@ const imageFilter: multer.Options["fileFilter"] = (_req, file, callback) => {
   const allowedTypes = ["image/jpeg", "image/png"];
 
   if (!allowedTypes.includes(file.mimetype)) {
-    callback(new Error("Facility images must be PNG or JPG files"));
+    callback(new Error("Slike objekta moraju biti PNG ili JPG fajlovi"));
     return;
   }
 
@@ -38,7 +38,7 @@ export const facilityJsonUpload = multer({
   limits: { fileSize: 1024 * 1024 },
   fileFilter: (_req, file, callback) => {
     if (file.mimetype !== "application/json" && !file.originalname.endsWith(".json")) {
-      callback(new Error("Select a JSON file"));
+      callback(new Error("Izaberite JSON fajl"));
       return;
     }
 

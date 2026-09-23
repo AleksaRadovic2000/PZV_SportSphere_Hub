@@ -16,8 +16,8 @@ export class TournamentController {
       const result = await this.addFacilityNames(tournaments);
       res.json(result);
     } catch (error) {
-      console.error("Failed to load open tournaments:", error);
-      res.status(500).json({ message: "Failed to load open tournaments" });
+      console.error("Ucitavanje otvorenih turnira nije uspelo:", error);
+      res.status(500).json({ message: "Ucitavanje otvorenih turnira nije uspelo" });
     }
   };
 
@@ -32,8 +32,8 @@ export class TournamentController {
       const result = await this.addFacilityNames(tournaments);
       res.json(result);
     } catch (error) {
-      console.error("Failed to load athlete tournaments:", error);
-      res.status(500).json({ message: "Failed to load athlete tournaments" });
+      console.error("Ucitavanje turnira sportiste nije uspelo:", error);
+      res.status(500).json({ message: "Ucitavanje turnira sportiste nije uspelo" });
     }
   };
 
@@ -50,8 +50,8 @@ export class TournamentController {
       const result = await this.addFacilityNames(tournaments);
       res.json(result);
     } catch (error) {
-      console.error("Failed to load employee tournaments:", error);
-      res.status(500).json({ message: "Failed to load employee tournaments" });
+      console.error("Ucitavanje turnira zaposlenog nije uspelo:", error);
+      res.status(500).json({ message: "Ucitavanje turnira zaposlenog nije uspelo" });
     }
   };
 
@@ -71,7 +71,7 @@ export class TournamentController {
       isNaN(startDateTime.getTime()) ||
       startDateTime <= new Date()
     ) {
-      res.status(400).json({ message: "Tournament data is not valid" });
+      res.status(400).json({ message: "Podaci o turniru nisu ispravni" });
       return;
     }
 
@@ -87,7 +87,7 @@ export class TournamentController {
       });
 
       if (!employee) {
-        res.status(404).json({ message: "Active employee was not found" });
+        res.status(404).json({ message: "Aktivan zaposleni nije pronadjen" });
         return;
       }
 
@@ -98,14 +98,14 @@ export class TournamentController {
       });
 
       if (!facility) {
-        res.status(404).json({ message: "Active managed facility was not found" });
+        res.status(404).json({ message: "Aktivan objekat kojim zaposleni upravlja nije pronadjen" });
         return;
       }
 
       const selectedSport = await SportModel.findOne({ name: sport });
 
       if (!selectedSport) {
-        res.status(400).json({ message: "Selected sport does not exist" });
+        res.status(400).json({ message: "Izabrani sport ne postoji" });
         return;
       }
 
@@ -119,10 +119,10 @@ export class TournamentController {
         applications: [],
       });
 
-      res.status(201).json({ message: "Tournament created successfully", tournament });
+      res.status(201).json({ message: "Turnir je uspesno kreiran", tournament });
     } catch (error) {
-      console.error("Tournament creation failed:", error);
-      res.status(500).json({ message: "Tournament creation failed" });
+      console.error("Kreiranje turnira nije uspelo:", error);
+      res.status(500).json({ message: "Kreiranje turnira nije uspelo" });
     }
   };
 
@@ -131,7 +131,7 @@ export class TournamentController {
     let athleteUsername = req.body.athleteUsername;
 
     if (!mongoose.isValidObjectId(id) || !athleteUsername) {
-      res.status(400).json({ message: "Tournament ID and athlete username are required" });
+      res.status(400).json({ message: "ID turnira i korisnicko ime sportiste su obavezni" });
       return;
     }
 
@@ -145,7 +145,7 @@ export class TournamentController {
       });
 
       if (!athlete) {
-        res.status(404).json({ message: "Active athlete was not found" });
+        res.status(404).json({ message: "Aktivan sportista nije pronadjen" });
         return;
       }
 
@@ -156,7 +156,7 @@ export class TournamentController {
       });
 
       if (!tournament) {
-        res.status(404).json({ message: "Open future tournament was not found" });
+        res.status(404).json({ message: "Otvoren buduci turnir nije pronadjen" });
         return;
       }
 
@@ -165,16 +165,16 @@ export class TournamentController {
       );
 
       if (alreadyApplied) {
-        res.status(409).json({ message: "Tournament application has already been sent" });
+        res.status(409).json({ message: "Prijava za turnir je vec poslata" });
         return;
       }
 
       tournament.applications.push({ athleteUsername, status: "pending" });
       await tournament.save();
-      res.json({ message: "Tournament application sent successfully", tournament });
+      res.json({ message: "Prijava za turnir je uspesno poslata", tournament });
     } catch (error) {
-      console.error("Tournament application failed:", error);
-      res.status(500).json({ message: "Tournament application failed" });
+      console.error("Prijava za turnir nije uspela:", error);
+      res.status(500).json({ message: "Prijava za turnir nije uspela" });
     }
   };
 
@@ -190,7 +190,7 @@ export class TournamentController {
       !employeeUsername ||
       !["accepted", "rejected"].includes(status)
     ) {
-      res.status(400).json({ message: "Application decision data is not valid" });
+      res.status(400).json({ message: "Podaci o odluci za prijavu nisu ispravni" });
       return;
     }
 
@@ -200,7 +200,7 @@ export class TournamentController {
       const tournament = await TournamentModel.findOne({ _id: id, status: "open" });
 
       if (!tournament) {
-        res.status(404).json({ message: "Open tournament was not found" });
+        res.status(404).json({ message: "Otvoren turnir nije pronadjen" });
         return;
       }
 
@@ -210,23 +210,23 @@ export class TournamentController {
       });
 
       if (!facility) {
-        res.status(403).json({ message: "Employee does not manage this facility" });
+        res.status(403).json({ message: "Zaposleni ne upravlja ovim objektom" });
         return;
       }
 
       const application = tournament.applications.id(applicationId);
 
       if (!application || application.status !== "pending") {
-        res.status(404).json({ message: "Pending tournament application was not found" });
+        res.status(404).json({ message: "Prijava za turnir na cekanju nije pronadjena" });
         return;
       }
 
       application.status = status;
       await tournament.save();
-      res.json({ message: "Tournament application resolved successfully", tournament });
+      res.json({ message: "Prijava za turnir je uspesno obradjena", tournament });
     } catch (error) {
-      console.error("Tournament application resolution failed:", error);
-      res.status(500).json({ message: "Tournament application resolution failed" });
+      console.error("Obrada prijave za turnir nije uspela:", error);
+      res.status(500).json({ message: "Obrada prijave za turnir nije uspela" });
     }
   };
 
@@ -235,7 +235,7 @@ export class TournamentController {
     let employeeUsername = req.body.employeeUsername;
 
     if (!mongoose.isValidObjectId(id) || !employeeUsername) {
-      res.status(400).json({ message: "Tournament ID and employee username are required" });
+      res.status(400).json({ message: "ID turnira i korisnicko ime zaposlenog su obavezni" });
       return;
     }
 
@@ -245,7 +245,7 @@ export class TournamentController {
       const tournament = await TournamentModel.findOne({ _id: id, status: "open" });
 
       if (!tournament) {
-        res.status(404).json({ message: "Open tournament was not found" });
+        res.status(404).json({ message: "Otvoren turnir nije pronadjen" });
         return;
       }
 
@@ -255,16 +255,16 @@ export class TournamentController {
       });
 
       if (!facility) {
-        res.status(403).json({ message: "Employee does not manage this facility" });
+        res.status(403).json({ message: "Zaposleni ne upravlja ovim objektom" });
         return;
       }
 
       tournament.status = "closed";
       await tournament.save();
-      res.json({ message: "Tournament closed successfully", tournament });
+      res.json({ message: "Turnir je uspesno zatvoren", tournament });
     } catch (error) {
-      console.error("Tournament closing failed:", error);
-      res.status(500).json({ message: "Tournament closing failed" });
+      console.error("Zatvaranje turnira nije uspelo:", error);
+      res.status(500).json({ message: "Zatvaranje turnira nije uspelo" });
     }
   };
 

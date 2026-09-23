@@ -23,7 +23,7 @@ export class AuthController {
     let seed = req.body.seed;
 
     if (!seed) {
-      res.status(400).json({ message: "Avatar seed is required" });
+      res.status(400).json({ message: "Vrednost za generisanje avatara je obavezna" });
       return;
     }
 
@@ -38,7 +38,7 @@ export class AuthController {
 
     if (!registrationData) {
       removeUploadedFile(req.file);
-      res.status(400).json({ message: "Registration data is required" });
+      res.status(400).json({ message: "Podaci za registraciju su obavezni" });
       return;
     }
 
@@ -46,7 +46,7 @@ export class AuthController {
       data = JSON.parse(registrationData);
     } catch {
       removeUploadedFile(req.file);
-      res.status(400).json({ message: "Registration data is not valid JSON" });
+      res.status(400).json({ message: "Podaci za registraciju nisu ispravan JSON" });
       return;
     }
 
@@ -62,13 +62,13 @@ export class AuthController {
 
     if (requiredFields.some((value) => typeof value !== "string" || !value.trim())) {
       removeUploadedFile(req.file);
-      res.status(400).json({ message: "All required fields must be provided" });
+      res.status(400).json({ message: "Sva obavezna polja moraju biti popunjena" });
       return;
     }
 
     if (data.role !== "athlete" && data.role !== "employee") {
       removeUploadedFile(req.file);
-      res.status(400).json({ message: "Only athletes and employees can register" });
+      res.status(400).json({ message: "Mogu se registrovati samo sportisti i zaposleni" });
       return;
     }
 
@@ -76,14 +76,14 @@ export class AuthController {
       removeUploadedFile(req.file);
       res.status(400).json({
         message:
-          "Password must have 8-12 characters, start with a letter and contain an uppercase letter, a number and a special character",
+          "Lozinka mora imati 8-12 karaktera, poceti slovom i sadrzati veliko slovo, broj i specijalni karakter",
       });
       return;
     }
 
     if (!emailPattern.test(data.email)) {
       removeUploadedFile(req.file);
-      res.status(400).json({ message: "Email address is not valid" });
+      res.status(400).json({ message: "Email adresa nije ispravna" });
       return;
     }
 
@@ -92,7 +92,7 @@ export class AuthController {
 
     if (distinctSports.length !== favouriteSports.length || favouriteSports.length > 5) {
       removeUploadedFile(req.file);
-      res.status(400).json({ message: "Select up to five different sports" });
+      res.status(400).json({ message: "Izaberite najvise pet razlicitih sportova" });
       return;
     }
 
@@ -107,8 +107,8 @@ export class AuthController {
       if (existingUser) {
         removeUploadedFile(req.file);
         const field =
-          existingUser.username === data.username.trim() ? "Username" : "Email";
-        res.status(409).json({ message: `${field} is already in use` });
+          existingUser.username === data.username.trim() ? "Korisnicko ime" : "Email";
+        res.status(409).json({ message: `${field} se vec koristi` });
         return;
       }
 
@@ -119,7 +119,7 @@ export class AuthController {
 
         if (sportsInDatabase !== favouriteSports.length) {
           removeUploadedFile(req.file);
-          res.status(400).json({ message: "One or more selected sports do not exist" });
+          res.status(400).json({ message: "Jedan ili vise izabranih sportova ne postoje" });
           return;
         }
       }
@@ -134,14 +134,14 @@ export class AuthController {
 
         if (companyFields.some((value) => typeof value !== "string" || !value.trim())) {
           removeUploadedFile(req.file);
-          res.status(400).json({ message: "All company fields are required for an employee" });
+          res.status(400).json({ message: "Svi podaci o kompaniji su obavezni za zaposlenog" });
           return;
         }
 
         if (!registrationNumberPattern.test(data.registrationNumber)) {
           removeUploadedFile(req.file);
           res.status(400).json({
-            message: "Registration number must contain exactly 8 digits",
+            message: "Maticni broj mora sadrzati tacno 8 cifara",
           });
           return;
         }
@@ -149,7 +149,7 @@ export class AuthController {
         if (!taxIdPattern.test(data.taxId)) {
           removeUploadedFile(req.file);
           res.status(400).json({
-            message: "Tax ID must contain exactly 9 digits and cannot start with zero",
+            message: "PIB mora sadrzati tacno 9 cifara i ne sme poceti nulom",
           });
           return;
         }
@@ -162,7 +162,7 @@ export class AuthController {
 
         if (companyEmployees.length >= 2) {
           removeUploadedFile(req.file);
-          res.status(409).json({ message: "This company already has two employees" });
+          res.status(409).json({ message: "Ova kompanija vec ima dva zaposlena" });
           return;
         }
 
@@ -176,7 +176,7 @@ export class AuthController {
         if (companyDataMismatch) {
           removeUploadedFile(req.file);
           res.status(409).json({
-            message: "Company data must match the existing employee of the same company",
+            message: "Podaci o kompaniji moraju odgovarati podacima postojeceg zaposlenog iste kompanije",
           });
           return;
         }
@@ -209,13 +209,13 @@ export class AuthController {
       delete userData.passwordHash;
 
       res.status(201).json({
-        message: "Registration request created and is waiting for administrator approval",
+        message: "Zahtev za registraciju je kreiran i ceka odobrenje administratora",
         user: userData,
       });
     } catch (error) {
       removeUploadedFile(req.file);
-      console.error("Registration failed:", error);
-      res.status(500).json({ message: "Registration failed" });
+      console.error("Registracija nije uspela:", error);
+      res.status(500).json({ message: "Registracija nije uspela" });
     }
   };
 
@@ -231,7 +231,7 @@ export class AuthController {
     let identifier = req.body.identifier;
 
     if (!identifier) {
-      res.status(400).json({ message: "Username or email is required" });
+      res.status(400).json({ message: "Korisnicko ime ili email su obavezni" });
       return;
     }
 
@@ -244,7 +244,7 @@ export class AuthController {
       });
 
       if (!user) {
-        res.status(404).json({ message: "Active user was not found" });
+        res.status(404).json({ message: "Aktivan korisnik nije pronadjen" });
         return;
       }
 
@@ -259,12 +259,12 @@ export class AuthController {
       });
 
       res.json({
-        message: "Password reset link created and valid for 30 minutes",
+        message: "Link za promenu lozinke je kreiran i vazi 30 minuta",
         resetUrl: `http://localhost:4200/reset-password/${token}`,
       });
     } catch (error) {
-      console.error("Password reset request failed:", error);
-      res.status(500).json({ message: "Password reset request failed" });
+      console.error("Zahtev za promenu lozinke nije uspeo:", error);
+      res.status(500).json({ message: "Zahtev za promenu lozinke nije uspeo" });
     }
   };
 
@@ -275,7 +275,7 @@ export class AuthController {
     if (!token || !isPasswordValid(newPassword)) {
       res.status(400).json({
         message:
-          "A valid token and password with 8-12 characters, uppercase letter, number and special character are required",
+          "Neophodni su ispravan token i lozinka od 8-12 karaktera sa velikim slovom, brojem i specijalnim karakterom",
       });
       return;
     }
@@ -289,7 +289,7 @@ export class AuthController {
       });
 
       if (!resetToken) {
-        res.status(400).json({ message: "Password reset link is invalid or expired" });
+        res.status(400).json({ message: "Link za promenu lozinke nije ispravan ili je istekao" });
         return;
       }
 
@@ -297,10 +297,10 @@ export class AuthController {
       await UserModel.updateOne({ username: resetToken.username }, { passwordHash });
       await PasswordResetTokenModel.deleteOne({ _id: resetToken._id });
 
-      res.json({ message: "Password changed successfully" });
+      res.json({ message: "Lozinka je uspesno promenjena" });
     } catch (error) {
-      console.error("Password reset failed:", error);
-      res.status(500).json({ message: "Password reset failed" });
+      console.error("Promena lozinke nije uspela:", error);
+      res.status(500).json({ message: "Promena lozinke nije uspela" });
     }
   };
 
@@ -313,7 +313,7 @@ export class AuthController {
     let password = req.body.password;
 
     if (!username || !password) {
-      res.status(400).json({ message: "Username and password are required" });
+      res.status(400).json({ message: "Korisnicko ime i lozinka su obavezni" });
       return;
     }
 
@@ -323,24 +323,24 @@ export class AuthController {
       const user = await UserModel.findOne({ username }).select("+passwordHash");
 
       if (!user || !allowedRoles.includes(user.role)) {
-        res.status(401).json({ message: "Username or password is incorrect" });
+        res.status(401).json({ message: "Korisnicko ime ili lozinka nisu ispravni" });
         return;
       }
 
       if (user.status === "pending") {
-        res.status(403).json({ message: "Registration request is still pending" });
+        res.status(403).json({ message: "Zahtev za registraciju jos uvek ceka odobrenje" });
         return;
       }
 
       if (user.status !== "active") {
-        res.status(403).json({ message: "User account is not active" });
+        res.status(403).json({ message: "Korisnicki nalog nije aktivan" });
         return;
       }
 
       if (!user.passwordHash) {
         console.error(`Password hash is missing for user: ${user.username}`);
         res.status(500).json({
-          message: "User password is not configured. Reimport the initial database",
+          message: "Lozinka korisnika nije podesena. Ponovo uvezite pocetnu bazu podataka",
         });
         return;
       }
@@ -348,7 +348,7 @@ export class AuthController {
       const passwordMatches = await bcrypt.compare(password, user.passwordHash);
 
       if (!passwordMatches) {
-        res.status(401).json({ message: "Username or password is incorrect" });
+        res.status(401).json({ message: "Korisnicko ime ili lozinka nisu ispravni" });
         return;
       }
 
@@ -356,12 +356,12 @@ export class AuthController {
       delete userData.passwordHash;
 
       res.json({
-        message: "Login successful",
+        message: "Prijava je uspesna",
         user: userData,
       });
     } catch (error) {
-      console.error("Login failed:", error);
-      res.status(500).json({ message: "Login failed" });
+      console.error("Prijava nije uspela:", error);
+      res.status(500).json({ message: "Prijava nije uspela" });
     }
   };
 }

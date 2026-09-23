@@ -25,7 +25,7 @@ export const profileImageUpload = multer({
     const allowedTypes = ["image/jpeg", "image/png"];
 
     if (!allowedTypes.includes(file.mimetype)) {
-      callback(new Error("Profile image must be a PNG or JPG file"));
+      callback(new Error("Profilna slika mora biti PNG ili JPG fajl"));
       return;
     }
 

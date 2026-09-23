@@ -92,7 +92,7 @@
             <div>
               <h3 class="text-xl mt-2 mb-2">{{ ad.sport }} - {{ ad.city }}</h3>
               <p class="m-0">{{ formatDateTime(ad.startDateTime) }} - {{ formatDateTime(ad.endDateTime) }}</p>
-              <p class="text-muted mb-0">Status: {{ ad.status }} | Nedostaje igraca: {{ ad.playersNeeded }}</p>
+              <p class="text-muted mb-0">Status: {{ label(ad.status) }} | Nedostaje igraca: {{ ad.playersNeeded }}</p>
             </div>
             @if (ad.status === 'active') {
               <button class="bg-danger text-white border-0 rounded px-3 py-2 cursor-pointer" type="button" (click)="closeAd(ad)">Zatvori oglas</button>
@@ -107,7 +107,7 @@
                 @for (request of ad.requests; track request._id) {
                   <tr class="border-b">
                     <td class="p-2">{{ request.athleteUsername }}</td>
-                    <td class="p-2">{{ request.status }}</td>
+                    <td class="p-2">{{ label(request.status) }}</td>
                     <td class="p-2">
                       @if (request.status === 'pending' && ad.status === 'active') {
                         <div class="flex flex-col gap-2 sm:flex-row">

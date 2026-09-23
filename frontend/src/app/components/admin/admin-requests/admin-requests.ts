@@ -4,12 +4,15 @@ import { User } from '../../../models/user';
 import { FacilityService } from '../../../services/facility';
 import { UserService } from '../../../services/user';
 
+import { getSerbianLabel } from '../../../shared/serbian-label';
+
 @Component({
   selector: 'app-admin-requests',
   imports: [],
   templateUrl: './admin-requests.html',
 })
 export class AdminRequests implements OnInit {
+  label = getSerbianLabel;
   private userService = inject(UserService);
   private facilityService = inject(FacilityService);
 

@@ -51,7 +51,7 @@
               <td class="p-2">{{ tournament.name }}</td>
               <td class="p-2">{{ tournament.facilityName }}</td>
               <td class="p-2">{{ formatDateTime(tournament.startDateTime) }}</td>
-              <td class="p-2">{{ tournament.status }}</td>
+              <td class="p-2">{{ label(tournament.status) }}</td>
               <td class="p-2">{{ getMyApplicationStatus(tournament) }}</td>
             </tr>
           } @empty {

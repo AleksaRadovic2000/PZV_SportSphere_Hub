@@ -34,8 +34,8 @@ export class PublicFacilityController {
 
       res.json({ activeCount, topFacilities });
     } catch (error) {
-      console.error("Failed to load public information:", error);
-      res.status(500).json({ message: "Failed to load public information" });
+      console.error("Ucitavanje javnih podataka nije uspelo:", error);
+      res.status(500).json({ message: "Ucitavanje javnih podataka nije uspelo" });
     }
   };
 
@@ -43,8 +43,8 @@ export class PublicFacilityController {
     FacilityModel.distinct("city", { status: "active" })
       .then((cities) => res.json(cities.sort()))
       .catch((error) => {
-        console.error("Failed to load cities:", error);
-        res.status(500).json({ message: "Failed to load cities" });
+        console.error("Ucitavanje gradova nije uspelo:", error);
+        res.status(500).json({ message: "Ucitavanje gradova nije uspelo" });
       });
   };
 
@@ -104,8 +104,8 @@ export class PublicFacilityController {
 
       res.json(availableFacilities);
     } catch (error) {
-      console.error("Facility search failed:", error);
-      res.status(500).json({ message: "Facility search failed" });
+      console.error("Pretraga objekata nije uspela:", error);
+      res.status(500).json({ message: "Pretraga objekata nije uspela" });
     }
   };
 
@@ -113,7 +113,7 @@ export class PublicFacilityController {
     let id = req.params.id;
 
     if (!mongoose.isValidObjectId(id)) {
-      res.status(400).json({ message: "Facility ID is not valid" });
+      res.status(400).json({ message: "ID objekta nije ispravan" });
       return;
     }
 
@@ -121,7 +121,7 @@ export class PublicFacilityController {
       const facility = await FacilityModel.findOne({ _id: id, status: "active" });
 
       if (!facility) {
-        res.status(404).json({ message: "Active facility was not found" });
+        res.status(404).json({ message: "Aktivan objekat nije pronadjen" });
         return;
       }
 
@@ -133,8 +133,8 @@ export class PublicFacilityController {
 
       res.json({ facility, likes, dislikes });
     } catch (error) {
-      console.error("Failed to load facility details:", error);
-      res.status(500).json({ message: "Failed to load facility details" });
+      console.error("Ucitavanje detalja objekta nije uspelo:", error);
+      res.status(500).json({ message: "Ucitavanje detalja objekta nije uspelo" });
     }
   };
 
@@ -177,8 +177,8 @@ export class PublicFacilityController {
       );
       res.json(promotions.slice(0, 3));
     } catch (error) {
-      console.error("Failed to load promotions:", error);
-      res.status(500).json({ message: "Failed to load promotions" });
+      console.error("Ucitavanje promocija nije uspelo:", error);
+      res.status(500).json({ message: "Ucitavanje promocija nije uspelo" });
     }
   };
 

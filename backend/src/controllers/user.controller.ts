@@ -20,8 +20,8 @@ export class UserController {
         res.json(users);
       })
       .catch((error) => {
-        console.error("Failed to load registration requests:", error);
-        res.status(500).json({ message: "Failed to load registration requests" });
+        console.error("Ucitavanje zahteva za registraciju nije uspelo:", error);
+        res.status(500).json({ message: "Ucitavanje zahteva za registraciju nije uspelo" });
       });
   };
 
@@ -29,7 +29,7 @@ export class UserController {
     let username = req.body.username;
 
     if (!username) {
-      res.status(400).json({ message: "Username is required" });
+      res.status(400).json({ message: "Korisnicko ime je obavezno" });
       return;
     }
 
@@ -43,7 +43,7 @@ export class UserController {
       );
 
       if (!user) {
-        res.status(404).json({ message: "Pending registration request was not found" });
+        res.status(404).json({ message: "Zahtev za registraciju na cekanju nije pronadjen" });
         return;
       }
 
@@ -54,10 +54,10 @@ export class UserController {
         );
       }
 
-      res.json({ message: "Registration request approved" });
+      res.json({ message: "Zahtev za registraciju je odobren" });
     } catch (error) {
-      console.error("Registration approval failed:", error);
-      res.status(500).json({ message: "Registration approval failed" });
+      console.error("Odobravanje registracije nije uspelo:", error);
+      res.status(500).json({ message: "Odobravanje registracije nije uspelo" });
     }
   };
 
@@ -65,7 +65,7 @@ export class UserController {
     let username = req.body.username;
 
     if (!username) {
-      res.status(400).json({ message: "Username is required" });
+      res.status(400).json({ message: "Korisnicko ime je obavezno" });
       return;
     }
 
@@ -78,15 +78,15 @@ export class UserController {
     )
       .then((user) => {
         if (!user) {
-          res.status(404).json({ message: "Pending registration request was not found" });
+          res.status(404).json({ message: "Zahtev za registraciju na cekanju nije pronadjen" });
           return;
         }
 
-        res.json({ message: "Registration request rejected" });
+        res.json({ message: "Zahtev za registraciju je odbijen" });
       })
       .catch((error) => {
-        console.error("Registration rejection failed:", error);
-        res.status(500).json({ message: "Registration rejection failed" });
+        console.error("Odbijanje registracije nije uspelo:", error);
+        res.status(500).json({ message: "Odbijanje registracije nije uspelo" });
       });
   };
 
@@ -98,7 +98,7 @@ export class UserController {
     let email = req.body.email;
 
     if (!username || !firstName || !lastName || !phone || !email) {
-      res.status(400).json({ message: "All required fields must be provided" });
+      res.status(400).json({ message: "Sva obavezna polja moraju biti popunjena" });
       return;
     }
 
@@ -109,7 +109,7 @@ export class UserController {
     email = email.trim().toLowerCase();
 
     if (!emailPattern.test(email)) {
-      res.status(400).json({ message: "Email address is not valid" });
+      res.status(400).json({ message: "Email adresa nije ispravna" });
       return;
     }
 
@@ -117,7 +117,7 @@ export class UserController {
       const user = await UserModel.findOne({ username });
 
       if (!user) {
-        res.status(404).json({ message: "User was not found" });
+        res.status(404).json({ message: "Korisnik nije pronadjen" });
         return;
       }
 
@@ -127,7 +127,7 @@ export class UserController {
       });
 
       if (userWithSameEmail) {
-        res.status(409).json({ message: "Email is already in use" });
+        res.status(409).json({ message: "Email se vec koristi" });
         return;
       }
 
@@ -138,12 +138,12 @@ export class UserController {
       );
 
       res.json({
-        message: "User updated successfully",
+        message: "Korisnik je uspesno izmenjen",
         user: updatedUser,
       });
     } catch (error) {
-      console.error("Admin user update failed:", error);
-      res.status(500).json({ message: "User update failed" });
+      console.error("Izmena korisnika nije uspela:", error);
+      res.status(500).json({ message: "Izmena korisnika nije uspela" });
     }
   };
 
@@ -151,7 +151,7 @@ export class UserController {
     let username = req.body.username;
 
     if (!username) {
-      res.status(400).json({ message: "Username is required" });
+      res.status(400).json({ message: "Korisnicko ime je obavezno" });
       return;
     }
 
@@ -161,7 +161,7 @@ export class UserController {
       const user = await UserModel.findOne({ username });
 
       if (!user) {
-        res.status(404).json({ message: "User was not found" });
+        res.status(404).json({ message: "Korisnik nije pronadjen" });
         return;
       }
 
@@ -169,7 +169,7 @@ export class UserController {
         const adminCount = await UserModel.countDocuments({ role: "admin" });
 
         if (adminCount <= 1) {
-          res.status(400).json({ message: "The only administrator cannot be deleted" });
+          res.status(400).json({ message: "Jedini administrator ne moze biti obrisan" });
           return;
         }
       }
@@ -182,10 +182,10 @@ export class UserController {
           { $pull: { employeeUsernames: username } },
         );
       }
-      res.json({ message: "User deleted successfully" });
+      res.json({ message: "Korisnik je uspesno obrisan" });
     } catch (error) {
-      console.error("User deletion failed:", error);
-      res.status(500).json({ message: "User deletion failed" });
+      console.error("Brisanje korisnika nije uspelo:", error);
+      res.status(500).json({ message: "Brisanje korisnika nije uspelo" });
     }
   };
 
@@ -196,8 +196,8 @@ export class UserController {
         res.json(users);
       })
       .catch((error) => {
-        console.error("Failed to load users:", error);
-        res.status(500).json({ message: "Failed to load users" });
+        console.error("Ucitavanje korisnika nije uspelo:", error);
+        res.status(500).json({ message: "Ucitavanje korisnika nije uspelo" });
       });
   };
 
@@ -207,15 +207,15 @@ export class UserController {
     UserModel.findOne({ username })
       .then((user) => {
         if (!user) {
-          res.status(404).json({ message: "User was not found" });
+          res.status(404).json({ message: "Korisnik nije pronadjen" });
           return;
         }
 
         res.json(user);
       })
       .catch((error) => {
-        console.error("Failed to load profile:", error);
-        res.status(500).json({ message: "Failed to load profile" });
+        console.error("Ucitavanje profila nije uspelo:", error);
+        res.status(500).json({ message: "Ucitavanje profila nije uspelo" });
       });
   };
 
@@ -225,7 +225,7 @@ export class UserController {
 
     if (!profileData) {
       removeUploadedFile(req.file);
-      res.status(400).json({ message: "Profile data is required" });
+      res.status(400).json({ message: "Podaci o profilu su obavezni" });
       return;
     }
 
@@ -233,7 +233,7 @@ export class UserController {
       data = JSON.parse(profileData);
     } catch {
       removeUploadedFile(req.file);
-      res.status(400).json({ message: "Profile data is not valid JSON" });
+      res.status(400).json({ message: "Podaci o profilu nisu ispravan JSON" });
       return;
     }
 
@@ -245,7 +245,7 @@ export class UserController {
 
     if (!username || !firstName || !lastName || !phone || !email) {
       removeUploadedFile(req.file);
-      res.status(400).json({ message: "All required fields must be provided" });
+      res.status(400).json({ message: "Sva obavezna polja moraju biti popunjena" });
       return;
     }
 
@@ -257,7 +257,7 @@ export class UserController {
 
     if (!emailPattern.test(email)) {
       removeUploadedFile(req.file);
-      res.status(400).json({ message: "Email address is not valid" });
+      res.status(400).json({ message: "Email adresa nije ispravna" });
       return;
     }
 
@@ -266,7 +266,7 @@ export class UserController {
 
       if (!user) {
         removeUploadedFile(req.file);
-        res.status(404).json({ message: "User was not found" });
+        res.status(404).json({ message: "Korisnik nije pronadjen" });
         return;
       }
 
@@ -277,7 +277,7 @@ export class UserController {
 
       if (userWithSameEmail) {
         removeUploadedFile(req.file);
-        res.status(409).json({ message: "Email is already in use" });
+        res.status(409).json({ message: "Email se vec koristi" });
         return;
       }
 
@@ -290,7 +290,7 @@ export class UserController {
 
         if (distinctSports.length !== favouriteSports.length || favouriteSports.length > 5) {
           removeUploadedFile(req.file);
-          res.status(400).json({ message: "Select up to five different sports" });
+          res.status(400).json({ message: "Izaberite najvise pet razlicitih sportova" });
           return;
         }
 
@@ -301,7 +301,7 @@ export class UserController {
 
           if (sportsInDatabase !== favouriteSports.length) {
             removeUploadedFile(req.file);
-            res.status(400).json({ message: "One or more selected sports do not exist" });
+            res.status(400).json({ message: "Jedan ili vise izabranih sportova ne postoje" });
             return;
           }
         }
@@ -329,13 +329,13 @@ export class UserController {
       );
 
       res.json({
-        message: "Profile updated successfully",
+        message: "Profil je uspesno izmenjen",
         user: updatedUser,
       });
     } catch (error) {
       removeUploadedFile(req.file);
-      console.error("Profile update failed:", error);
-      res.status(500).json({ message: "Profile update failed" });
+      console.error("Izmena profila nije uspela:", error);
+      res.status(500).json({ message: "Izmena profila nije uspela" });
     }
   };
 }

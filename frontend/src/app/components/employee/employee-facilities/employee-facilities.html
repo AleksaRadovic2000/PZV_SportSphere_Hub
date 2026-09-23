@@ -54,7 +54,7 @@
             <td class="p-2">{{ facility.city }}</td>
             <td class="p-2">{{ getSports(facility) }}</td>
             <td class="p-2">{{ facility.resources.length }}</td>
-            <td class="p-2">{{ facility.status }}</td>
+            <td class="p-2">{{ label(facility.status) }}</td>
             <td class="p-2">
               <a class="text-primary" [routerLink]="['/employee/facilities/edit', facility._id]">
                 Izmeni

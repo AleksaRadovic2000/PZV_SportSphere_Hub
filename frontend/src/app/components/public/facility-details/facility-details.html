@@ -117,7 +117,7 @@
         @for (resource of details.facility.resources; track resource._id) {
           <article class="border rounded p-4">
             <h3 class="text-xl mt-2 mb-2">{{ resource.name }}</h3>
-            <p>Tip: {{ resource.type }} | Kapacitet: {{ resource.capacity }}</p>
+            <p>Tip: {{ label(resource.type) }} | Kapacitet: {{ resource.capacity }}</p>
             <p>{{ resource.equipmentDescription }}</p>
             <div class="overflow-x-auto">
               <table class="w-full border-collapse">
